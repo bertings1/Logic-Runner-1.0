@@ -9,13 +9,15 @@
 </head>
 <body>
     <div class="container">
-        <!-- Sticky Header for Score/Level -->
+        <!-- Stats Bar (Sticky) -->
         <div class="sticky-header game-header">
-            <div class="game-title">
-                <h1><i class="fas fa-brain"></i> Logic Runner</h1>
+            <div>
+                <h1 style="font-family:'IBM Plex Mono',monospace;font-size:2.1rem">
+                    <i class="fas fa-brain"></i> Logic Runner
+                </h1>
                 <p class="subtitle">
                     Test your wits and master logic puzzles.<br>
-                    <span style="font-size:0.92em;color:#cb6000;font-family:'IBM Plex Mono', monospace;"><i class="fas fa-bolt"></i> Modern, Minimal, Fun</span>
+                    <span style="color:#f49b23" class="subtitle"><i class="fas fa-bolt"></i> Modern, Minimal, Fun</span>
                 </p>
             </div>
             <div class="game-stats">
@@ -31,92 +33,44 @@
             </div>
         </div>
 
-        <!-- Intro Card -->
-        <div class="card">
-            <div class="card-title">
-                <i class="fas fa-gamepad"></i>
-                <h3>Welcome to Logic Runner!</h3>
-            </div>
-            <p>
-                Level up your logic skills by solving modern, interactive propositional puzzles.<br>
-                Each level unlocks new challenges—drag, drop, match, and think critically to progress.<br>
-                Can you reach the end and claim your spot on the leaderboard?
-            </p>
-            <ul style="padding-left:1.4em;line-height:1.7;font-size:1.04rem;">
-                <li><strong>Unique Levels</strong>: Face 4 fresh logic challenges</li>
-                <li><strong>Drag-and-Drop</strong>: Intuitive matching gameplay</li>
-                <li><strong>Difficulty Selector</strong>: Begin your journey or go pro!</li>
-                <li><strong>Instant Feedback</strong>: Know right/wrong, keep improving</li>
-            </ul>
-        </div>
-
         <!-- Settings Card -->
-        <div class="card">
-            <div class="card-title">
-                <i class="fas fa-sliders-h"></i>
-                <h3>Game Settings</h3>
-            </div>
-            <div class="input-group">
-                <div class="label">DIFFICULTY</div>
-                <div class="select-group" id="difficulty-select">
-                    <div class="select-option active" tabindex="0" data-difficulty="easy"><span><i class="fas fa-seedling"></i> Beginner</span></div>
-                    <div class="select-option" tabindex="0" data-difficulty="medium"><span><i class="fas fa-chart-line"></i> Intermediate</span></div>
-                    <div class="select-option" tabindex="0" data-difficulty="hard"><span><i class="fas fa-crown"></i> Expert</span></div>
+        <div class="card" id="settings-card">
+            <div class="card-title"><i class="fas fa-sliders-h"></i> GAME SETTINGS</div>
+            <div class="settings-row">
+                <div class="settings-label">DIFFICULTY</div>
+                <div class="settings-choices" id="difficulty-select">
+                    <div class="settings-card active" data-value="easy" tabindex="0">
+                        <i class="fas fa-seedling"></i> Beginner
+                    </div>
+                    <div class="settings-card" data-value="medium" tabindex="0">
+                        <i class="fas fa-chart-line"></i> Intermediate
+                    </div>
+                    <div class="settings-card" data-value="hard" tabindex="0">
+                        <i class="fas fa-crown"></i> Expert
+                    </div>
                 </div>
             </div>
-            <div class="input-group">
-                <div class="label">MODE</div>
-                <div class="select-group" id="mode-select">
-                    <div class="select-option active" tabindex="0" data-mode="classic"><span><i class="fas fa-puzzle-piece"></i> Classic</span></div>
-                    <div class="select-option" tabindex="0" data-mode="timed"><span><i class="fas fa-stopwatch"></i> Timed</span></div>
-                    <div class="select-option" tabindex="0" data-mode="zen"><span><i class="fas fa-spa"></i> Zen</span></div>
+            <div class="settings-row">
+                <div class="settings-label">MODE</div>
+                <div class="settings-choices" id="mode-select">
+                    <div class="settings-card active" data-value="classic" tabindex="0">
+                        <i class="fas fa-puzzle-piece"></i> Classic
+                    </div>
+                    <div class="settings-card" data-value="timed" tabindex="0">
+                        <i class="fas fa-stopwatch"></i> Timed
+                    </div>
+                    <div class="settings-card" data-value="zen" tabindex="0">
+                        <i class="fas fa-spa"></i> Zen
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Game Area -->
-        <div class="game-area">
-            <div class="level-info">
-                <h2 id="level-title">Level 1: Proposition Match</h2>
-                <p id="level-description" class="subtitle">Drag operators to match with their correct symbols</p>
-            </div>
-            <div class="matching-container">
-                <!-- Columns dynamically generated by JS -->
-            </div>
-            <div class="game-controls">
-                <button id="hint-btn" class="btn btn-secondary">
-                    <i class="fas fa-lightbulb"></i>
-                    Get Hint
-                </button>
-                <button id="check-btn" class="btn btn-primary">
-                    <i class="fas fa-check-circle"></i>
-                    Check Answers
-                </button>
-                <button id="next-btn" class="btn btn-primary btn-disabled" disabled>
-                    <i class="fas fa-arrow-right"></i>
-                    Next Level
-                </button>
-            </div>
-        </div>
-
-        <!-- Instructions Card -->
-        <div class="card">
-            <div class="card-title">
-                <i class="fas fa-info-circle"></i>
-                <h3>How to Play</h3>
-            </div>
-            <ul style="padding-left:1.2em;line-height:1.6;font-size:1.04rem;">
-                <li><strong>Drag</strong> operators/symbols from the left column</li>
-                <li><strong>Drop</strong> them in the correct place on the right</li>
-                <li><strong>Check your answers</strong> to see progress and hints</li>
-                <li>Use <strong>hints</strong> if you're stuck!</li>
-                <li><strong>Advance</strong> to the next level when you solve the current one</li>
-                <li><strong>Customize game</strong> with your favorite difficulty and mode</li>
-            </ul>
-        </div>
+        <!-- Dynamic Game Area -->
+        <div id="game-area"></div>
 
         <!-- Footer -->
-        <footer style="text-align:center;margin:38px 0 8px 0;font-size:0.95rem;color:#a5a5ae;font-family:'IBM Plex Mono',monospace;">
+        <footer style="text-align:center;margin:38px 0 8px 0;font-size:0.92rem;color:#a5a5ae;font-family:'IBM Plex Mono',monospace;">
             <span>Made with <i class="fas fa-brain"></i> by bertings1 &copy; 2025</span>
         </footer>
     </div>
