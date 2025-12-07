@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- STICKY HEADER: Stats always visible -->
+        <!-- Modern, minimal sticky header for branding (not floating on scroll) -->
         <div class="sticky-header game-header">
             <div>
                 <h1 style="font-family:'IBM Plex Mono',monospace;font-size:2.1rem">
@@ -20,24 +20,31 @@
                     <span style="color:#f49b23" class="subtitle"><i class="fas fa-bolt"></i> Modern, Minimal, Fun</span>
                 </p>
             </div>
-            <div class="game-stats">
-                <div class="status-indicator"><i class="fas fa-layer-group"></i>
-                    <span>Level: <strong id="current-level">1</strong>/<span id="level-total">4</span></span>
-                </div>
-                <div class="status-indicator"><i class="fas fa-star"></i>
-                    <span>Score: <strong id="score-value">0</strong></span>
-                </div>
-                <div class="status-indicator"><i class="fas fa-heart"></i>
-                    <span>Lives: <strong id="lives-value">3</strong></span>
-                </div>
-            </div>
-        </div>
-        <!-- FLOATING TIMER CARD (shown only in timed mode) -->
-        <div id="floating-timer" class="floating-timer" style="display:none;">
-            <i class="fas fa-stopwatch"></i> <span id="timer-value">15</span>s
         </div>
 
-        <!-- Settings Card -->
+        <!-- GAME FLOATING UI (score, lives, etc) -->
+        <div id="floating-ui" class="floating-ui" style="display:none;">
+            <div class="floating-stats">
+                <div class="status-indicator"><i class="fas fa-layer-group"></i>
+                    <span id="stat-level">1/4</span>
+                </div>
+                <div class="status-indicator"><i class="fas fa-star"></i>
+                    <span id="stat-score">0</span>
+                </div>
+                <div class="status-indicator"><i class="fas fa-heart"></i>
+                    <span id="stat-lives">3</span>
+                </div>
+                <div class="status-indicator floating-timer" id="floating-timer" style="display:none;">
+                    <i class="fas fa-stopwatch"></i> <span id="timer-value">15</span>s
+                </div>
+            </div>
+            <div class="floating-actions">
+                <button id="btn-quit" class="btn floating-btn"><i class="fas fa-sign-out-alt"></i> Quit</button>
+                <button id="btn-retry" class="btn floating-btn"><i class="fas fa-redo"></i> Retry</button>
+            </div>
+        </div>
+
+        <!-- Settings Card (appears when not playing) -->
         <div class="card" id="settings-card">
             <div class="card-title"><i class="fas fa-sliders-h"></i> GAME SETTINGS</div>
             <div class="settings-row">

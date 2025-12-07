@@ -1,117 +1,54 @@
-// --- Logic Data
+// Logic operators: ONLY core, no NOR/NAND.
 const operatorsArr = [
     { name: "AND", symbol: "∧", description: "True if both are true" },
     { name: "OR", symbol: "∨", description: "True if either is true" },
     { name: "NOT", symbol: "¬", description: "Inverts truth" },
-    { name: "IMPLIES", symbol: "→", description: "If A is true, B is true" },
-    { name: "NOR", symbol: "↓", description: "True if both are false" },
-    { name: "NAND", symbol: "⊼", description: "False if both are true" },
+    { name: "IMPLIES", symbol: "→", description: "If A is true, B is true" }
 ];
 function shuffle(arr) {
     arr = arr.slice();
-    for (let i = arr.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
+    for (let i = arr.length-1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i+1));
         [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
 }
-const DIFFICULTY = {
-    easy: 5,
-    medium: 7,
-    hard: 10
-};
-const TIME_LIMIT = {
-    easy: 15,
-    medium: 10,
-    hard: 5
+
+// ---- QUESTION POOLS: These are hand-designed and NO repeat across beginner/inter/expert ----
+const POOLS = {
+    easy: [
+        // Simple match and symbol logic
+        { type:'match', ops:['AND','OR','NOT','IMPLIES'] }, // Classic, any order
+        { type:'sentence', sentence:"A ___ B (true if both are true)", choices:["AND","OR","IMPLIES","NOT"], answer:"AND" },
+        { type:'sentence', sentence:"A ___ B (true if either is true)", choices:["AND","OR","IMPLIES","NOT"], answer:"OR" },
+        { type:'sentence', sentence:"___ A (true if A is false)", choices:["AND","OR","IMPLIES","NOT"], answer:"NOT" },
+        { type:'sentence', sentence:"If rain ___ umbrella, you stay dry. (umbrella because rain)", choices:["IMPLIES","AND","OR","NOT"], answer:"IMPLIES" }
+    ],
+    medium: [
+        // NO duplication of above, add chaining, real life, truth table
+        { type:'sentence', sentence:"A ___ B ___ C (true if all are true)", choices:["AND","OR","IMPLIES"], answer:"AND" },
+        { type:'sentence', sentence:"You can enter if you have a ticket ___ your name is on the list.", choices:["AND","OR","IMPLIES"], answer:"OR" },
+        { type:'tt', op:"AND" },
+        { type:'sentence', sentence:"If you do NOT complete your homework, ___ you get a bad grade.", choices:["IMPLIES","AND","OR"], answer:"IMPLIES" },
+        { type:'fault', pairs:[["AND","∧"],["OR","∨"],["NOT","¬"],["IMPLIES","∨"]], answerWrongIndex:3 }
+    ],
+    hard: [
+        // Real-world deductive, multi-step, hard logic
+        { type:'sentence', sentence:"If you study, you will pass. You studied. Therefore ___ ?", choices:["You will pass","Nothing follows","You did not pass"], answer:"You will pass" },
+        { type:'sentence', sentence:"Either Alice OR Bob will present, but not both.", choices:["AND","OR","IMPLIES","NOT"], answer:"OR" },
+        { type:'tt', op:"IMPLIES" },
+        { type:'fault', pairs:[["AND","∨"],["OR","∨"],["NOT","¬"],["IMPLIES","→"]], answerWrongIndex:0 },
+        { type:'sentence', sentence:"Light will be ON if the switch is ON ___ the switch is OFF.", choices:["AND","OR","IMPLIES"], answer:"IMPLIES" }
+    ]
 };
 const LEVELS = [
-    {
-        title: "Symbol Match",
-        instructions: "Drag each logic operator to its correct symbol. Order is always randomized!",
-        generateQuestions: qCount => {
-            let questions = [];
-            for(let i=0;i<qCount;i++) {
-                let ops = shuffle(operatorsArr).slice(0,4);
-                let opPairs = Object.fromEntries(ops.map(o=>[o.name,o.symbol]));
-                let left = shuffle(ops.map(o=>o.name));
-                let right = shuffle(ops.map(o=>o.symbol));
-                questions.push({
-                    opPairs, left, right
-                });
-            }
-            return questions;
-        },
-        type: "match"
-    },
-    {
-        title: "Statement Builder",
-        instructions: "Drag the correct logic connector into the blank in the statement.",
-        generateQuestions: qCount => {
-            const sentences = [
-                { template: "A ___ B (true if both are true)", answer: "AND" },
-                { template: "A ___ B (true if either is true)", answer: "OR" },
-                { template: "A ___ B (true if A is true, B must be true)", answer: "IMPLIES" },
-                { template: "___ A (true if A is false)", answer: "NOT" }
-            ];
-            let questions = [];
-            for(let i=0;i<qCount;i++) {
-                let chosen = sentences[Math.floor(Math.random() * sentences.length)];
-                let choices = shuffle(["AND","OR","IMPLIES","NOT"]);
-                questions.push({
-                    sentence: chosen.template,
-                    choices,
-                    answer: chosen.answer
-                });
-            }
-            return questions;
-        },
-        type: "sentence"
-    },
-    {
-        title: "Find the Fault",
-        instructions: "Drag the incorrect operator-symbol match to the orange zone.",
-        generateQuestions: qCount => {
-            let questions = [];
-            for(let i=0;i<qCount;i++) {
-                let ops = shuffle(operatorsArr).slice(0,4);
-                let pairs = ops.map(o=>[o.name,o.symbol]);
-                let wrongIndex = Math.floor(Math.random() * pairs.length);
-                let wrongSymbol = shuffle(operatorsArr.filter(o=>o.name !== pairs[wrongIndex][0]))[0].symbol;
-                pairs[wrongIndex][1] = wrongSymbol;
-                questions.push({
-                    pairs, answerWrongIndex: wrongIndex
-                });
-            }
-            return questions;
-        },
-        type: "fault"
-    },
-    {
-        title: "Truth Table Builder",
-        instructions: "Drag T/F chips to fill in the operator's truth table.",
-        generateQuestions: qCount => {
-            let questions = [];
-            for(let i=0;i<qCount;i++){
-                let op = operatorsArr[Math.floor(Math.random()*operatorsArr.length)];
-                let combos = [[true,true],[true,false],[false,true],[false,false]];
-                let results = combos.map(c=>{
-                    if(op.name==="AND") return c[0]&&c[1];
-                    if(op.name==="OR") return c[0]||c[1];
-                    if(op.name==="IMPLIES") return !c[0]||c[1];
-                    if(op.name==="NOT") return !c[0];
-                    if(op.name==="NAND") return !(c[0]&&c[1]);
-                    if(op.name==="NOR") return !(c[0]||c[1]);
-                    return null;
-                });
-                questions.push({op,combos,results});
-            }
-            return questions;
-        },
-        type: "tt"
-    }
+    {title:'Logic Mastery',pool:'easy'},
+    {title:'Logic Sprint',pool:'medium'},
+    {title:'Logic Deduction',pool:'hard'},
+    {title:'Truth Test',pool:'hard'}
 ];
-// --- State & UI refs
+
+// --- Settings, State, UI refs
 let gameState = {
     difficulty: "easy",
     mode: "classic",
@@ -123,15 +60,20 @@ let gameState = {
     timer: null,
     timeLeft: 0
 };
+const DIFFICULTY = {
+    easy: 5,
+    medium: 6,
+    hard: 5
+};
+const TIME_LIMIT = {
+    easy: 15,
+    medium: 10,
+    hard: 5
+};
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
-function updateStats() {
-    $("#current-level").textContent = gameState.level+1;
-    $("#level-total").textContent = LEVELS.length;
-    $("#score-value").textContent = gameState.score;
-    $("#lives-value").textContent = gameState.lives;
-}
-// --- Settings UI ---
+
+// --- Setup: Game Settings ---
 function settingsSetup() {
     $$("#difficulty-select .settings-card").forEach(card=>{
         card.onclick = function() {
@@ -147,28 +89,63 @@ function settingsSetup() {
             gameState.mode = this.dataset.value;
         };
     });
-    $("#start-game").onclick = startGame;
+    $("#start-game").onclick = ()=>{
+        document.getElementById("settings-card").style.display = "none";
+        showFloatingUI(true);
+        startGame();
+    };
 }
-// --- Game Start!
+function showFloatingUI(on) {
+    $("#floating-ui").style.display = on ? "flex":"none";
+    updateFloatingUI();
+}
+function updateFloatingUI() {
+    $("#stat-level").textContent = `${gameState.level+1}/${LEVELS.length}`;
+    $("#stat-score").textContent = gameState.score;
+    $("#stat-lives").textContent = gameState.lives;
+    // Timer: Only in timed mode, only during question
+    let isTimed = (gameState.mode==="timed" && typeof gameState.timeLeft==="number" && gameState.timeLeft > 0);
+    if(isTimed){
+        $("#floating-timer").style.display = "";
+        $("#timer-value").textContent = gameState.timeLeft;
+        $("#floating-timer").style.borderColor = gameState.timeLeft<4 ? "#ef4746":"#f45223";
+    }else{
+        $("#floating-timer").style.display = "none";
+    }
+}
 function startGame() {
-    $("#settings-card").style.display = "none";
+    // Difficulty/Mode already selected
     gameState.level = 0;
     gameState.score = 0;
     gameState.lives = 3;
+    // Build Q set for this game, no repeats between difficulties
+    const diff = gameState.difficulty;
+    let pool = shuffle(POOLS[diff]).slice(0, DIFFICULTY[diff]);
+    gameState.questions = pool;
     gameState.question = 0;
-    gameState.questions = LEVELS[gameState.level].generateQuestions(DIFFICULTY[gameState.difficulty]);
-    updateStats();
     showQuestion();
 }
-// --- Timer Logic
-function startTimer(seconds,onExpire) {
+
+// ---- Controls: quit, retry
+$("#btn-quit").onclick = ()=>{
+    stopTimer();
+    showFloatingUI(false);
+    $("#settings-card").style.display = "";
+    $("#game-area").innerHTML = "";
+};
+$("#btn-retry").onclick = ()=>{
+    stopTimer();
+    showFloatingUI(true);
+    startGame();
+};
+// ------ Timer
+function startTimer(seconds, onExpire) {
     gameState.timeLeft = seconds;
-    updateTimerUI();
-    $("#floating-timer").style.display = "block";
+    updateFloatingUI();
     if(gameState.timer)clearInterval(gameState.timer);
     gameState.timer = setInterval(()=>{
         gameState.timeLeft--;
-        updateTimerUI();
+        updateFloatingUI();
         if(gameState.timeLeft<=0){
             clearInterval(gameState.timer);
             $("#floating-timer").style.display = "none";
@@ -178,70 +155,60 @@ function startTimer(seconds,onExpire) {
 }
 function stopTimer() {
     if(gameState.timer) clearInterval(gameState.timer);
-    $("#floating-timer").style.display = "none";
+    gameState.timeLeft = 0;
+    updateFloatingUI();
 }
-function updateTimerUI() {
-    $("#timer-value").textContent = gameState.timeLeft;
-    $("#floating-timer").style.borderColor = gameState.timeLeft<4 ? "#ef4746" : "#f45223";
-}
-// --- Show Question
+// ---- Gameplay
 function showQuestion() {
-    const level = LEVELS[gameState.level];
-    const q = gameState.questions[gameState.question];
-    let idx = gameState.question;
-    // Floats/timers
     stopTimer();
-    // Based on mode, show timer!
-    if(gameState.mode === "timed") {
+    updateFloatingUI();
+    let qdata = gameState.questions[gameState.question];
+    let idx = gameState.question;
+    // Timed mode
+    if(gameState.mode==="timed" && qdata.type!=="match") {
         startTimer(TIME_LIMIT[gameState.difficulty], ()=>{loseLife("Time's up!");});
     }
-    // Match
-    if(level.type === "match") renderMatch(q, idx, level);
-    if(level.type === "sentence") renderSentence(q, idx, level);
-    if(level.type === "fault") renderFault(q, idx, level);
-    if(level.type === "tt") renderTT(q, idx, level);
-    updateStats();
+    // Render Q
+    if(qdata.type==="match") renderMatch(qdata, idx);
+    else if(qdata.type==="sentence") renderSentence(qdata, idx);
+    else if(qdata.type==="tt") renderTT(qdata, idx);
+    else if(qdata.type==="fault") renderFault(qdata, idx);
 }
 function nextQuestion() {
-    if(gameState.mode === "timed") stopTimer();
+    stopTimer();
     gameState.question++;
     if(gameState.question < gameState.questions.length && gameState.lives > 0){
         showQuestion();
     } else if(gameState.lives > 0){
-        // Next level!
-        if(gameState.level < LEVELS.length-1){
-            gameState.level++;
-            gameState.questions = LEVELS[gameState.level].generateQuestions(DIFFICULTY[gameState.difficulty]);
-            gameState.question=0;
-            showMessage("Next level!", "success");
-            setTimeout(()=>showQuestion(),500);
-        }else{
-            showEndModal();
-        }
+        // Next "level" = pick next set of questions (if any). Here we just end for demo.
+        showEndModal();
     } else {
         showRetryModal();
     }
 }
-// --- Levels ---
-function renderMatch(q, idx, level) {
+function renderMatch(q,idx){
+    let ops = q.ops.map(n=>operatorsArr.find(o=>o.name===n));
+    let opPairs = Object.fromEntries(ops.map(o=>[o.name,o.symbol]));
+    let left = shuffle(ops.map(o=>o.name));
+    let right = shuffle(ops.map(o=>o.symbol));
     $("#game-area").innerHTML = `
-        <div class="game-section-title">Level ${gameState.level+1}: ${level.title}</div>
-        <div class="subtitle">${level.instructions}<br><span style="font-size:1.03em;color:#555;">Question ${idx+1} of ${gameState.questions.length}</span></div>
+        <div class="game-section-title">Symbol Match</div>
+        <div class="subtitle">Match each logic name to its symbol.<br><span style="font-size:1.03em;color:#555;">Question ${idx+1} of ${gameState.questions.length}</span></div>
         <div class="matching-container">
             <div class="game-column">
                 <div class="column-title">OPERATORS</div>
-                ${q.left.map(n=>`<div class="draggable-item" draggable="true" data-operator="${n}">${n}</div>`).join("")}
+                ${left.map(n=>`<div class="draggable-item" draggable="true" data-operator="${n}">${n}</div>`).join("")}
             </div>
             <div class="game-column">
                 <div class="column-title">SYMBOLS</div>
-                ${q.right.map(sym=>`<div class="drop-zone empty" data-symbol="${sym}"><span class="zone-label">${sym}</span></div>`).join("")}
+                ${right.map(sym=>`<div class="drop-zone empty" data-symbol="${sym}"><span class="zone-label">${sym}</span></div>`).join("")}
             </div>
         </div>
         <div class="game-controls">
             <button id="check-btn" class="btn btn-primary"><i class="fas fa-check-circle"></i> Check Answers</button>
         </div>
     `;
-    dragDropMultiMatch(q.opPairs, ()=>advanceMatchScore(q.opPairs.length));
+    dragDropMultiMatch(opPairs, ()=>advanceMatchScore(left.length));
 }
 function dragDropMultiMatch(correctPairs, onWin){
     const draggables = $$(".draggable-item");
@@ -266,9 +233,8 @@ function dragDropMultiMatch(correctPairs, onWin){
                 zone.innerHTML = `<span class="zone-label">${zone.dataset.symbol}</span>
                     <div class="match-content">${opName}</div>`;
                 zone.classList.add("correct");zone.classList.remove("empty");
-                item = $(`.draggable-item[data-operator="${opName}"]`);
-                item.classList.add("disabled");
-                item.setAttribute("draggable","false");
+                let item = $(`.draggable-item[data-operator="${opName}"]`);
+                item.classList.add("disabled");item.setAttribute("draggable","false");
                 matched++;
                 showMessage(`${opName} → ${zone.dataset.symbol} is correct!`,"success");
             }else{
@@ -292,56 +258,77 @@ function advanceMatchScore(n){
     gameState.score+=n*15;
     nextQuestion();
 }
-function renderSentence(q,idx,level){
-    $("#game-area").innerHTML = `
-        <div class="game-section-title">Level ${gameState.level+1}: ${level.title}</div>
-        <div class="subtitle">${level.instructions}<br><span style="font-size:1.03em;color:#555;">Question ${idx+1} of ${gameState.questions.length}</span></div>
-        <div class="sentence-area" style="background:#fff;padding:1.2em;border-radius:8px;margin-bottom:.7em;letter-spacing:.07em;">
-            <span style="color:#c76300;font-weight:700;">${q.sentence.replace("___",`<span id="sentence-drop" class="drop-zone empty" style="display:inline-block;width:90px"></span>`)}</span>
-        </div>
-        <div class="sentence-choices" style="display:flex;gap:1.1em;">
-            ${q.choices.map(choice=>`
-                <div class="draggable-item sentence-choice" draggable="true" data-choice="${choice}">${choice}</div>
-            `).join("")}
-        </div>
-        <div class="game-controls">
-            <button id="check-btn" class="btn btn-primary"><i class="fas fa-check-circle"></i> Check Answer</button>
-        </div>
-    `;
-    let droppedChoice = "";
-    const drop = $("#sentence-drop");
-    $$(".sentence-choice").forEach(item=>{
-        item.ondragstart = e=>{
-            e.dataTransfer.setData("text/plain", item.dataset.choice);
+function renderSentence(q,idx){
+    // Check: special text response (for expert); otherwise drag-drop
+    if(q.choices && q.answer){
+        $("#game-area").innerHTML = `
+            <div class="game-section-title">Logic Sentence</div>
+            <div class="subtitle">${q.sentence}<br><span style="font-size:1.03em;color:#555;">Question ${idx+1} of ${gameState.questions.length}</span></div>
+            <div class="sentence-area" style="background:#fff;padding:1.2em;border-radius:8px;margin-bottom:.7em;letter-spacing:.07em;">
+                <span style="color:#c76300;font-weight:700;">${q.sentence.replace("___",`<span id="sentence-drop" class="drop-zone empty" style="display:inline-block;width:90px"></span>`)}</span>
+            </div>
+            <div class="sentence-choices" style="display:flex;gap:1.1em;">
+                ${q.choices.map(choice=>`
+                    <div class="draggable-item sentence-choice" draggable="true" data-choice="${choice}">${choice}</div>
+                `).join("")}
+            </div>
+            <div class="game-controls">
+                <button id="check-btn" class="btn btn-primary"><i class="fas fa-check-circle"></i> Check Answer</button>
+            </div>
+        `;
+        let droppedChoice = "";
+        const drop = $("#sentence-drop");
+        $$(".sentence-choice").forEach(item=>{
+            item.ondragstart = e=>{
+                e.dataTransfer.setData("text/plain", item.dataset.choice);
+            };
+        });
+        drop.ondragover = e=>{e.preventDefault();drop.classList.add("drag-over");};
+        drop.ondragleave = ()=>drop.classList.remove("drag-over");
+        drop.ondrop = e=>{
+            e.preventDefault();
+            drop.classList.remove("drag-over");
+            let val = e.dataTransfer.getData("text/plain");
+            drop.textContent = val; droppedChoice = val; drop.classList.remove("empty");
         };
-    });
-    drop.ondragover = e=>{e.preventDefault();drop.classList.add("drag-over");};
-    drop.ondragleave = ()=>drop.classList.remove("drag-over");
-    drop.ondrop = e=>{
-        e.preventDefault();
-        drop.classList.remove("drag-over");
-        let val = e.dataTransfer.getData("text/plain");
-        drop.textContent = val; droppedChoice = val;
-        drop.classList.remove("empty");
-    };
-    $("#check-btn").onclick = ()=>{
-        if(droppedChoice){
-            if(droppedChoice === q.answer){
-                showMessage("You filled the sentence correctly!","success");
-                gameState.score+=25;nextQuestion();
+        $("#check-btn").onclick = ()=>{
+            if(droppedChoice){
+                if(droppedChoice === q.answer){
+                    showMessage("You filled the sentence correctly!","success");
+                    gameState.score+=25;nextQuestion();
+                }else{
+                    showMessage("Incorrect logic connector.","error");loseLife();
+                }
             }else{
-                showMessage("Incorrect logic connector.","error");loseLife();
+                showMessage("Drag one of the choices to the blank.","warning");
             }
-        }else{
-            showMessage("Drag one of the choices to the blank.","warning");
+        };
+    } else if(q.answer){ // Text-driven "make correct deduction"
+        $("#game-area").innerHTML = `
+            <div class="game-section-title">Logic Reasoning</div>
+            <div class="subtitle">${q.sentence}<br><span style="font-size:1.03em;color:#555;">Question ${idx+1} of ${gameState.questions.length}</span></div>
+            <div>
+                <input type="text" id="logic-input" class="draggable-item" placeholder="Type your answer..." style="width:222px;margin-bottom:1.2em;">
+            </div>
+            <div class="game-controls">
+                <button id="check-btn" class="btn btn-primary"><i class="fas fa-check-circle"></i> Check Answer</button>
+            </div>
+        `;
+        $("#check-btn").onclick = ()=>{
+            let user = ($("#logic-input").value+"").trim().toLowerCase();
+            if(user && user === (q.answer+"").toLowerCase()){
+                showMessage("That's correct!","success");
+                gameState.score+=45;nextQuestion();
+            }else{
+                showMessage("Incorrect, try again!","error");loseLife();
+            }
         }
-    };
+    }
 }
-// Fault
-function renderFault(q,idx,level){
+function renderFault(q,idx){
     $("#game-area").innerHTML = `
-        <div class="game-section-title">Level ${gameState.level+1}: ${level.title}</div>
-        <div class="subtitle">${level.instructions}<br><span style="font-size:1.03em;color:#555;">Question ${idx+1} of ${gameState.questions.length}</span></div>
+        <div class="game-section-title">Spot the Faulty</div>
+        <div class="subtitle">Drag the incorrect match to the zone.<br><span style="font-size:1.03em;color:#555;">Question ${idx+1} of ${gameState.questions.length}</span></div>
         <div style="display:flex;gap:3em;">
             <div>
                 <div class="column-title">Matches</div>
@@ -381,11 +368,18 @@ function renderFault(q,idx,level){
     };
     $("#check-btn").onclick = ()=>showMessage("Drag the wrong match to the zone first.","warning");
 }
-// TT
-function renderTT(q,idx,level){
+function renderTT(q,idx){
+    let combos = [[true,true],[true,false],[false,true],[false,false]];
+    let op = operatorsArr.find(o=>o.name===q.op);
+    let results = combos.map(c=>{
+        if(op.name==="AND") return c[0]&&c[1];
+        if(op.name==="OR") return c[0]||c[1];
+        if(op.name==="IMPLIES") return !c[0]||c[1];
+        if(op.name==="NOT") return !c[0];
+    });
     $("#game-area").innerHTML = `
-        <div class="game-section-title">Level ${gameState.level+1}: ${level.title}</div>
-        <div class="subtitle">Operator: <strong>${q.op.name}</strong> (${q.op.symbol}) — ${q.op.description}
+        <div class="game-section-title">Truth Table</div>
+        <div class="subtitle">${op.name} (${op.symbol}): ${op.description}
             <br><span style="font-size:1.03em;color:#555;">Question ${idx+1} of ${gameState.questions.length}</span>
         </div>
         <div class="tt-grid" style="margin-top:1.1em;margin-bottom:1.2em;">
@@ -393,7 +387,7 @@ function renderTT(q,idx,level){
                 <tr>
                     <th>A</th><th>B</th><th>Result</th>
                 </tr>
-                ${q.combos.map((c,i)=>
+                ${combos.map((c,i)=>
                     `<tr>
                         <td>${c[0] ? "T" : "F"}</td>
                         <td>${c[1] ? "T" : "F"}</td>
@@ -402,13 +396,11 @@ function renderTT(q,idx,level){
                 ).join("")}
             </table>
         </div>
-        <div style="margin-bottom:1.3em;">
-            <div class="column-title" style="margin-bottom:.65em;">Drag T/F chips below:</div>
-            <div class="tt-chips" style="display:flex;gap:.7em;">
-                ${["T","F","T","F"].map(ret=>`
-                    <div class="draggable-item tt-chip" draggable="true" data-value="${ret}">${ret}</div>
-                `).join("")}
-            </div>
+        <div class="column-title" style="margin-bottom:.65em;">Drag T/F chips below:</div>
+        <div class="tt-chips" style="display:flex;gap:.7em;">
+            ${["T","F","T","F"].map(ret=>`
+                <div class="draggable-item tt-chip" draggable="true" data-value="${ret}">${ret}</div>
+            `).join("")}
         </div>
         <div class="game-controls">
             <button id="check-btn" class="btn btn-primary"><i class="fas fa-check-circle"></i> Check Answers</button>
@@ -432,9 +424,7 @@ function renderTT(q,idx,level){
     });
     $("#check-btn").onclick = ()=>{
         if(userSolution.every(x=>x)){
-            let correct = userSolution.every(
-                (v,idx)=>((q.results[idx] ? "T" : "F") === v)
-            );
+            let correct = userSolution.every((v,idx)=>((results[idx] ? "T" : "F") === v));
             if(correct){
                 showMessage("You completed the table correctly!","success");
                 gameState.score+=45;nextQuestion();
@@ -448,18 +438,15 @@ function renderTT(q,idx,level){
     };
 }
 
+// --- Feedback, Game Over, etc
 function loseLife(msg){
     gameState.lives--;
-    updateStats();
-    if(gameState.lives <= 0) {
-        showRetryModal();
-    } else if(msg) {
-        showMessage(msg, "error");
-        setTimeout(()=>nextQuestion(),1200);
-    }
+    updateFloatingUI();
+    if(gameState.lives <= 0) showRetryModal();
+    else if(msg) { showMessage(msg, "error"); setTimeout(nextQuestion,1200);}
 }
 function showMessage(msg,type){
-    let existing = $(".game-message");
+    let existing = document.querySelector(".game-message");
     if(existing)existing.remove();
     let div = document.createElement("div");
     div.className = `game-message ${type}`;
@@ -479,19 +466,24 @@ function showRetryModal(){
       <div class="modal-popup">
         <div class="modal-title"><i class="fas fa-heart-broken"></i> Game Over</div>
         <div class="modal-content">Your lives ran out.<br>Would you like to try again?</div>
-        <button class="btn btn-primary modal-btn modal-tryagain"><i class="fas fa-redo"></i> Try Again</button>
+        <button class="btn btn-primary modal-btn modal-tryagain"><i class="fas fa-redo"></i> Retry</button>
+        <button class="btn btn-secondary modal-btn modal-quit"><i class="fas fa-sign-out-alt"></i> Quit</button>
       </div>
     `;
     document.body.appendChild(modal);
-    $(".modal-tryagain").onclick = ()=>{
+    modal.querySelector(".modal-tryagain").onclick = ()=>{
+        modal.remove(); showFloatingUI(true); startGame();
+    };
+    modal.querySelector(".modal-quit").onclick = ()=>{
         modal.remove();
-        $("#settings-card").style.display = "";
-        $("#game-area").innerHTML = "";
-        stopTimer();
+        showFloatingUI(false);
+        document.getElementById("settings-card").style.display = "";
+        document.getElementById("game-area").innerHTML = "";
     };
 }
 function showEndModal(){
     stopTimer();
+    showFloatingUI(false);
     $("#game-area").innerHTML = `
         <div class="card">
             <div class="card-title"><i class="fas fa-trophy"></i><h3>Game Complete!</h3></div>
@@ -499,17 +491,16 @@ function showEndModal(){
             Refresh or <span class='retry-link' style='text-decoration:underline;color:#f45223;cursor:pointer;'>play again!</span></p>
         </div>
     `;
-    $(".retry-link").onclick = ()=>{
-        $("#settings-card").style.display = "";
-        $("#game-area").innerHTML = "";
-        stopTimer();
+    document.querySelector(".retry-link").onclick = ()=>{
+        document.getElementById("settings-card").style.display = "";
+        document.getElementById("game-area").innerHTML = "";
+        showFloatingUI(false);
     };
     showMessage('Congratulations! You finished all levels!', 'success');
-    updateStats();
+    updateFloatingUI();
 }
-
-// Start on load
+// Init on load
 window.addEventListener("DOMContentLoaded",()=>{
     settingsSetup();
-    updateStats();
+    showFloatingUI(false);
 });
