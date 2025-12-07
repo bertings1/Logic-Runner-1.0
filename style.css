@@ -1,9 +1,7 @@
-/* ========== OPENAI.FM Remastered Color & Typography ========== */
+/* ========== OpenAI.fm Remastered Color & Typography ========== */
 
-/* Import modern mono font */
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap');
 
-/* Soft app-like background, mono font, gray text */
 body {
     background: #f5f5f7;
     font-family: 'IBM Plex Mono', monospace;
@@ -214,7 +212,6 @@ input, .select-group, .btn, .btn-primary, .btn-secondary {
     75% { transform: translateX(4px);}
 }
 
-/* Game Message Feedback */
 .game-message {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 1.07rem;
@@ -239,5 +236,3 @@ input, .select-group, .btn, .btn-primary, .btn-secondary {
     .matching-container { grid-template-columns: 1fr; }
     .game-header { flex-direction: column; gap: 1rem;}
 }
-
-/* Remove unnecessary style for "voice" etc., keep only real settings */

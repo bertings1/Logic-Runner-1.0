@@ -1,13 +1,13 @@
-// Game Data
+// ========== LEVEL DATA ==========
 const levels = [
     {
         title: "Level 1: Proposition Match",
         description: "Drag operators to match with their correct symbols.",
         operators: [
-            { name: "AND", symbol: "∧", hint: "AND (∧) means both statements must be true" },
-            { name: "OR", symbol: "∨", hint: "OR (∨) means at least one statement is true" },
-            { name: "NOT", symbol: "¬", hint: "NOT (¬) reverses the truth value" },
-            { name: "IMPLIES", symbol: "→", hint: "IMPLIES (→) means 'if first, then second'" }
+            { name: "AND", symbol: "∧", hint: "AND (∧): both statements must be true." },
+            { name: "OR", symbol: "∨", hint: "OR (∨): at least one statement is true." },
+            { name: "NOT", symbol: "¬", hint: "NOT (¬): reverses the truth value." },
+            { name: "IMPLIES", symbol: "→", hint: "IMPLIES (→): 'if first, then second'." }
         ]
     },
     {
@@ -25,10 +25,10 @@ const levels = [
         title: "Level 3: Truth Table Challenge",
         description: "Which symbol means the operator is TRUE only if both inputs are TRUE?",
         operators: [
-            { name: "AND", symbol: "∧", hint: "AND is only TRUE when both inputs are TRUE" },
-            { name: "OR", symbol: "∨", hint: "OR is TRUE when at least one is TRUE" },
-            { name: "NOT", symbol: "¬", hint: "NOT flips the value" },
-            { name: "IMPLIES", symbol: "→", hint: "IMPLIES: if first is TRUE, guarantees second is TRUE" }
+            { name: "AND", symbol: "∧", hint: "AND is only TRUE when both inputs are TRUE." },
+            { name: "OR", symbol: "∨", hint: "OR is TRUE when at least one is TRUE." },
+            { name: "NOT", symbol: "¬", hint: "NOT flips the value." },
+            { name: "IMPLIES", symbol: "→", hint: "IMPLIES: if first is TRUE, guarantees second is TRUE." }
         ]
     },
     {
@@ -51,7 +51,6 @@ let gameState = {
     matchedPairs: 0
 };
 
-// DOM Shortcuts
 const $ = selector => document.querySelector(selector);
 const $$ = selector => Array.from(document.querySelectorAll(selector));
 const elements = {
@@ -83,7 +82,6 @@ function loadLevel(levelIdx) {
     elements.levelTitle.textContent = level.title;
     elements.levelDesc.textContent = level.description;
 
-    // Enable buttons
     elements.checkBtn.disabled = false;
     elements.hintBtn.disabled = false;
     elements.nextBtn.disabled = true;
@@ -92,34 +90,10 @@ function loadLevel(levelIdx) {
     renderMatchingGame(level);
 }
 
-// ========== RENDER LEVELS ==========
+// ========== RENDER LEVEL ==========
 function renderMatchingGame(level) {
-    // Clear previous game area
-    elements.gameArea.innerHTML = `
-        <div class="level-info">
-            <h2 id="level-title">${level.title}</h2>
-            <p id="level-description" class="subtitle">${level.description}</p>
-        </div>
-        <div class="matching-container"></div>
-        <div class="game-controls">
-            <button id="hint-btn" class="btn btn-secondary">
-                <i class="fas fa-lightbulb"></i> Get Hint
-            </button>
-            <button id="check-btn" class="btn btn-primary">
-                <i class="fas fa-check-circle"></i> Check Answers
-            </button>
-            <button id="next-btn" class="btn btn-primary btn-disabled" disabled>
-                <i class="fas fa-arrow-right"></i> Next Level
-            </button>
-        </div>
-    `;
-    // Update control element references
-    elements.hintBtn = $('#hint-btn');
-    elements.checkBtn = $('#check-btn');
-    elements.nextBtn = $('#next-btn');
-
-    // Build match columns depending on "reverse" or "speedRun"
-    const matchingContainer = $('.matching-container');
+    elements.gameArea.querySelector('.matching-container').innerHTML = '';
+    // Build columns for drag and drop
     let leftLabel = "LOGICAL OPERATORS", rightLabel = "SYMBOLS", draggables = [], drops = [];
 
     if (level.reverse) {
@@ -164,8 +138,8 @@ function renderMatchingGame(level) {
         rightColumn.appendChild(zone);
     });
 
-    matchingContainer.appendChild(leftColumn);
-    matchingContainer.appendChild(rightColumn);
+    elements.gameArea.querySelector('.matching-container').appendChild(leftColumn);
+    elements.gameArea.querySelector('.matching-container').appendChild(rightColumn);
 
     setupDragAndDrop(level);
 
@@ -325,43 +299,14 @@ function showMessage(text, type) {
     const msg = document.createElement('div');
     msg.className = `game-message ${type}`;
     msg.textContent = text;
-    msg.style.cssText = `
-        position: fixed;
-        top: 100px;
-        right: 20px;
-        padding: 15px 20px;
-        border-radius: 10px;
-        color: white;
-        font-weight: 600;
-        z-index: 1000;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        animation: slideIn 0.3s ease;
-    `;
-    // Color scheme
-    if (type === 'success') msg.style.background = 'linear-gradient(135deg, #10a37f, #0d8c6d)';
-    else if (type === 'error') msg.style.background = 'linear-gradient(135deg, #ef4146, #d13438)';
-    else if (type === 'warning') msg.style.background = 'linear-gradient(135deg, #f7b500, #e6a200)';
-    else msg.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+    // Style
+    msg.style.background = type === 'success' ? '#15bb90'
+        : type === 'error' ? '#ef4746'
+        : type === 'warning' ? '#ffb300'
+        : '#232325e0';
     document.body.appendChild(msg);
-    setTimeout(() => { msg.style.animation = 'slideOut 0.3s ease'; setTimeout(()=>msg.remove(),300); }, 3000);
+    setTimeout(() => { msg.style.opacity='0'; setTimeout(()=>msg.remove(),500); }, 3000);
 }
-
-// ========== CSS ENHANCEMENTS ==========
-(function injectCSS(){
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideIn { from { transform: translateX(100px); opacity:0; } to { transform: translateX(0); opacity:1; } }
-        @keyframes slideOut { from { transform: translateX(0); opacity:1; } to { transform: translateX(100px); opacity:0; } }
-        .drag-over { border-color: #10a37f !important; background: rgba(16,163,127,0.1) !important; }
-        .correct { border-color: #10a37f !important; background: rgba(16,163,127,0.1) !important; }
-        .incorrect { border-color: #ef4146 !important; background: rgba(239,65,70,0.1) !important; animation: shake 0.5s ease; }
-        @keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-5px);} 75%{transform:translateX(5px);} }
-        .match-content { display: flex; flex-direction: column; align-items: center; padding:10px;}
-        .match-content div { font-weight:600; font-size:1.1rem;}
-        .game-message { font-size: 1rem; letter-spacing: 1px;}
-    `;
-    document.head.appendChild(style);
-})();
 
 // ========== ON LOAD ==========
 window.addEventListener('DOMContentLoaded', startGame);
