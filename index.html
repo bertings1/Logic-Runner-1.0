@@ -6,16 +6,20 @@
     <title>Logic Runner | Propositional Logic Game</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- IBM Plex Mono imported via CSS -->
 </head>
 <body>
     <div class="container">
-        <!-- Game Header -->
+        <!-- Header: Logo + Tagline -->
         <div class="game-header">
             <div class="game-title">
                 <h1><i class="fas fa-brain"></i> Logic Runner</h1>
-                <p class="subtitle">Master Propositional Logic Through Gameplay</p>
+                <p class="subtitle">
+                    Test your wits and master logic puzzles.<br>
+                    <span style="font-size:0.92em;color:#cb6000;font-family:'IBM Plex Mono', monospace;"><i class="fas fa-bolt"></i> Modern, Minimal, Fun</span>
+                </p>
             </div>
-            
+            <!-- Game Stats -->
             <div class="game-stats">
                 <div class="status-indicator">
                     <i class="fas fa-layer-group"></i>
@@ -32,46 +36,45 @@
             </div>
         </div>
 
-        <!-- Game Settings Card -->
+        <!-- Game Intro/Description Card -->
         <div class="card">
             <div class="card-title">
-                <i class="fas fa-cogs"></i>
+                <i class="fas fa-gamepad"></i>
+                <h3>Welcome to Logic Runner!</h3>
+            </div>
+            <p>
+                Level up your logic skills by solving modern, interactive propositional puzzles.<br>
+                Each level unlocks new challenges—drag, drop, match, and think critically to progress.<br>
+                Can you reach the end and claim your spot on the leaderboard?
+            </p>
+            <ul style="padding-left:1.4em;line-height:1.7;font-size:1.04rem;">
+                <li><strong>Unique Levels</strong>: Face 4 fresh logic challenges</li>
+                <li><strong>Drag-and-Drop</strong>: Intuitive matching gameplay</li>
+                <li><strong>Difficulty Selector</strong>: Begin your journey or go pro!</li>
+                <li><strong>Instant Feedback</strong>: Know right/wrong, keep improving</li>
+            </ul>
+        </div>
+
+        <!-- Settings Card -->
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-sliders-h"></i>
                 <h3>Game Settings</h3>
             </div>
-            
-            <div class="input-group">
-                <div class="label">VOICE GUIDE</div>
-                <div class="select-group">
-                    <div class="select-option active">
-                        <i class="fas fa-robot"></i>
-                        <span>Nova</span>
-                    </div>
-                    <div class="select-option">
-                        <i class="fas fa-hat-wizard"></i>
-                        <span>Sage</span>
-                    </div>
-                    <div class="select-option">
-                        <i class="fas fa-bolt"></i>
-                        <span>Echo</span>
-                    </div>
-                </div>
-            </div>
-            
             <div class="input-group">
                 <div class="label">DIFFICULTY</div>
-                <div class="select-group">
-                    <div class="select-option active">
-                        <i class="fas fa-seedling"></i>
-                        <span>Beginner</span>
-                    </div>
-                    <div class="select-option">
-                        <i class="fas fa-chart-line"></i>
-                        <span>Intermediate</span>
-                    </div>
-                    <div class="select-option">
-                        <i class="fas fa-crown"></i>
-                        <span>Expert</span>
-                    </div>
+                <div class="select-group" id="difficulty-select">
+                    <div class="select-option active" tabindex="0" data-difficulty="easy"><span><i class="fas fa-seedling"></i> Beginner</span></div>
+                    <div class="select-option" tabindex="0" data-difficulty="medium"><span><i class="fas fa-chart-line"></i> Intermediate</span></div>
+                    <div class="select-option" tabindex="0" data-difficulty="hard"><span><i class="fas fa-crown"></i> Expert</span></div>
+                </div>
+            </div>
+            <div class="input-group">
+                <div class="label">MODE</div>
+                <div class="select-group" id="mode-select">
+                    <div class="select-option active" tabindex="0" data-mode="classic"><span><i class="fas fa-puzzle-piece"></i> Classic</span></div>
+                    <div class="select-option" tabindex="0" data-mode="timed"><span><i class="fas fa-stopwatch"></i> Timed</span></div>
+                    <div class="select-option" tabindex="0" data-mode="zen"><span><i class="fas fa-spa"></i> Zen</span></div>
                 </div>
             </div>
         </div>
@@ -82,28 +85,12 @@
                 <h2 id="level-title">Level 1: Proposition Match</h2>
                 <p id="level-description" class="subtitle">Drag operators to match with their correct symbols</p>
             </div>
-            
-            <!-- Matching Game -->
+
+            <!-- Matching Game (auto filled by game.js) -->
             <div class="matching-container">
-                <!-- Operators Column -->
-                <div class="game-column">
-                    <div class="column-title">LOGICAL OPERATORS</div>
-                    <div class="draggable-item" data-operator="AND">AND</div>
-                    <div class="draggable-item" data-operator="OR">OR</div>
-                    <div class="draggable-item" data-operator="NOT">NOT</div>
-                    <div class="draggable-item" data-operator="IMPLIES">IMPLIES</div>
-                </div>
-                
-                <!-- Symbols Column -->
-                <div class="game-column">
-                    <div class="column-title">SYMBOLS</div>
-                    <div class="drop-zone" data-symbol="∧"></div>
-                    <div class="drop-zone" data-symbol="∨"></div>
-                    <div class="drop-zone" data-symbol="¬"></div>
-                    <div class="drop-zone" data-symbol="→"></div>
-                </div>
+                <!-- Columns dynamically generated by JS -->
             </div>
-            
+
             <!-- Game Controls -->
             <div class="game-controls">
                 <button id="hint-btn" class="btn btn-secondary">
@@ -120,20 +107,43 @@
                 </button>
             </div>
         </div>
-        
+
         <!-- Instructions Card -->
         <div class="card">
             <div class="card-title">
                 <i class="fas fa-info-circle"></i>
                 <h3>How to Play</h3>
             </div>
-            <p>1. <strong>Drag</strong> operators from the left column</p>
-            <p>2. <strong>Drop</strong> them on the correct symbols in the right column</p>
-            <p>3. <strong>Check</strong> your answers when all matches are made</p>
-            <p>4. <strong>Progress</strong> to the next level when you succeed!</p>
+            <ul style="padding-left:1.2em;line-height:1.6;font-size:1.04rem;">
+                <li><strong>Drag</strong> operators/symbols from the left column</li>
+                <li><strong>Drop</strong> them in the correct place on the right</li>
+                <li><strong>Check your answers</strong> to see progress and hints</li>
+                <li>Use <strong>hints</strong> if you're stuck!</li>
+                <li><strong>Advance</strong> to the next level when you solve the current one</li>
+                <li><strong>Customize game</strong> with your favorite difficulty and mode</li>
+            </ul>
         </div>
+
+        <!-- Footer -->
+        <footer style="text-align:center;margin:38px 0 8px 0;font-size:0.95rem;color:#a5a5ae;font-family:'IBM Plex Mono',monospace;">
+            <span>Made with <i class="fas fa-brain"></i> by bertings1 &copy; 2025</span>
+        </footer>
+
     </div>
 
     <script src="game.js"></script>
+    <!-- Optionally, add JS here for settings interactivity -->
+    <script>
+    // Settings selection effect
+    document.querySelectorAll('.select-group').forEach(group => {
+        group.querySelectorAll('.select-option').forEach(option => {
+            option.onclick = () => {
+                group.querySelectorAll('.select-option').forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                // Optionally: Hook into game logic to apply settings!
+            };
+        });
+    });
+    </script>
 </body>
 </html>

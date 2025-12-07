@@ -1,101 +1,243 @@
-/* ======= OPENAI.FM TYPOGRAPHY REMASTER ======= */
+/* ========== OPENAI.FM Remastered Color & Typography ========== */
 
-/* Import IBM Plex Mono or fallback to monospace */
+/* Import modern mono font */
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap');
 
+/* Soft app-like background, mono font, gray text */
 body {
-    font-family: 'IBM Plex Mono', 'Fira Mono', 'Courier New', monospace !important;
-    color: #3c3f3e;
-    background: #f6f6f5;
+    background: #f5f5f7;
+    font-family: 'IBM Plex Mono', monospace;
+    color: #474747;
     font-weight: 400;
-    letter-spacing: 0.05em;
-    font-size: 1.08rem;
+    font-size: 1.07rem;
+    letter-spacing: 0.04em;
 }
 
 h1, h2, h3, h4 {
-    font-family: 'IBM Plex Mono', 'Fira Mono', 'Courier New', monospace !important;
-    color: #222;
+    font-family: 'IBM Plex Mono', monospace;
+    color: #232325;
     font-weight: 500;
-    text-transform: none;
-    letter-spacing: 0.03em;
-    margin-bottom: 0.15em;
 }
 
 h1 {
     font-size: 2.05rem;
     letter-spacing: 0.035em;
-    color: #222;
+    margin-bottom: 10px;
 }
 
-h2 {
-    font-size: 1.2rem;
-    text-transform: uppercase;
-    letter-spacing: 0.11em;
-    color: #4d4d4d;
-    font-weight: 500;
-}
-
-.subtitle {
-    font-size: 1.02rem;
-    color: #8a8c8f;
-    font-weight: 400;
-    letter-spacing: 0.07em;
-}
-
-.label {
-    text-transform: uppercase;
-    letter-spacing: 0.13em;
-    color: #777;
-    font-weight: 400;
-    font-size: 0.96rem;
-}
-
-input, textarea, select, .draggable-item, .drop-zone, .card-title, .column-title {
-    font-family: 'IBM Plex Mono', 'Fira Mono', 'Courier New', monospace !important;
-    font-size: 1.08rem;
-    letter-spacing: 0.04em;
-}
-
-.card-title, .column-title, .game-header .status-indicator span {
-    text-transform: uppercase;
-    font-size: 1.06rem;
-    color: #5d5e5f;
-    letter-spacing: 0.13em;
-    font-weight: 500;
-}
-
-.game-message {
-    font-family: 'IBM Plex Mono', 'Fira Mono', 'Courier New', monospace !important;
+h2, h3 {
     font-size: 1.11rem;
-    letter-spacing: 0.13em;
-}
-
-.btn, .btn-primary, .btn-secondary {
-    font-family: 'IBM Plex Mono', 'Fira Mono', 'Courier New', monospace !important;
     text-transform: uppercase;
     letter-spacing: 0.13em;
+    color: #5d5e5f;
     font-weight: 500;
+    margin-bottom: 8px;
 }
 
-.code, pre, code {
-    font-family: 'IBM Plex Mono', 'Fira Mono', 'Courier New', monospace !important;
-    background: #ececec;
-    color: #222;
-    padding: 3px 7px;
-    font-size: 1.01rem;
-    border-radius: 5px;
+.subtitle, .label {
+    font-size: 0.97rem;
+    color: #87888a;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
 }
 
-/* Strong separation between cards and backgrounds */
-.card, .game-area, .input-group, .status-indicator, .select-option {
+.container {
+    max-width: 1120px;
+    margin: 32px auto;
+    padding: 0 1.5rem;
+}
+
+.card, .game-area, .select-option, .input-group, .status-indicator, .drop-zone {
     background: #fff;
-    box-shadow: 0 0 4px 1px #ececec;
-    border-radius: 11px;
+    border-radius: 12px;
+    box-shadow: 0 0 6px 0 #eee;
+    border: none;
+    margin-bottom: 1.8rem;
+    transition: box-shadow 0.22s cubic-bezier(.28,.6,.3,1), transform 0.23s cubic-bezier(.2,.7,.3,1.1);
 }
 
-/* Section separator */
-hr {
-    border: none;
-    border-top: 1.5px solid #ededed;
-    margin: 28px 0;
+.card {
+    padding: 1.2rem 1.6rem;
 }
+
+.card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.7rem;
+    color: #494a4d;
+    font-size: 1.11rem;
+    text-transform: uppercase;
+}
+
+/* GAME HEADER */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1rem 1.5rem;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 0 9px 0 #e9eaee;
+}
+
+.status-indicator {
+    background: #f6f6f5;
+    border-radius: 20px;
+    box-shadow: none;
+    border: none;
+    color: #7a7a7d;
+    font-weight: 500;
+    font-size: 1.01rem;
+}
+
+.badge {
+    background: #fbfbfc;
+    color: #232325;
+    padding: 0.5rem 1rem;
+    border-radius: 18px;
+    font-weight: 600;
+}
+
+/* INPUT, SELECT, BTN */
+input, .select-group, .btn, .btn-primary, .btn-secondary {
+    font-family: 'IBM Plex Mono', monospace;
+    border-radius: 8px;
+    font-size: 1.03rem;
+    border: none;
+    outline: none;
+}
+
+.btn {
+    background: #ececec;
+    color: #232325;
+    padding: 0.77rem 1.6rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    border-radius: 8px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    cursor: pointer;
+    transition: background 0.19s, transform 0.16s;
+}
+
+.btn-primary {
+    background: #f45223;
+    color: #fff;
+    border: none;
+    box-shadow: 0 2px 6px #edaa91a0;
+}
+.btn-primary:hover { background: #e9471f; transform: translateY(-2px);}
+.btn-secondary {
+    background: #fff;
+    color: #232325;
+    border: 1px solid #ececec;
+}
+.btn-secondary:hover { background: #f1f1f3; transform: translateY(-2px);}
+.btn-disabled, .btn[disabled] {
+    background: #eee;
+    color: #b4b4b4;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Matching Game Layout */
+.matching-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    margin: 2rem 0;
+}
+.game-column {
+    background: #fff;
+    border-radius: 12px;
+    min-height: 260px;
+    box-shadow: 0 0 7px 0 #e6e7ea;
+    padding: 1.4rem;
+}
+
+.column-title {
+    text-align: left;
+    color: #9a9a9c;
+    font-size: 0.97rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 1.1rem;
+    letter-spacing: 0.14em;
+}
+
+/* DRAGGABLES & DROP ZONES */
+.draggable-item {
+    background: #fafafd;
+    padding: 0.7rem 1.2rem;
+    border-radius: 7px;
+    margin-bottom: 0.7rem;
+    box-shadow: 0 1.5px 13px -6px #d1d1db;
+    border: none;
+    color: #232325;
+    font-weight: 500;
+    transition: box-shadow 0.16s, background 0.19s, transform 0.19s;
+    cursor: grab;
+    font-size: 1.06rem;
+}
+.draggable-item:hover {
+    background: #f5f5f7;
+    transform: scale(1.04);
+    box-shadow: 0 2.5px 16px -6px #cfcdcfcc;
+}
+.draggable-item:active {
+    cursor: grabbing;
+    background: #e2e2e7;
+}
+
+.drop-zone {
+    min-height: 54px;
+    border: 2px dashed #eee;
+    border-radius: 8px;
+    margin-bottom: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.14s, background 0.18s;
+    font-size: 1.08rem;
+}
+.drop-zone.empty { color: #babcbc; font-style: italic; }
+.drag-over { border-color: #f45223 !important; background: #ffe7e1 !important; }
+.correct { border-color: #15bb90 !important; background: #e7ffef !important; }
+.incorrect { border-color: #ef4746 !important; background: #ffe7e7 !important; animation: shake 0.5s ease; }
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0);}
+    25% { transform: translateX(-4px);}
+    75% { transform: translateX(4px);}
+}
+
+/* Game Message Feedback */
+.game-message {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.07rem;
+    position: fixed;
+    top: 98px;
+    right: 24px;
+    color: #fff;
+    background: #232325e0;
+    padding: 17px 22px;
+    border-radius: 9px;
+    box-shadow: 0 4px 22px #e0e0f199;
+    z-index: 1200;
+    letter-spacing: 0.09em;
+    font-weight: 500;
+    animation: fadeIn 0.28s cubic-bezier(.29,1.1,.4,1.2);
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: scale(.98);} to { opacity: 1; transform: scale(1); } }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .matching-container { grid-template-columns: 1fr; }
+    .game-header { flex-direction: column; gap: 1rem;}
+}
+
+/* Remove unnecessary style for "voice" etc., keep only real settings */
