@@ -1,183 +1,295 @@
-// Game State
+// Game Data
+const levels = [
+    {
+        title: "Level 1: Proposition Match",
+        description: "Drag operators to match with their correct symbols.",
+        operators: [
+            { name: "AND", symbol: "∧", hint: "AND (∧) means both statements must be true" },
+            { name: "OR", symbol: "∨", hint: "OR (∨) means at least one statement is true" },
+            { name: "NOT", symbol: "¬", hint: "NOT (¬) reverses the truth value" },
+            { name: "IMPLIES", symbol: "→", hint: "IMPLIES (→) means 'if first, then second'" }
+        ]
+    },
+    {
+        title: "Level 2: Operator Reverse Match",
+        description: "Drag symbols to match with their operator names.",
+        operators: [
+            { name: "AND", symbol: "∧", hint: "It's AND!" },
+            { name: "OR", symbol: "∨", hint: "It's OR!" },
+            { name: "NOT", symbol: "¬", hint: "It's NOT!" },
+            { name: "IMPLIES", symbol: "→", hint: "It's IMPLIES!" }
+        ],
+        reverse: true
+    },
+    {
+        title: "Level 3: Truth Table Challenge",
+        description: "Which symbol means the operator is TRUE only if both inputs are TRUE?",
+        operators: [
+            { name: "AND", symbol: "∧", hint: "AND is only TRUE when both inputs are TRUE" },
+            { name: "OR", symbol: "∨", hint: "OR is TRUE when at least one is TRUE" },
+            { name: "NOT", symbol: "¬", hint: "NOT flips the value" },
+            { name: "IMPLIES", symbol: "→", hint: "IMPLIES: if first is TRUE, guarantees second is TRUE" }
+        ]
+    },
+    {
+        title: "Level 4: Final Symbol Speed Run",
+        description: "Drag all symbols to the right as quickly as you can.",
+        operators: [
+            { name: "AND", symbol: "∧", hint: "Fast AND!" },
+            { name: "OR", symbol: "∨", hint: "Fast OR!" },
+            { name: "NOT", symbol: "¬", hint: "Fast NOT!" },
+            { name: "IMPLIES", symbol: "→", hint: "Fast IMPLIES!" }
+        ],
+        speedRun: true
+    }
+];
+
 let gameState = {
-    currentLevel: 1,
+    currentLevel: 0,
     score: 0,
     lives: 3,
-    totalLevels: 4,
-    matchedPairs: 0,
-    correctMatches: {
-        'AND': '∧',
-        'OR': '∨', 
-        'NOT': '¬',
-        'IMPLIES': '→'
-    }
+    matchedPairs: 0
 };
 
-// DOM Elements
+// DOM Shortcuts
+const $ = selector => document.querySelector(selector);
+const $$ = selector => Array.from(document.querySelectorAll(selector));
 const elements = {
-    currentLevel: document.getElementById('current-level'),
-    score: document.getElementById('score-value'),
-    lives: document.getElementById('lives-value'),
-    levelTitle: document.getElementById('level-title'),
-    levelDesc: document.getElementById('level-description'),
-    hintBtn: document.getElementById('hint-btn'),
-    checkBtn: document.getElementById('check-btn'),
-    nextBtn: document.getElementById('next-btn')
+    currentLevel: $('#current-level'),
+    score: $('#score-value'),
+    lives: $('#lives-value'),
+    levelTitle: $('#level-title'),
+    levelDesc: $('#level-description'),
+    hintBtn: $('#hint-btn'),
+    checkBtn: $('#check-btn'),
+    nextBtn: $('#next-btn'),
+    gameArea: $('.game-area')
 };
 
-// Initialize Game
-function initGame() {
-    console.log("Game initializing...");
-    updateUI();
-    setupEventListeners();
-    setupDragAndDrop();
+// ========== INITIALIZE ==========
+function startGame() {
+    gameState.currentLevel = 0;
+    gameState.score = 0;
+    gameState.lives = 3;
+    loadLevel(0);
 }
 
-// Update UI
-function updateUI() {
-    elements.currentLevel.textContent = gameState.currentLevel;
+function loadLevel(levelIdx) {
+    const level = levels[levelIdx];
+    gameState.matchedPairs = 0;
+    elements.currentLevel.textContent = levelIdx + 1;
     elements.score.textContent = gameState.score;
     elements.lives.textContent = gameState.lives;
+    elements.levelTitle.textContent = level.title;
+    elements.levelDesc.textContent = level.description;
+
+    // Enable buttons
+    elements.checkBtn.disabled = false;
+    elements.hintBtn.disabled = false;
+    elements.nextBtn.disabled = true;
+    elements.nextBtn.classList.add('btn-disabled');
+
+    renderMatchingGame(level);
 }
 
-// Setup Event Listeners
-function setupEventListeners() {
-    console.log("Setting up event listeners...");
-    
-    if (elements.hintBtn) {
-        elements.hintBtn.addEventListener('click', showHint);
-        console.log("Hint button listener added");
+// ========== RENDER LEVELS ==========
+function renderMatchingGame(level) {
+    // Clear previous game area
+    elements.gameArea.innerHTML = `
+        <div class="level-info">
+            <h2 id="level-title">${level.title}</h2>
+            <p id="level-description" class="subtitle">${level.description}</p>
+        </div>
+        <div class="matching-container"></div>
+        <div class="game-controls">
+            <button id="hint-btn" class="btn btn-secondary">
+                <i class="fas fa-lightbulb"></i> Get Hint
+            </button>
+            <button id="check-btn" class="btn btn-primary">
+                <i class="fas fa-check-circle"></i> Check Answers
+            </button>
+            <button id="next-btn" class="btn btn-primary btn-disabled" disabled>
+                <i class="fas fa-arrow-right"></i> Next Level
+            </button>
+        </div>
+    `;
+    // Update control element references
+    elements.hintBtn = $('#hint-btn');
+    elements.checkBtn = $('#check-btn');
+    elements.nextBtn = $('#next-btn');
+
+    // Build match columns depending on "reverse" or "speedRun"
+    const matchingContainer = $('.matching-container');
+    let leftLabel = "LOGICAL OPERATORS", rightLabel = "SYMBOLS", draggables = [], drops = [];
+
+    if (level.reverse) {
+        leftLabel = "SYMBOLS";
+        rightLabel = "LOGICAL OPERATORS";
+        draggables = level.operators.map(o => o.symbol);
+        drops = level.operators.map(o => o.name);
+    } else {
+        draggables = level.operators.map(o => o.name);
+        drops = level.operators.map(o => o.symbol);
     }
-    
-    if (elements.checkBtn) {
-        elements.checkBtn.addEventListener('click', checkAnswers);
-        console.log("Check button listener added");
-    }
-    
-    if (elements.nextBtn) {
-        elements.nextBtn.addEventListener('click', nextLevel);
-        console.log("Next button listener added");
-    }
+
+    // Left column
+    const leftColumn = document.createElement('div');
+    leftColumn.className = 'game-column';
+    leftColumn.innerHTML = `<div class="column-title">${leftLabel}</div>`;
+    draggables.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'draggable-item';
+        div.textContent = item;
+        // Use data attributes to track both operator and symbol
+        if (level.reverse) {
+            div.dataset.symbol = item;
+        } else {
+            div.dataset.operator = item;
+        }
+        leftColumn.appendChild(div);
+    });
+
+    // Right column
+    const rightColumn = document.createElement('div');
+    rightColumn.className = 'game-column';
+    rightColumn.innerHTML = `<div class="column-title">${rightLabel}</div>`;
+    drops.forEach((drop, idx) => {
+        const zone = document.createElement('div');
+        zone.className = 'drop-zone empty';
+        if (level.reverse) {
+            zone.dataset.operator = drop;
+        } else {
+            zone.dataset.symbol = drop;
+        }
+        rightColumn.appendChild(zone);
+    });
+
+    matchingContainer.appendChild(leftColumn);
+    matchingContainer.appendChild(rightColumn);
+
+    setupDragAndDrop(level);
+
+    // Add listeners to buttons each time
+    elements.hintBtn.onclick = () => showHint(level);
+    elements.checkBtn.onclick = () => checkAnswers(level);
+    elements.nextBtn.onclick = () => {
+        if (gameState.currentLevel < levels.length - 1) {
+            gameState.currentLevel++;
+            gameState.score += 50;
+            loadLevel(gameState.currentLevel);
+            showMessage(`Level ${gameState.currentLevel + 1} loaded!`, 'info');
+        } else {
+            showEndModal();
+        }
+    };
 }
 
-// DRAG AND DROP - FIXED VERSION
-function setupDragAndDrop() {
-    console.log("Setting up drag and drop...");
-    
-    const draggables = document.querySelectorAll('.draggable-item');
-    const dropZones = document.querySelectorAll('.drop-zone');
-    
-    console.log(`Found ${draggables.length} draggable items`);
-    console.log(`Found ${dropZones.length} drop zones`);
-    
-    // Add drag events to each draggable item
+// ========== DRAG & DROP ==========
+function setupDragAndDrop(level) {
+    const draggables =
+        level.reverse
+            ? $$('.draggable-item[data-symbol]')
+            : $$('.draggable-item[data-operator]');
+    const dropZones =
+        level.reverse
+            ? $$('.drop-zone[data-operator]')
+            : $$('.drop-zone[data-symbol]');
+
     draggables.forEach(item => {
         item.setAttribute('draggable', 'true');
-        
-        item.addEventListener('dragstart', function(e) {
-            console.log('Drag started:', this.textContent);
-            e.dataTransfer.setData('text/plain', this.dataset.operator);
+        item.ondragstart = function (e) {
+            e.dataTransfer.setData('text/plain', level.reverse ? this.dataset.symbol : this.dataset.operator);
             this.classList.add('dragging');
-        });
-        
-        item.addEventListener('dragend', function() {
+        };
+        item.ondragend = function () {
             this.classList.remove('dragging');
-        });
+        };
     });
-    
-    // Add drop events to each drop zone
+
     dropZones.forEach(zone => {
-        zone.addEventListener('dragover', function(e) {
+        zone.ondragover = function (e) {
             e.preventDefault();
-            this.classList.add('drag-over');
-        });
-        
-        zone.addEventListener('dragenter', function(e) {
+            zone.classList.add('drag-over');
+        };
+
+        zone.ondragleave = function () {
+            zone.classList.remove('drag-over');
+        };
+
+        zone.ondrop = function (e) {
             e.preventDefault();
-        });
-        
-        zone.addEventListener('dragleave', function() {
-            this.classList.remove('drag-over');
-        });
-        
-        zone.addEventListener('drop', function(e) {
-            e.preventDefault();
-            this.classList.remove('drag-over');
-            
-            const operator = e.dataTransfer.getData('text/plain');
-            const symbol = this.dataset.symbol;
-            console.log(`Dropped ${operator} on ${symbol}`);
-            
-            // Check if this drop zone already has content
-            if (this.querySelector('.match-content')) {
-                showMessage('This symbol already has a match!', 'warning');
+            zone.classList.remove('drag-over');
+            // Only allow one match per drop
+            if (zone.classList.contains('correct')) {
+                showMessage('Already matched!', 'warning');
                 return;
             }
-            
-            // Check if match is correct
-            if (gameState.correctMatches[operator] === symbol) {
-                // CORRECT MATCH
-                this.innerHTML = `
-                    <div class="match-content">
-                        <div class="operator">${operator}</div>
-                        <div class="symbol">= ${symbol}</div>
-                    </div>
-                `;
-                this.classList.add('correct');
-                
-                // Mark the dragged item as used
-                const draggedItem = document.querySelector(`.draggable-item[data-operator="${operator}"]`);
+            // Get operator/symbol from drag
+            const dropped = e.dataTransfer.getData('text/plain');
+
+            let correct = false, operator, symbol;
+            if (level.reverse) {
+                operator = zone.dataset.operator;
+                symbol = dropped;
+                correct = level.operators.find(o => o.name === operator && o.symbol === symbol);
+            } else {
+                symbol = zone.dataset.symbol;
+                operator = dropped;
+                correct = level.operators.find(o => o.name === operator && o.symbol === symbol);
+            }
+
+            if (correct) {
+                zone.innerHTML = `<div class="match-content"><div>${operator}</div><div>= ${symbol}</div></div>`;
+                zone.classList.add('correct');
+                zone.classList.remove('empty');
+                const draggedItem = level.reverse
+                    ? document.querySelector(`.draggable-item[data-symbol="${symbol}"]`)
+                    : document.querySelector(`.draggable-item[data-operator="${operator}"]`);
                 if (draggedItem) {
-                    draggedItem.style.opacity = '0.3';
-                    draggedItem.style.cursor = 'not-allowed';
-                    draggedItem.setAttribute('draggable', 'false');
+                    draggedItem.style.opacity = ".3";
+                    draggedItem.setAttribute('draggable','false');
+                    draggedItem.style.cursor = "not-allowed";
                 }
-                
-                gameState.matchedPairs++;
                 gameState.score += 25;
-                updateUI();
+                gameState.matchedPairs++;
+                elements.score.textContent = gameState.score;
                 showMessage(`Correct! ${operator} = ${symbol}`, 'success');
-                
-                // Check if all matches are complete
+                // Next level unlock
                 if (gameState.matchedPairs === 4) {
                     elements.nextBtn.disabled = false;
+                    elements.nextBtn.classList.remove('btn-disabled');
                     showMessage('Excellent! All matches correct!', 'success');
                 }
             } else {
-                // WRONG MATCH
-                this.classList.add('incorrect');
-                showMessage(`Incorrect! ${operator} ≠ ${symbol}`, 'error');
-                
+                zone.classList.add('incorrect');
+                showMessage('Incorrect match!', 'error');
                 gameState.lives--;
-                updateUI();
-                
-                if (gameState.lives <= 0) {
-                    gameOver();
-                }
-                
-                // Remove incorrect class after 1 second
-                setTimeout(() => {
-                    this.classList.remove('incorrect');
-                }, 1000);
+                elements.lives.textContent = gameState.lives;
+                setTimeout(() => zone.classList.remove('incorrect'),1000);
+                if (gameState.lives <= 0) return gameOver();
             }
-        });
+        };
     });
 }
 
-// Show Hint
-function showHint() {
-    const hints = [
-        "💡 Hint: AND (∧) means both statements must be true",
-        "💡 Hint: OR (∨) means at least one statement is true", 
-        "💡 Hint: NOT (¬) reverses the truth value",
-        "💡 Hint: IMPLIES (→) means 'if first, then second'"
-    ];
-    const randomHint = hints[Math.floor(Math.random() * hints.length)];
-    showMessage(randomHint, 'info');
+// ========== HINTS ==========
+function showHint(level) {
+    // If matched, show random correct operator hint for unmatched
+    const remaining = level.operators.filter(o => {
+        return !$$('.drop-zone.correct').find(z =>
+            (level.reverse ? z.dataset.operator === o.name : z.dataset.symbol === o.symbol)
+        );
+    });
+    if (remaining.length === 0) {
+        showMessage('All matched! No hints needed.', 'info');
+        return;
+    }
+    const hint = remaining[Math.floor(Math.random() * remaining.length)].hint || 'Think logically!';
+    showMessage(`💡 ${hint}`, 'info');
 }
 
-// Check Answers
-function checkAnswers() {
+// ========== CHECK ==========
+function checkAnswers(level) {
     if (gameState.matchedPairs === 4) {
         showMessage('Perfect! All matches are correct!', 'success');
     } else {
@@ -185,65 +297,31 @@ function checkAnswers() {
     }
 }
 
-// Next Level
-function nextLevel() {
-    if (gameState.currentLevel < gameState.totalLevels) {
-        gameState.currentLevel++;
-        gameState.score += 50;
-        gameState.matchedPairs = 0;
-        
-        elements.currentLevel.textContent = gameState.currentLevel;
-        elements.nextBtn.disabled = true;
-        
-        // Reset game area for next level
-        resetGameArea();
-        
-        showMessage(`Level ${gameState.currentLevel} loaded!`, 'info');
-        updateUI();
-    } else {
-        showMessage('Congratulations! Game Complete!', 'success');
-    }
+// ========== GAME OVER ==========
+function gameOver() {
+    showMessage('Game Over! Refresh to try again.', 'error');
+    elements.checkBtn.disabled = true;
+    elements.hintBtn.disabled = true;
+    $$('.draggable-item').forEach(e=>e.setAttribute('draggable', 'false'));
 }
 
-// Reset Game Area
-function resetGameArea() {
-    const operatorsColumn = document.querySelector('.column:first-child');
-    const symbolsColumn = document.querySelector('.column:last-child');
-    
-    // Reset operators
-    const operators = ['AND', 'OR', 'NOT', 'IMPLIES'];
-    operatorsColumn.innerHTML = '<div class="column-header">OPERATORS</div>';
-    operators.forEach(op => {
-        const div = document.createElement('div');
-        div.className = 'draggable-item';
-        div.textContent = op;
-        div.dataset.operator = op;
-        operatorsColumn.appendChild(div);
-    });
-    
-    // Reset symbols
-    const symbols = ['∧', '∨', '¬', '→'];
-    symbolsColumn.innerHTML = '<div class="column-header">SYMBOLS</div>';
-    symbols.forEach(sym => {
-        const div = document.createElement('div');
-        div.className = 'drop-zone';
-        div.dataset.symbol = sym;
-        symbolsColumn.appendChild(div);
-    });
-    
-    // Re-setup drag and drop
-    setupDragAndDrop();
+// ========== MODAL END ==========
+function showEndModal() {
+    elements.gameArea.innerHTML = `
+        <div class="card">
+            <div class="card-title"><i class="fas fa-trophy"></i><h3>Game Complete!</h3></div>
+            <p>You scored <strong>${gameState.score}</strong> points.<br>
+            Thanks for playing. Refresh to play again!</p>
+        </div>
+    `;
+    showMessage('Congratulations! You finished all levels!', 'success');
+    elements.nextBtn.disabled = true;
 }
 
-// Show Message
+// ========== MESSAGE ==========
 function showMessage(text, type) {
-    // Remove existing message
     const existingMsg = document.querySelector('.game-message');
-    if (existingMsg) {
-        existingMsg.remove();
-    }
-    
-    // Create new message
+    if (existingMsg) existingMsg.remove();
     const msg = document.createElement('div');
     msg.className = `game-message ${type}`;
     msg.textContent = text;
@@ -259,103 +337,31 @@ function showMessage(text, type) {
         box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         animation: slideIn 0.3s ease;
     `;
-    
-    // Set color based on type
-    if (type === 'success') {
-        msg.style.background = 'linear-gradient(135deg, #10a37f, #0d8c6d)';
-    } else if (type === 'error') {
-        msg.style.background = 'linear-gradient(135deg, #ef4146, #d13438)';
-    } else if (type === 'warning') {
-        msg.style.background = 'linear-gradient(135deg, #f7b500, #e6a200)';
-    } else {
-        msg.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-    }
-    
+    // Color scheme
+    if (type === 'success') msg.style.background = 'linear-gradient(135deg, #10a37f, #0d8c6d)';
+    else if (type === 'error') msg.style.background = 'linear-gradient(135deg, #ef4146, #d13438)';
+    else if (type === 'warning') msg.style.background = 'linear-gradient(135deg, #f7b500, #e6a200)';
+    else msg.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
     document.body.appendChild(msg);
-    
-    // Auto-remove after 3 seconds
-    setTimeout(() => {
-        msg.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => msg.remove(), 300);
-    }, 3000);
+    setTimeout(() => { msg.style.animation = 'slideOut 0.3s ease'; setTimeout(()=>msg.remove(),300); }, 3000);
 }
 
-// Game Over
-function gameOver() {
-    showMessage('Game Over! Refresh to try again.', 'error');
-    elements.checkBtn.disabled = true;
-    elements.hintBtn.disabled = true;
-}
+// ========== CSS ENHANCEMENTS ==========
+(function injectCSS(){
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn { from { transform: translateX(100px); opacity:0; } to { transform: translateX(0); opacity:1; } }
+        @keyframes slideOut { from { transform: translateX(0); opacity:1; } to { transform: translateX(100px); opacity:0; } }
+        .drag-over { border-color: #10a37f !important; background: rgba(16,163,127,0.1) !important; }
+        .correct { border-color: #10a37f !important; background: rgba(16,163,127,0.1) !important; }
+        .incorrect { border-color: #ef4146 !important; background: rgba(239,65,70,0.1) !important; animation: shake 0.5s ease; }
+        @keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-5px);} 75%{transform:translateX(5px);} }
+        .match-content { display: flex; flex-direction: column; align-items: center; padding:10px;}
+        .match-content div { font-weight:600; font-size:1.1rem;}
+        .game-message { font-size: 1rem; letter-spacing: 1px;}
+    `;
+    document.head.appendChild(style);
+})();
 
-// Initialize when page loads
-window.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM loaded, initializing game...");
-    initGame();
-});
-
-// Add CSS animations
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(100px);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-    
-    @keyframes slideOut {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(100px);
-            opacity: 0;
-        }
-    }
-    
-    .drag-over {
-        border-color: #10a37f !important;
-        background: rgba(16, 163, 127, 0.1) !important;
-    }
-    
-    .correct {
-        border-color: #10a37f !important;
-        background: rgba(16, 163, 127, 0.1) !important;
-    }
-    
-    .incorrect {
-        border-color: #ef4146 !important;
-        background: rgba(239, 65, 70, 0.1) !important;
-        animation: shake 0.5s ease;
-    }
-    
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-5px); }
-        75% { transform: translateX(5px); }
-    }
-    
-    .match-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 10px;
-    }
-    
-    .match-content .operator {
-        font-weight: 600;
-        font-size: 1.1rem;
-    }
-    
-    .match-content .symbol {
-        font-size: 1.5rem;
-        color: #10a37f;
-        margin-top: 5px;
-    }
-`;
-document.head.appendChild(style);
+// ========== ON LOAD ==========
+window.addEventListener('DOMContentLoaded', startGame);
