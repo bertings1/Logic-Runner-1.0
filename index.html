@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logic Runner | Propositional Logic Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-brain-circuit"></i>
+            <span>LogicRunner</span>
+        </div>
+        <div class="nav-links">
+            <a href="#" class="nav-link active"><i class="fas fa-gamepad"></i> Game</a>
+            <a href="#" class="nav-link"><i class="fas fa-book"></i> Learn</a>
+            <a href="#" class="nav-link"><i class="fas fa-chart-line"></i> Progress</a>
+        </div>
+        <div class="nav-user">
+            <div class="user-badge">
+                <i class="fas fa-user"></i>
+                <span>Player</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <div class="panel-card">
+                <h3><i class="fas fa-cogs"></i> Game Settings</h3>
+                <div class="control-group">
+                    <label class="control-label">VOICE GUIDE</label>
+                    <div class="voice-selector">
+                        <div class="voice-option active" data-voice="nova">
+                            <i class="fas fa-robot"></i>
+                            <span>Nova</span>
+                        </div>
+                        <div class="voice-option" data-voice="sage">
+                            <i class="fas fa-hat-wizard"></i>
+                            <span>Sage</span>
+                        </div>
+                        <div class="voice-option" data-voice="echo">
+                            <i class="fas fa-bolt"></i>
+                            <span>Echo</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">VIBE</label>
+                    <div class="vibe-selector">
+                        <div class="vibe-option active">
+                            <i class="fas fa-user-tie"></i>
+                            <span>Patient Teacher</span>
+                        </div>
+                        <div class="vibe-option">
+                            <i class="fas fa-robot"></i>
+                            <span>AI Assistant</span>
+                        </div>
+                        <div class="vibe-option">
+                            <i class="fas fa-crown"></i>
+                            <span>Logic Knight</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel -->
+        <div class="center-panel">
+            <div class="game-header">
+                <div class="level-indicator">
+                    <div class="level-badge">
+                        <i class="fas fa-layer-group"></i>
+                        <span>LEVEL <span id="current-level">1</span>/4</span>
+                    </div>
+                </div>
+                <div class="player-score">
+                    <div class="score-display">
+                        <i class="fas fa-star"></i>
+                        <span id="score-value">0</span> points
+                    </div>
+                    <div class="lives-display">
+                        <i class="fas fa-heart"></i>
+                        <span id="lives-value">3</span> lives
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <div class="game-title-section">
+                    <h2 id="level-title">Level 1: Proposition Match</h2>
+                    <p id="level-description" class="game-subtitle">Match logical operators with their correct symbols</p>
+                </div>
+
+                <div id="game-content" class="game-content-area">
+                    <div class="matching-game-container">
+                        <div class="columns-container">
+                            <div class="column">
+                                <div class="column-header">OPERATORS</div>
+                                <div class="draggable-item" data-operator="AND">AND</div>
+                                <div class="draggable-item" data-operator="OR">OR</div>
+                                <div class="draggable-item" data-operator="NOT">NOT</div>
+                                <div class="draggable-item" data-operator="IMPLIES">IMPLIES</div>
+                            </div>
+                            <div class="column">
+                                <div class="column-header">SYMBOLS</div>
+                                <div class="drop-zone" data-symbol="∧"></div>
+                                <div class="drop-zone" data-symbol="∨"></div>
+                                <div class="drop-zone" data-symbol="¬"></div>
+                                <div class="drop-zone" data-symbol="→"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-controls">
+                    <button id="hint-btn" class="control-btn hint-btn">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>Get Hint</span>
+                    </button>
+                    <button id="check-btn" class="control-btn primary-btn">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Check Answer</span>
+                    </button>
+                    <button id="next-btn" class="control-btn next-btn" disabled>
+                        <i class="fas fa-arrow-right"></i>
+                        <span>Next Level</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
