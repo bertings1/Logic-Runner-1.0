@@ -6,12 +6,11 @@
     <title>Logic Runner | Propositional Logic Game</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- IBM Plex Mono imported via CSS -->
 </head>
 <body>
     <div class="container">
-        <!-- Header: Logo + Tagline -->
-        <div class="game-header">
+        <!-- Sticky Header for Score/Level -->
+        <div class="sticky-header game-header">
             <div class="game-title">
                 <h1><i class="fas fa-brain"></i> Logic Runner</h1>
                 <p class="subtitle">
@@ -19,24 +18,20 @@
                     <span style="font-size:0.92em;color:#cb6000;font-family:'IBM Plex Mono', monospace;"><i class="fas fa-bolt"></i> Modern, Minimal, Fun</span>
                 </p>
             </div>
-            <!-- Game Stats -->
             <div class="game-stats">
-                <div class="status-indicator">
-                    <i class="fas fa-layer-group"></i>
+                <div class="status-indicator"><i class="fas fa-layer-group"></i>
                     <span>Level: <strong id="current-level">1</strong>/4</span>
                 </div>
-                <div class="status-indicator">
-                    <i class="fas fa-star"></i>
+                <div class="status-indicator"><i class="fas fa-star"></i>
                     <span>Score: <strong id="score-value">0</strong></span>
                 </div>
-                <div class="status-indicator">
-                    <i class="fas fa-heart"></i>
+                <div class="status-indicator"><i class="fas fa-heart"></i>
                     <span>Lives: <strong id="lives-value">3</strong></span>
                 </div>
             </div>
         </div>
 
-        <!-- Game Intro/Description Card -->
+        <!-- Intro Card -->
         <div class="card">
             <div class="card-title">
                 <i class="fas fa-gamepad"></i>
@@ -126,16 +121,5 @@
         </footer>
     </div>
     <script src="game.js"></script>
-    <script>
-    // Settings selection effect
-    document.querySelectorAll('.select-group').forEach(group => {
-        group.querySelectorAll('.select-option').forEach(option => {
-            option.onclick = () => {
-                group.querySelectorAll('.select-option').forEach(opt => opt.classList.remove('active'));
-                option.classList.add('active');
-            };
-        });
-    });
-    </script>
 </body>
 </html>

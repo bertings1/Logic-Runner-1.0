@@ -1,6 +1,16 @@
-/* ========== OpenAI.fm Remastered Color & Typography ========== */
-
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap');
+
+/* --- Sticky header for stats --- */
+.sticky-header, .game-header {
+    position: -webkit-sticky;
+    position: sticky;
+    z-index: 8;
+    top: 0;
+    background: #f5f5f7;
+    box-shadow: 0 2px 24px 0 #ececec75;
+    border-bottom: 1.5px solid #f0f0f3;
+    transition: box-shadow 0.18s, background 0.14s;
+}
 
 body {
     background: #f5f5f7;
@@ -69,18 +79,6 @@ h2, h3 {
     text-transform: uppercase;
 }
 
-/* GAME HEADER */
-.game-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    padding: 1rem 1.5rem;
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 0 9px 0 #e9eaee;
-}
-
 .status-indicator {
     background: #f6f6f5;
     border-radius: 20px;
@@ -99,7 +97,7 @@ h2, h3 {
     font-weight: 600;
 }
 
-/* INPUT, SELECT, BTN */
+/* Input, select, buttons */
 input, .select-group, .btn, .btn-primary, .btn-secondary {
     font-family: 'IBM Plex Mono', monospace;
     border-radius: 8px;
@@ -190,16 +188,20 @@ input, .select-group, .btn, .btn-primary, .btn-secondary {
     background: #e2e2e7;
 }
 
+/* Match zone labels (category/symbol always visible) */
 .drop-zone {
-    min-height: 54px;
+    display: flex; align-items: center; justify-content: start; gap: 0.7em;
+    min-height: 54px; font-size: 1.12rem;
     border: 2px dashed #eee;
-    border-radius: 8px;
-    margin-bottom: 0.7rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: border-color 0.14s, background 0.18s;
-    font-size: 1.08rem;
+}
+.zone-label {
+    color: #c76300;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 1.13rem;
+    letter-spacing: 0.06em;
+    margin-right: 8px;
+    display: inline-block;
 }
 .drop-zone.empty { color: #babcbc; font-style: italic; }
 .drag-over { border-color: #f45223 !important; background: #ffe7e1 !important; }
@@ -231,8 +233,23 @@ input, .select-group, .btn, .btn-primary, .btn-secondary {
 
 @keyframes fadeIn { from { opacity: 0; transform: scale(.98);} to { opacity: 1; transform: scale(1); } }
 
-/* Responsive */
+/* --- Modal popup for Retry --- */
+.modal-overlay {
+    position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(40,40,45,.27);
+    z-index: 10010; display: flex; align-items:center; justify-content: center;
+}
+.modal-popup {
+    background: #fff; border-radius:12px; box-shadow:0 8px 32px #32323225; min-width:310px; text-align:center;
+    padding: 2.2rem 2rem 2.3rem 2rem; position: relative;
+    animation: fadeIn .35s;
+}
+.modal-title {
+    font-size: 1.32rem; font-weight:700; letter-spacing:0.15em; margin-bottom:15px; color: #e34c00;
+}
+.modal-content { margin-bottom:18px; font-size:1.09rem; }
+.modal-btn { margin-top:5px; min-width:170px; }
+
 @media (max-width: 900px) {
+    .sticky-header, .game-header { flex-direction: column; gap: 0.7rem; }
     .matching-container { grid-template-columns: 1fr; }
-    .game-header { flex-direction: column; gap: 1rem;}
 }
