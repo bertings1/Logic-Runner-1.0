@@ -1,237 +1,361 @@
 // Game State
-let currentLevel = 1;
-let score = 0;
-let lives = 3;
-let gameStarted = false;
+let gameState = {
+    currentLevel: 1,
+    score: 0,
+    lives: 3,
+    totalLevels: 4,
+    matchedPairs: 0,
+    correctMatches: {
+        'AND': '∧',
+        'OR': '∨', 
+        'NOT': '¬',
+        'IMPLIES': '→'
+    }
+};
 
 // DOM Elements
-const levelElement = document.getElementById('current-level');
-const scoreElement = document.getElementById('score-value');
-const livesElement = document.getElementById('lives-value');
-const levelTitle = document.getElementById('level-title');
-const levelDesc = document.getElementById('level-description');
-const hintBtn = document.getElementById('hint-btn');
-const checkBtn = document.getElementById('check-btn');
-const nextBtn = document.getElementById('next-btn');
+const elements = {
+    currentLevel: document.getElementById('current-level'),
+    score: document.getElementById('score-value'),
+    lives: document.getElementById('lives-value'),
+    levelTitle: document.getElementById('level-title'),
+    levelDesc: document.getElementById('level-description'),
+    hintBtn: document.getElementById('hint-btn'),
+    checkBtn: document.getElementById('check-btn'),
+    nextBtn: document.getElementById('next-btn')
+};
 
 // Initialize Game
 function initGame() {
+    console.log("Game initializing...");
     updateUI();
+    setupEventListeners();
     setupDragAndDrop();
-    
-    hintBtn.addEventListener('click', showHint);
-    checkBtn.addEventListener('click', checkAnswers);
-    nextBtn.addEventListener('click', nextLevel);
 }
 
 // Update UI
 function updateUI() {
-    levelElement.textContent = currentLevel;
-    scoreElement.textContent = score;
-    livesElement.textContent = lives;
+    elements.currentLevel.textContent = gameState.currentLevel;
+    elements.score.textContent = gameState.score;
+    elements.lives.textContent = gameState.lives;
 }
 
-// Setup Drag and Drop
+// Setup Event Listeners
+function setupEventListeners() {
+    console.log("Setting up event listeners...");
+    
+    if (elements.hintBtn) {
+        elements.hintBtn.addEventListener('click', showHint);
+        console.log("Hint button listener added");
+    }
+    
+    if (elements.checkBtn) {
+        elements.checkBtn.addEventListener('click', checkAnswers);
+        console.log("Check button listener added");
+    }
+    
+    if (elements.nextBtn) {
+        elements.nextBtn.addEventListener('click', nextLevel);
+        console.log("Next button listener added");
+    }
+}
+
+// DRAG AND DROP - FIXED VERSION
 function setupDragAndDrop() {
+    console.log("Setting up drag and drop...");
+    
     const draggables = document.querySelectorAll('.draggable-item');
     const dropZones = document.querySelectorAll('.drop-zone');
     
+    console.log(`Found ${draggables.length} draggable items`);
+    console.log(`Found ${dropZones.length} drop zones`);
+    
+    // Add drag events to each draggable item
     draggables.forEach(item => {
-        item.addEventListener('dragstart', dragStart);
-        item.addEventListener('dragend', dragEnd);
+        item.setAttribute('draggable', 'true');
+        
+        item.addEventListener('dragstart', function(e) {
+            console.log('Drag started:', this.textContent);
+            e.dataTransfer.setData('text/plain', this.dataset.operator);
+            this.classList.add('dragging');
+        });
+        
+        item.addEventListener('dragend', function() {
+            this.classList.remove('dragging');
+        });
     });
     
+    // Add drop events to each drop zone
     dropZones.forEach(zone => {
-        zone.addEventListener('dragover', dragOver);
-        zone.addEventListener('dragenter', dragEnter);
-        zone.addEventListener('dragleave', dragLeave);
-        zone.addEventListener('drop', drop);
+        zone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('drag-over');
+        });
+        
+        zone.addEventListener('dragenter', function(e) {
+            e.preventDefault();
+        });
+        
+        zone.addEventListener('dragleave', function() {
+            this.classList.remove('drag-over');
+        });
+        
+        zone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            
+            const operator = e.dataTransfer.getData('text/plain');
+            const symbol = this.dataset.symbol;
+            console.log(`Dropped ${operator} on ${symbol}`);
+            
+            // Check if this drop zone already has content
+            if (this.querySelector('.match-content')) {
+                showMessage('This symbol already has a match!', 'warning');
+                return;
+            }
+            
+            // Check if match is correct
+            if (gameState.correctMatches[operator] === symbol) {
+                // CORRECT MATCH
+                this.innerHTML = `
+                    <div class="match-content">
+                        <div class="operator">${operator}</div>
+                        <div class="symbol">= ${symbol}</div>
+                    </div>
+                `;
+                this.classList.add('correct');
+                
+                // Mark the dragged item as used
+                const draggedItem = document.querySelector(`.draggable-item[data-operator="${operator}"]`);
+                if (draggedItem) {
+                    draggedItem.style.opacity = '0.3';
+                    draggedItem.style.cursor = 'not-allowed';
+                    draggedItem.setAttribute('draggable', 'false');
+                }
+                
+                gameState.matchedPairs++;
+                gameState.score += 25;
+                updateUI();
+                showMessage(`Correct! ${operator} = ${symbol}`, 'success');
+                
+                // Check if all matches are complete
+                if (gameState.matchedPairs === 4) {
+                    elements.nextBtn.disabled = false;
+                    showMessage('Excellent! All matches correct!', 'success');
+                }
+            } else {
+                // WRONG MATCH
+                this.classList.add('incorrect');
+                showMessage(`Incorrect! ${operator} ≠ ${symbol}`, 'error');
+                
+                gameState.lives--;
+                updateUI();
+                
+                if (gameState.lives <= 0) {
+                    gameOver();
+                }
+                
+                // Remove incorrect class after 1 second
+                setTimeout(() => {
+                    this.classList.remove('incorrect');
+                }, 1000);
+            }
+        });
     });
-}
-
-function dragStart(e) {
-    e.dataTransfer.setData('text/plain', e.target.dataset.operator);
-    e.target.classList.add('dragging');
-}
-
-function dragEnd(e) {
-    e.target.classList.remove('dragging');
-}
-
-function dragOver(e) {
-    e.preventDefault();
-}
-
-function dragEnter(e) {
-    e.preventDefault();
-    e.target.classList.add('active');
-}
-
-function dragLeave(e) {
-    e.target.classList.remove('active');
-}
-
-function drop(e) {
-    e.preventDefault();
-    const operator = e.dataTransfer.getData('text/plain');
-    const symbol = e.target.dataset.symbol;
-    
-    // Remove active class
-    e.target.classList.remove('active');
-    
-    // Check if correct
-    const correctPairs = {
-        'AND': '∧',
-        'OR': '∨',
-        'NOT': '¬',
-        'IMPLIES': '→'
-    };
-    
-    if (correctPairs[operator] === symbol) {
-        // Correct match
-        e.target.style.background = 'rgba(16, 163, 127, 0.2)';
-        e.target.textContent = `${operator} = ${symbol}`;
-        e.target.classList.add('matched');
-        
-        // Find and hide the dragged item
-        const draggedItem = document.querySelector(`.draggable-item[data-operator="${operator}"]`);
-        if (draggedItem) {
-            draggedItem.style.opacity = '0.3';
-            draggedItem.style.cursor = 'default';
-        }
-        
-        // Check if all matches are complete
-        checkAllMatches();
-    } else {
-        // Wrong match
-        e.target.style.background = 'rgba(239, 65, 70, 0.2)';
-        lives--;
-        updateUI();
-        
-        if (lives <= 0) {
-            gameOver();
-        }
-    }
-}
-
-// Check all matches
-function checkAllMatches() {
-    const matchedItems = document.querySelectorAll('.drop-zone.matched');
-    if (matchedItems.length === 4) {
-        // All matches complete
-        nextBtn.disabled = false;
-        score += 100;
-        updateUI();
-        showFeedback('Excellent! All matches are correct!', 'success');
-    }
 }
 
 // Show Hint
 function showHint() {
     const hints = [
-        "AND (∧) requires both propositions to be true",
-        "OR (∨) requires at least one proposition to be true",
-        "NOT (¬) reverses the truth value",
-        "IMPLIES (→) means 'if p then q'"
+        "💡 Hint: AND (∧) means both statements must be true",
+        "💡 Hint: OR (∨) means at least one statement is true", 
+        "💡 Hint: NOT (¬) reverses the truth value",
+        "💡 Hint: IMPLIES (→) means 'if first, then second'"
     ];
-    
     const randomHint = hints[Math.floor(Math.random() * hints.length)];
-    showFeedback(`Hint: ${randomHint}`, 'info');
+    showMessage(randomHint, 'info');
 }
 
 // Check Answers
 function checkAnswers() {
-    const matchedItems = document.querySelectorAll('.drop-zone.matched');
-    
-    if (matchedItems.length === 4) {
-        showFeedback('Perfect! All matches are correct!', 'success');
-        nextBtn.disabled = false;
+    if (gameState.matchedPairs === 4) {
+        showMessage('Perfect! All matches are correct!', 'success');
     } else {
-        showFeedback(`You have ${matchedItems.length}/4 correct. Keep trying!`, 'warning');
+        showMessage(`You have ${gameState.matchedPairs}/4 correct. Keep trying!`, 'warning');
     }
 }
 
 // Next Level
 function nextLevel() {
-    if (currentLevel < 4) {
-        currentLevel++;
-        score += 50;
+    if (gameState.currentLevel < gameState.totalLevels) {
+        gameState.currentLevel++;
+        gameState.score += 50;
+        gameState.matchedPairs = 0;
+        
+        elements.currentLevel.textContent = gameState.currentLevel;
+        elements.nextBtn.disabled = true;
+        
+        // Reset game area for next level
+        resetGameArea();
+        
+        showMessage(`Level ${gameState.currentLevel} loaded!`, 'info');
         updateUI();
-        
-        levelTitle.textContent = `Level ${currentLevel}: Truth Tables`;
-        levelDesc.textContent = 'Complete the truth table for the given expression';
-        
-        // Reset for next level
-        nextBtn.disabled = true;
-        showFeedback(`Level ${currentLevel} loaded! Good luck!`, 'info');
-        
-        // Here you would load the next level content
-        // For now, just show a message
-        const gameContent = document.querySelector('.game-content-area');
-        gameContent.innerHTML = `
-            <div style="text-align: center; padding: 2rem;">
-                <h3>Truth Table Challenge</h3>
-                <p>Complete the truth table for: (p ∧ q) → r</p>
-                <p>Coming soon in the full version!</p>
-            </div>
-        `;
     } else {
-        showFeedback('Congratulations! You completed all levels!', 'success');
-        nextBtn.disabled = true;
+        showMessage('Congratulations! Game Complete!', 'success');
     }
 }
 
-// Show Feedback
-function showFeedback(message, type) {
-    // Create feedback element if it doesn't exist
-    let feedbackEl = document.getElementById('feedback-message');
-    if (!feedbackEl) {
-        feedbackEl = document.createElement('div');
-        feedbackEl.id = 'feedback-message';
-        feedbackEl.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            color: white;
-            font-weight: 500;
-            z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
-        `;
-        document.body.appendChild(feedbackEl);
+// Reset Game Area
+function resetGameArea() {
+    const operatorsColumn = document.querySelector('.column:first-child');
+    const symbolsColumn = document.querySelector('.column:last-child');
+    
+    // Reset operators
+    const operators = ['AND', 'OR', 'NOT', 'IMPLIES'];
+    operatorsColumn.innerHTML = '<div class="column-header">OPERATORS</div>';
+    operators.forEach(op => {
+        const div = document.createElement('div');
+        div.className = 'draggable-item';
+        div.textContent = op;
+        div.dataset.operator = op;
+        operatorsColumn.appendChild(div);
+    });
+    
+    // Reset symbols
+    const symbols = ['∧', '∨', '¬', '→'];
+    symbolsColumn.innerHTML = '<div class="column-header">SYMBOLS</div>';
+    symbols.forEach(sym => {
+        const div = document.createElement('div');
+        div.className = 'drop-zone';
+        div.dataset.symbol = sym;
+        symbolsColumn.appendChild(div);
+    });
+    
+    // Re-setup drag and drop
+    setupDragAndDrop();
+}
+
+// Show Message
+function showMessage(text, type) {
+    // Remove existing message
+    const existingMsg = document.querySelector('.game-message');
+    if (existingMsg) {
+        existingMsg.remove();
     }
     
-    // Set message and color
-    feedbackEl.textContent = message;
+    // Create new message
+    const msg = document.createElement('div');
+    msg.className = `game-message ${type}`;
+    msg.textContent = text;
+    msg.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 10px;
+        color: white;
+        font-weight: 600;
+        z-index: 1000;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        animation: slideIn 0.3s ease;
+    `;
     
+    // Set color based on type
     if (type === 'success') {
-        feedbackEl.style.background = '#10a37f';
-    } else if (type === 'warning') {
-        feedbackEl.style.background = '#f7b500';
+        msg.style.background = 'linear-gradient(135deg, #10a37f, #0d8c6d)';
     } else if (type === 'error') {
-        feedbackEl.style.background = '#ef4146';
+        msg.style.background = 'linear-gradient(135deg, #ef4146, #d13438)';
+    } else if (type === 'warning') {
+        msg.style.background = 'linear-gradient(135deg, #f7b500, #e6a200)';
     } else {
-        feedbackEl.style.background = '#667eea';
+        msg.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
     }
     
-    // Show and auto-hide
-    feedbackEl.style.opacity = '1';
-    feedbackEl.style.transform = 'translateX(0)';
+    document.body.appendChild(msg);
     
+    // Auto-remove after 3 seconds
     setTimeout(() => {
-        feedbackEl.style.opacity = '0';
-        feedbackEl.style.transform = 'translateX(100px)';
+        msg.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => msg.remove(), 300);
     }, 3000);
 }
 
 // Game Over
 function gameOver() {
-    showFeedback('Game Over! Refresh to try again.', 'error');
-    checkBtn.disabled = true;
-    hintBtn.disabled = true;
+    showMessage('Game Over! Refresh to try again.', 'error');
+    elements.checkBtn.disabled = true;
+    elements.hintBtn.disabled = true;
 }
 
 // Initialize when page loads
-window.addEventListener('DOMContentLoaded', initGame);
+window.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM loaded, initializing game...");
+    initGame();
+});
+
+// Add CSS animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from {
+            transform: translateX(100px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100px);
+            opacity: 0;
+        }
+    }
+    
+    .drag-over {
+        border-color: #10a37f !important;
+        background: rgba(16, 163, 127, 0.1) !important;
+    }
+    
+    .correct {
+        border-color: #10a37f !important;
+        background: rgba(16, 163, 127, 0.1) !important;
+    }
+    
+    .incorrect {
+        border-color: #ef4146 !important;
+        background: rgba(239, 65, 70, 0.1) !important;
+        animation: shake 0.5s ease;
+    }
+    
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+    
+    .match-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+    }
+    
+    .match-content .operator {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    
+    .match-content .symbol {
+        font-size: 1.5rem;
+        color: #10a37f;
+        margin-top: 5px;
+    }
+`;
+document.head.appendChild(style);
