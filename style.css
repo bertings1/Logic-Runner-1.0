@@ -13,13 +13,24 @@ body {
     padding: 22px 14px 0 14px;
 }
 .sticky-header, .game-header {
-    position: -webkit-sticky; position: sticky; z-index: 8;
-    top: 0; background: #f6f6f6;
+    position: -webkit-sticky; position: sticky;
+    top: 0; background: #f6f6f6; z-index: 8;
     box-shadow: 0 2px 22px -8px #e5e5e5;
     border-bottom: 1.5px solid #ededed;
     padding: 8px 0 10px 0;
     display:flex; justify-content:space-between; align-items:center; gap:2.1em;
 }
+.floating-timer {
+    position:fixed; top:18px; right:32px;
+    background:#fff; color:#f45223; font-size:1.2em; padding:.38em 1.2em .23em 1.2em;
+    border-radius:16px; box-shadow:0px 2px 18px -7px #e5aa91b0;
+    text-align:center; font-family:'IBM Plex Mono',monospace; font-weight:500; letter-spacing:0.06em;
+    z-index:99; display:none;
+    border:2px solid #f45223;
+    animation:fadeInTimer .31s;
+}
+@keyframes fadeInTimer {from{opacity:0;top:-15px;}to{opacity:1;top:18px;}}
+
 .game-stats { display:flex; gap:2.8em; }
 .status-indicator { font-size:1.02rem;background:#fff;padding:0.48em 1.24em 0.38em 0.8em;border-radius:21px;box-shadow:0 0 2px #eee;}
 .status-indicator i{margin-right:0.55em;color:#f49b23;}
@@ -42,7 +53,6 @@ h1 { font-size:2.09rem;color:#232325;}
 .settings-card:focus {border-color: #f49b23;}
 .settings-card:hover:not(.active) {box-shadow:0 3.5px 12px -7px #f49b237a;background:#fdf7ed;}
 #game-area {margin-bottom:3em;}
-
 .game-section-title {font-size:1.21rem;color:#c76300;font-family:'IBM Plex Mono',monospace;margin-bottom:.7em;text-transform:uppercase;letter-spacing:.09em;}
 .matching-container {display:grid;grid-template-columns:1fr 1fr;gap:2.4rem;}
 .game-column {background:#fff;border-radius:12px;box-shadow:0 0 7px 0 #e6e7ea;padding:1.4em;}
@@ -83,7 +93,6 @@ h1 { font-size:2.09rem;color:#232325;}
 .btn-secondary {background:#fff;color:#232325;border:1px solid #ececec;}
 .btn-secondary:hover {background:#f1f1f3;transform:translateY(-2px);}
 .btn-disabled, .btn[disabled] {background:#eee;color:#b4b4b4;opacity:.7;cursor:not-allowed;}
-/* Modal popup styling for Try Again */
 .modal-overlay {
     position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(40,40,45,.27);
     z-index:10010;display:flex;align-items:center;justify-content:center;
@@ -98,4 +107,5 @@ h1 { font-size:2.09rem;color:#232325;}
 @media (max-width:900px) {
     .sticky-header,.game-header{flex-direction:column;gap:.7rem;}
     .matching-container{grid-template-columns:1fr;}
+    .floating-timer { top:12px; right:8px; }
 }
