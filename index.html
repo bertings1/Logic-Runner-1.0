@@ -40,47 +40,9 @@
           <h1 class="shimmer">Logic Runner</h1>
           <p class="subtitle">Test your wits and master propositional logic through gameplay.</p>
 
-          <!-- INFORMATIVE CONTENT -->
           <div class="topic-info" aria-hidden="false">
             <div class="topic-title"><i class="fas fa-lightbulb"></i> Master Propositional Logic</div>
-            <p>Propositional logic is the foundation of reasoning in mathematics, computer science, philosophy, and AI. Logic Runner turns these concepts into a fun, skill-building game where you solve small logic tasks under mild pressure.</p>
-
-            <h3>🎮 Play</h3>
-            <p>Jump into randomized sessions with symbol-matching, truth-table challenges, and sentence-to-symbol translations.</p>
-
-            <h3>📘 Tutorial — Connectives & Semantics</h3>
-            <ul>
-              <li><strong>AND (∧)</strong> — true only if both p and q are true</li>
-              <li><strong>OR (∨)</strong> — true if at least one of p or q is true</li>
-              <li><strong>NOT (¬)</strong> — inverts truth</li>
-              <li><strong>IMPLIES (→)</strong> — false only when p is true and q is false</li>
-            </ul>
-
-            <h3>How to Play</h3>
-            <ol>
-              <li>Select difficulty (Beginner, Intermediate, Expert) and mode (Classic or Timed).</li>
-              <li>Solve logic questions: drag-and-drop operator matching, sentence-to-symbol translation, truth-table values, partial evaluation.</li>
-              <li>Correct answers increase score. Wrong answers lose a life. Run ends at 0 lives.</li>
-              <li>Timed Mode: answer before the countdown ends.</li>
-            </ol>
-
-            <h3>🎓 Learning Goals</h3>
-            <ul>
-              <li>Translate English statements into logical expressions</li>
-              <li>Understand logical connectives</li>
-              <li>Analyze compound propositions step-by-step</li>
-              <li>Read and complete truth tables</li>
-              <li>Recognize logical equivalences</li>
-              <li>Apply fast reasoning under mild pressure</li>
-            </ul>
-
-            <h3>🧩 Example Tasks</h3>
-            <ul>
-              <li>Symbol Match: "not p" → ¬p</li>
-              <li>Truth Table Completion: p=T, q=F → p → q = False</li>
-              <li>Sentence Translation: "If the switch is on, the light turns on." → p → q</li>
-              <li>Evaluate Expression: ¬(p ∧ q) when p=T, q=F → True</li>
-            </ul>
+            <p>Logic Runner transforms propositional logic into fun, interactive challenges. Solve small tasks under mild pressure while strengthening your understanding of logical operators, truth tables, and symbolic translation.</p>
           </div>
 
           <!-- Big Cards layout -->
@@ -93,14 +55,14 @@
 
               <button class="big-card" data-target="tutorial-panel" id="card-tut" type="button">
                 <div class="card-icon-wrap"><i class="fas fa-book card-icon"></i></div>
-                <div class="card-body"><span class="card-title">TUTORIAL</span><small>Modes, rules & tips</small></div>
+                <div class="card-body"><span class="card-title">TUTORIAL</span><small>Learn connectors & gameplay</small></div>
               </button>
             </div>
 
             <div class="big-card-row">
               <button class="big-card" data-target="about-panel" id="card-about" type="button">
                 <div class="card-icon-wrap"><i class="fas fa-users card-icon"></i></div>
-                <div class="card-body"><span class="card-title">ABOUT</span><small>What the game teaches</small></div>
+                <div class="card-body"><span class="card-title">ABOUT</span><small>Learning goals & benefits</small></div>
               </button>
 
               <button class="big-card" data-target="leaderboard-panel" id="card-leader" type="button">
@@ -159,21 +121,40 @@
     <section id="tutorial-panel" class="panel">
       <div class="card">
         <div class="card-title"><i class="fas fa-book"></i> Tutorial</div>
-        <div class="topic-info">
-          <div class="topic-title"><i class="fas fa-project-diagram"></i> Connectors & Semantics</div>
-          <p><strong>AND (∧)</strong> — true only when both p and q are true.<br>
-             <strong>OR (∨)</strong> — true when at least one of p or q is true.<br>
-             <strong>NOT (¬)</strong> — inverts truth.<br>
-             <strong>IMPLIES (→)</strong> — false only when p is true and q is false.</p>
-        </div>
 
-        <h3>How to Play</h3>
-        <ol class="tutorial-list">
-          <li>Choose difficulty and mode, then press Start.</li>
-          <li>Question types: symbol match, sentence fill, truth-table tasks (drag / mcq / type / dropdown / partial).</li>
-          <li>Correct answers increase score. Wrong answers lose a life. Run ends at 0 lives.</li>
-          <li>In Timed mode, each question has a countdown — answer before time runs out.</li>
-        </ol>
+        <div class="topic-info">
+          <div class="topic-title"><i class="fas fa-project-diagram"></i> Connectives & How to Play</div>
+          <p>These are the four fundamental operators in propositional logic and gameplay tips:</p>
+          <ul>
+            <li><strong>AND (∧)</strong> — true only if both p and q are true</li>
+            <li><strong>OR (∨)</strong> — true if at least one of p or q is true</li>
+            <li><strong>NOT (¬)</strong> — inverts the truth value</li>
+            <li><strong>IMPLIES (→)</strong> — false only when p is true and q is false</li>
+          </ul>
+
+          <h3>Gameplay Tips</h3>
+          <ol>
+            <li>Select difficulty (Beginner, Intermediate, Expert) and mode (Classic or Timed).</li>
+            <li>Question types include:
+              <ul>
+                <li>Drag-and-drop operator matching</li>
+                <li>Sentence-to-symbol translation</li>
+                <li>Fill-in or multiple-choice truth-table values</li>
+                <li>Partial expression evaluation</li>
+              </ul>
+            </li>
+            <li>Correct answers increase score; wrong answers cost a life. Run ends at 0 lives.</li>
+            <li>Timed Mode: answer before countdown ends.</li>
+          </ol>
+
+          <h3>🧩 Example Tasks</h3>
+          <ul>
+            <li>Symbol Match: "not p" → ¬p</li>
+            <li>Truth Table Completion: p=T, q=F → p → q = False</li>
+            <li>Sentence Translation: "If the switch is on, the light turns on." → p → q</li>
+            <li>Evaluate Expression: ¬(p ∧ q) when p=T, q=F → True</li>
+          </ul>
+        </div>
       </div>
     </section>
 
@@ -183,9 +164,16 @@
         <div class="card-title"><i class="fas fa-users"></i> About</div>
         <div class="topic-info">
           <div class="topic-title"><i class="fas fa-graduation-cap"></i> Learning Goals</div>
-          <p>Logic Runner is a practice tool to build fluency in propositional logic: translating sentences into logical operators, reading truth tables, and applying logical reasoning under mild time pressure.</p>
+          <ul>
+            <li>Translate English statements into logical expressions</li>
+            <li>Understand logical connectives</li>
+            <li>Analyze compound propositions step-by-step</li>
+            <li>Read and complete truth tables</li>
+            <li>Recognize logical equivalences</li>
+            <li>Apply fast reasoning under mild pressure</li>
+          </ul>
+          <p>Skills are essential for computer science, discrete math, formal logic courses, philosophy, and exam preparation (NMAT, LSAT, GRE logic sections). Designed for students and self-learners.</p>
         </div>
-        <p>Designed for students. Use it often and the patterns will stick.</p>
       </div>
     </section>
 
