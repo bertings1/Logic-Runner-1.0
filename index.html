@@ -4,43 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Logic Runner | Propositional Logic Game</title>
+
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    /* Custom Start and Check buttons */
-    .btn-start {
-      background: linear-gradient(90deg, #0ff, #0aa);
-      color: #000;
-      font-weight: bold;
-      font-size: 1.2rem;
-      padding: 12px 24px;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      box-shadow: 0 4px 6px rgba(0,255,255,0.3);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .btn-start:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 8px rgba(0,255,255,0.5);
-    }
-    .btn-check {
-      background: linear-gradient(90deg, #ff0, #aa0);
-      color: #000;
-      font-weight: bold;
-      font-size: 1rem;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      box-shadow: 0 3px 5px rgba(255,255,0,0.3);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .btn-check:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 5px 7px rgba(255,255,0,0.5);
-    }
-  </style>
 </head>
 <body>
   <div class="bg-animated" aria-hidden="true"></div>
@@ -50,7 +16,15 @@
       <button id="hamburger" class="hamburger" aria-label="Open menu" type="button"><i class="fas fa-bars"></i></button>
       <div class="logo" aria-hidden="false"><i class="fas fa-brain"></i><span class="brand">Logic Runner</span></div>
     </div>
-    <!-- Removed topnav links -->
+
+    <nav class="topnav" id="topnav" aria-label="Main navigation">
+      <button class="nav-link active" data-target="home" type="button">Play</button>
+      <button class="nav-link" data-target="tutorial-panel" type="button">Tutorial</button>
+      <button class="nav-link" data-target="about-panel" type="button">About</button>
+      <button class="nav-link" data-target="leaderboard-panel" type="button">Leaderboard</button>
+      <div class="nav-underline" aria-hidden="true"></div>
+    </nav>
+
     <div class="topbar-right">
       <button id="sound-toggle" class="icon-btn" title="Toggle sound" type="button"><i class="fas fa-volume-up"></i></button>
       <button id="open-leaderboard" class="icon-btn" title="Leaderboard" type="button"><i class="fas fa-trophy"></i></button>
@@ -77,6 +51,23 @@
                 <div class="card-icon-wrap"><i class="fas fa-play card-icon"></i></div>
                 <div class="card-body"><span class="card-title">PLAY</span><small>Jump into a randomized run</small></div>
               </button>
+
+              <button class="big-card" data-target="tutorial-panel" id="card-tut" type="button">
+                <div class="card-icon-wrap"><i class="fas fa-book card-icon"></i></div>
+                <div class="card-body"><span class="card-title">TUTORIAL</span><small>Modes, rules & tips</small></div>
+              </button>
+            </div>
+
+            <div class="big-card-row">
+              <button class="big-card" data-target="about-panel" id="card-about" type="button">
+                <div class="card-icon-wrap"><i class="fas fa-users card-icon"></i></div>
+                <div class="card-body"><span class="card-title">ABOUT</span><small>What the game teaches</small></div>
+              </button>
+
+              <button class="big-card" data-target="leaderboard-panel" id="card-leader" type="button">
+                <div class="card-icon-wrap"><i class="fas fa-trophy card-icon"></i></div>
+                <div class="card-body"><span class="card-title">LEADERBOARD</span><small>Top local runs</small></div>
+              </button>
             </div>
           </div>
 
@@ -98,6 +89,7 @@
                 <div class="settings-card" data-value="hard" role="button" tabindex="0">Expert</div>
               </div>
             </div>
+
             <div class="settings-row">
               <div class="settings-label">MODE</div>
               <div class="settings-choices" id="mode-select">
@@ -105,8 +97,9 @@
                 <div class="settings-card" data-value="timed" role="button" tabindex="0">Timed</div>
               </div>
             </div>
+
             <div style="margin-top:12px;">
-              <button id="start-game" class="btn-start" type="button">Start Game</button>
+              <button id="start-game" class="btn btn-primary" type="button">Start Game</button>
             </div>
           </div>
 
@@ -126,23 +119,71 @@
 
     <!-- TUTORIAL -->
     <section id="tutorial-panel" class="panel">
-      <!-- tutorial content remains unchanged -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-book"></i> Tutorial</div>
+        <div class="topic-info">
+          <div class="topic-title"><i class="fas fa-project-diagram"></i> Connectors & Semantics</div>
+          <p><strong>AND (∧)</strong> — true only when both p and q are true.<br>
+             <strong>OR (∨)</strong> — true when at least one of p or q is true.<br>
+             <strong>NOT (¬)</strong> — inverts truth.<br>
+             <strong>IMPLIES (→)</strong> — false only when p is true and q is false.<br>
+             <strong>XOR (⊕)</strong> — true when exactly one of p or q is true.</p>
+        </div>
+
+        <h3>How to Play</h3>
+        <ol class="tutorial-list">
+          <li>Choose difficulty and mode, then press Start.</li>
+          <li>Question types: symbol match, sentence fill, truth-table tasks (drag / mcq / type / dropdown / partial).</li>
+          <li>Correct answers increase score. Wrong answers lose a life. Run ends at 0 lives.</li>
+          <li>In Timed mode, each question has a countdown — answer before time runs out.</li>
+        </ol>
+      </div>
     </section>
 
     <!-- ABOUT -->
     <section id="about-panel" class="panel">
-      <!-- about content remains unchanged -->
+      <div class="card about-card">
+        <div class="card-title"><i class="fas fa-users"></i> About</div>
+        <div class="topic-info">
+          <div class="topic-title"><i class="fas fa-graduation-cap"></i> Learning Goals</div>
+          <p>Logic Runner is a practice tool to build fluency in propositional logic: translating sentences into logical operators, reading truth tables, and applying logical reasoning under mild time pressure.</p>
+        </div>
+        <p>Designed for students. Use it often and the patterns will stick.</p>
+      </div>
     </section>
 
     <!-- LEADERBOARD -->
     <section id="leaderboard-panel" class="panel">
-      <!-- leaderboard content remains unchanged -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-trophy"></i> Leaderboard (local)</div>
+
+        <div class="topic-info">
+          <div class="topic-title"><i class="fas fa-clipboard-list"></i> Tip of the Round</div>
+          <p id="topic-tip">Practice negation and small subexpressions — simplify step-by-step.</p>
+        </div>
+
+        <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:8px;">
+          <input id="player-name" placeholder="Your name" class="name-input" />
+          <button id="clear-leader" class="btn btn-secondary" type="button">Clear</button>
+        </div>
+
+        <ol id="leader-list" aria-live="polite"></ol>
+      </div>
     </section>
   </main>
 
   <!-- Floating HUD (top-right, shown only in-game) -->
   <div id="floating-ui" class="floating-ui" aria-hidden="true" style="display:none;">
-    <!-- floating UI content remains unchanged -->
+    <div class="floating-top">
+      <div class="status-indicator" title="Level"><i class="fas fa-layer-group"></i> <span id="stat-level">0/0</span></div>
+      <div class="status-indicator" title="Score"><i class="fas fa-star"></i> <span id="stat-score">0</span></div>
+      <div class="status-indicator" title="Lives"><i class="fas fa-heart"></i> <span id="stat-lives">3</span></div>
+      <div id="floating-timer" class="status-indicator" style="display:none;" title="Timer"><i class="fas fa-stopwatch"></i> <span id="timer-value">0</span>s</div>
+    </div>
+    <div class="floating-actions">
+      <button id="btn-retry" class="btn floating-btn" title="Retry" type="button"><i class="fas fa-redo"></i> Retry</button>
+      <button id="btn-quit" class="btn floating-btn" title="Quit" type="button"><i class="fas fa-sign-out-alt"></i> Quit</button>
+    </div>
   </div>
 
   <script src="game.js"></script>
