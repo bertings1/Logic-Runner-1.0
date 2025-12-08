@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -8,10 +8,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <!-- TOP NAV -->
+  <!-- NAV -->
   <header class="topbar">
     <div class="topbar-left">
-      <button id="hamburger" class="hamburger" aria-label="Open menu"><i class="fas fa-bars"></i></button>
+      <button id="hamburger" class="hamburger"><i class="fas fa-bars"></i></button>
       <div class="logo"><i class="fas fa-brain"></i><span class="brand">Logic Runner</span></div>
     </div>
 
@@ -31,28 +31,23 @@
   <main class="container">
     <!-- HOME / PLAY -->
     <section id="home" class="panel active-panel">
-      <div class="hero">
+      <div class="hero" id="hero-section">
         <div class="hero-left">
           <h1>Logic Runner</h1>
           <p class="subtitle">Test your wits and master propositional logic through gameplay.</p>
-
           <div class="hero-cta">
             <button id="quick-start" class="btn btn-primary"><i class="fas fa-play"></i> Quick Start</button>
             <button id="quick-tutorial" class="btn btn-secondary"><i class="fas fa-book"></i> Tutorial</button>
           </div>
-
           <div class="meta-row">
             <span class="meta-pill">Modern</span>
             <span class="meta-pill">Minimal</span>
             <span class="meta-pill">Fun</span>
           </div>
         </div>
-
         <aside class="hero-right">
-          <!-- Settings Card -->
           <div class="card" id="settings-card">
             <div class="card-title"><i class="fas fa-sliders-h"></i> GAME SETTINGS</div>
-
             <div class="settings-row">
               <div class="settings-label">DIFFICULTY</div>
               <div class="settings-choices" id="difficulty-select">
@@ -61,7 +56,6 @@
                 <div class="settings-card" data-value="hard">Expert</div>
               </div>
             </div>
-
             <div class="settings-row">
               <div class="settings-label">MODE</div>
               <div class="settings-choices" id="mode-select">
@@ -69,41 +63,36 @@
                 <div class="settings-card" data-value="timed">Timed</div>
               </div>
             </div>
-
             <div style="margin-top:12px;">
               <button id="start-game" class="btn btn-primary">Start Game</button>
             </div>
           </div>
-
           <div class="card small-card" id="help-card">
             <div class="card-title"><i class="fas fa-info-circle"></i> Quick Tips</div>
             <ol class="tips">
               <li>Drag operator names to symbols, or answer prompts when shown.</li>
               <li>Timed mode starts when you press Start. Timer floats top-right.</li>
-              <li>Use Retry / Quit from the floating controls while playing.</li>
+              <li>Use Retry/Quit while playing for more runs.</li>
             </ol>
           </div>
         </aside>
       </div>
-
-      <!-- Dynamic game area (populated by JS) -->
       <section id="game-area" class="game-area"></section>
     </section>
 
-    <!-- TUTORIAL PANEL (scroll-target) -->
+    <!-- TUTORIAL -->
     <section id="tutorial-panel" class="panel">
       <div class="card">
         <div class="card-title"><i class="fas fa-book"></i> Tutorial</div>
         <h3>How to Play</h3>
         <ol class="tutorial-list">
           <li>Choose difficulty and mode, then press Start.</li>
-          <li>Questions are randomized and unique per difficulty (no repeats across difficulties).</li>
-          <li>In Timed mode the floating timer starts when the first question appears.</li>
-          <li>Use the floating Retry or Quit buttons during a run.</li>
+          <li>Each level contains unique questions (randomized every run).</li>
+          <li>In Timed mode the floating timer starts per question.</li>
         </ol>
         <h4>Examples</h4>
-        <p><strong>Sentence Builder</strong>: "A ___ B (true if both are true)" — drop "AND".</p>
-        <p><strong>Truth Table</strong>: Fill T/F for input pairs.</p>
+        <p>Sentence Builder: "A ___ B (true if both are true)" — drop "AND".</p>
+        <p>Truth Table: Fill T/F for each row in inclusive/exclusive/negation tables.</p>
       </div>
     </section>
 
@@ -136,21 +125,19 @@
     </section>
   </main>
 
-  <!-- Floating UI: level, score, lives, timer + Quit/Retry -->
-  <div id="floating-ui" class="floating-ui" aria-hidden="true">
+  <!-- Floating UI: bigger level/score/lives/timer + quit/retry-->
+  <div id="floating-ui" class="floating-ui">
     <div class="floating-top">
-      <div class="status-indicator"><i class="fas fa-layer-group"></i> <span id="stat-level">1/1</span></div>
-      <div class="status-indicator"><i class="fas fa-star"></i> <span id="stat-score">0</span></div>
-      <div class="status-indicator"><i class="fas fa-heart"></i> <span id="stat-lives">3</span></div>
-      <div id="floating-timer" class="status-indicator" style="display:none;"><i class="fas fa-stopwatch"></i> <span id="timer-value">15</span>s</div>
+      <div class="status-indicator"><i class="fas fa-layer-group"></i> <span id="stat-level"></span></div>
+      <div class="status-indicator"><i class="fas fa-star"></i> <span id="stat-score"></span></div>
+      <div class="status-indicator"><i class="fas fa-heart"></i> <span id="stat-lives"></span></div>
+      <div id="floating-timer" class="status-indicator" style="display:none;"><i class="fas fa-stopwatch"></i> <span id="timer-value"></span>s</div>
     </div>
     <div class="floating-actions">
       <button id="btn-retry" class="btn floating-btn" title="Retry"><i class="fas fa-redo"></i></button>
       <button id="btn-quit" class="btn floating-btn" title="Quit"><i class="fas fa-sign-out-alt"></i></button>
     </div>
   </div>
-
-  <!-- Modals appended by JS: tutorial modal, game-over modal, name-submit modal -->
 
   <script src="game.js"></script>
 </body>
