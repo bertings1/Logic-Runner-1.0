@@ -40,40 +40,47 @@
           <h1 class="shimmer">Logic Runner</h1>
           <p class="subtitle">Test your wits and master propositional logic through gameplay.</p>
 
+          <!-- INFORMATIVE CONTENT -->
           <div class="topic-info" aria-hidden="false">
-            <div class="topic-title"><i class="fas fa-lightbulb"></i> Propositional Logic — Quick idea</div>
-            <p>Propositional logic deals with statements that are either true or false. Practice using connectives like AND, OR, NOT, and IMPLIES through short interactive challenges.</p>
-          </div>
+            <div class="topic-title"><i class="fas fa-lightbulb"></i> Master Propositional Logic</div>
+            <p>Propositional logic is the foundation of reasoning in mathematics, computer science, philosophy, and AI. Logic Runner turns these concepts into a fun, skill-building game where you solve small logic tasks under mild pressure.</p>
 
-          <!-- Additional informative content -->
-          <div class="topic-info">
-            <div class="topic-title"><i class="fas fa-book-reader"></i> More About Propositional Logic</div>
-            <p>In propositional logic, statements are represented by symbols, often called propositions. Each proposition can be either <strong>TRUE (T)</strong> or <strong>FALSE (F)</strong>. Logical operators combine propositions to form complex statements.</p>
-            
-            <h4>Common Logical Connectives:</h4>
+            <h3>🎮 Play</h3>
+            <p>Jump into randomized sessions with symbol-matching, truth-table challenges, and sentence-to-symbol translations.</p>
+
+            <h3>📘 Tutorial — Connectives & Semantics</h3>
             <ul>
-              <li><strong>AND (∧)</strong>: True if both statements are true.</li>
-              <li><strong>OR (∨)</strong>: True if at least one statement is true.</li>
-              <li><strong>NOT (¬)</strong>: Inverts the truth value.</li>
-              <li><strong>IMPLIES (→)</strong>: False only if the first is true and the second is false.</li>
+              <li><strong>AND (∧)</strong> — true only if both p and q are true</li>
+              <li><strong>OR (∨)</strong> — true if at least one of p or q is true</li>
+              <li><strong>NOT (¬)</strong> — inverts truth</li>
+              <li><strong>IMPLIES (→)</strong> — false only when p is true and q is false</li>
             </ul>
 
-            <h4>Example:</h4>
-            <p>Let p = "It is raining", q = "I take an umbrella".</p>
+            <h3>How to Play</h3>
+            <ol>
+              <li>Select difficulty (Beginner, Intermediate, Expert) and mode (Classic or Timed).</li>
+              <li>Solve logic questions: drag-and-drop operator matching, sentence-to-symbol translation, truth-table values, partial evaluation.</li>
+              <li>Correct answers increase score. Wrong answers lose a life. Run ends at 0 lives.</li>
+              <li>Timed Mode: answer before the countdown ends.</li>
+            </ol>
+
+            <h3>🎓 Learning Goals</h3>
             <ul>
-              <li>p ∧ q → True if it is raining <em>and</em> I take an umbrella.</li>
-              <li>p ∨ q → True if it is raining <em>or</em> I take an umbrella (or both).</li>
-              <li>¬p → True if it is <em>not</em> raining.</li>
+              <li>Translate English statements into logical expressions</li>
+              <li>Understand logical connectives</li>
+              <li>Analyze compound propositions step-by-step</li>
+              <li>Read and complete truth tables</li>
+              <li>Recognize logical equivalences</li>
+              <li>Apply fast reasoning under mild pressure</li>
             </ul>
 
-            <h4>Sample Truth Table:</h4>
-            <table class="tt-table">
-              <tr><th>p</th><th>q</th><th>p ∧ q</th><th>p ∨ q</th><th>¬p</th></tr>
-              <tr><td>T</td><td>T</td><td>T</td><td>T</td><td>F</td></tr>
-              <tr><td>T</td><td>F</td><td>F</td><td>T</td><td>F</td></tr>
-              <tr><td>F</td><td>T</td><td>F</td><td>T</td><td>T</td></tr>
-              <tr><td>F</td><td>F</td><td>F</td><td>F</td><td>T</td></tr>
-            </table>
+            <h3>🧩 Example Tasks</h3>
+            <ul>
+              <li>Symbol Match: "not p" → ¬p</li>
+              <li>Truth Table Completion: p=T, q=F → p → q = False</li>
+              <li>Sentence Translation: "If the switch is on, the light turns on." → p → q</li>
+              <li>Evaluate Expression: ¬(p ∧ q) when p=T, q=F → True</li>
+            </ul>
           </div>
 
           <!-- Big Cards layout -->
@@ -106,7 +113,6 @@
           <div class="meta-row">
             <span class="meta-pill">BSIT</span>
             <span class="meta-pill">BLOCK</span>
-            <span class="meta-pill"></span>
           </div>
         </div>
 
@@ -149,9 +155,61 @@
       <section id="game-area" class="game-area" aria-live="polite"></section>
     </section>
 
-    <!-- Existing Tutorial, About, Leaderboard sections remain unchanged -->
+    <!-- TUTORIAL PANEL -->
+    <section id="tutorial-panel" class="panel">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-book"></i> Tutorial</div>
+        <div class="topic-info">
+          <div class="topic-title"><i class="fas fa-project-diagram"></i> Connectors & Semantics</div>
+          <p><strong>AND (∧)</strong> — true only when both p and q are true.<br>
+             <strong>OR (∨)</strong> — true when at least one of p or q is true.<br>
+             <strong>NOT (¬)</strong> — inverts truth.<br>
+             <strong>IMPLIES (→)</strong> — false only when p is true and q is false.</p>
+        </div>
+
+        <h3>How to Play</h3>
+        <ol class="tutorial-list">
+          <li>Choose difficulty and mode, then press Start.</li>
+          <li>Question types: symbol match, sentence fill, truth-table tasks (drag / mcq / type / dropdown / partial).</li>
+          <li>Correct answers increase score. Wrong answers lose a life. Run ends at 0 lives.</li>
+          <li>In Timed mode, each question has a countdown — answer before time runs out.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ABOUT PANEL -->
+    <section id="about-panel" class="panel">
+      <div class="card about-card">
+        <div class="card-title"><i class="fas fa-users"></i> About</div>
+        <div class="topic-info">
+          <div class="topic-title"><i class="fas fa-graduation-cap"></i> Learning Goals</div>
+          <p>Logic Runner is a practice tool to build fluency in propositional logic: translating sentences into logical operators, reading truth tables, and applying logical reasoning under mild time pressure.</p>
+        </div>
+        <p>Designed for students. Use it often and the patterns will stick.</p>
+      </div>
+    </section>
+
+    <!-- LEADERBOARD PANEL -->
+    <section id="leaderboard-panel" class="panel">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-trophy"></i> Leaderboard (local)</div>
+
+        <div class="topic-info">
+          <div class="topic-title"><i class="fas fa-clipboard-list"></i> Tip of the Round</div>
+          <p id="topic-tip">Practice negation and small subexpressions — simplify step-by-step.</p>
+        </div>
+
+        <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:8px;">
+          <input id="player-name" placeholder="Your name" class="name-input" />
+          <button id="clear-leader" class="btn btn-secondary" type="button">Clear</button>
+        </div>
+
+        <ol id="leader-list" aria-live="polite"></ol>
+      </div>
+    </section>
   </main>
 
+  <!-- Floating HUD -->
   <div id="floating-ui" class="floating-ui" aria-hidden="true" style="display:none;">
     <div class="floating-top">
       <div class="status-indicator" title="Level"><i class="fas fa-layer-group"></i> <span id="stat-level">0/0</span></div>
