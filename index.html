@@ -1,88 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logic Runner | Propositional Logic Game</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Logic Runner | Propositional Logic Game</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Modern, minimal sticky header for branding (not floating on scroll) -->
-        <div class="sticky-header game-header">
-            <div>
-                <h1 style="font-family:'IBM Plex Mono',monospace;font-size:2.1rem">
-                    <i class="fas fa-brain"></i> Logic Runner
-                </h1>
-                <p class="subtitle">
-                    Test your wits and master logic puzzles.<br>
-                    <span style="color:#f49b23" class="subtitle"><i class="fas fa-bolt"></i> Modern, Minimal, Fun</span>
-                </p>
-            </div>
+  <!-- NAV -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button id="hamburger" class="hamburger"><i class="fas fa-bars"></i></button>
+      <div class="logo">
+        <i class="fas fa-brain"></i>
+        <span class="brand">Logic Runner</span>
+      </div>
+    </div>
+
+    <nav class="topnav" id="topnav">
+      <a href="#" data-target="home" class="nav-link active">Play</a>
+      <a href="#" data-target="tutorial" class="nav-link">Tutorial</a>
+      <a href="#" data-target="about" class="nav-link">About</a>
+      <a href="#" data-target="leaderboard" class="nav-link">Leaderboard</a>
+    </nav>
+
+    <div class="topbar-right">
+      <button id="sound-toggle" class="icon-btn" title="Toggle sound"><i class="fas fa-volume-up"></i></button>
+      <button id="open-leaderboard" class="icon-btn" title="Leaderboard"><i class="fas fa-trophy"></i></button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Sticky branding header (keeps structure on desktop) -->
+    <section id="home" class="panel active-panel">
+      <div class="hero">
+        <div class="hero-left">
+          <h1>Logic Runner</h1>
+          <p class="subtitle">Test your wits and master propositional logic through gameplay.</p>
+          <div class="hero-cta">
+            <button id="quick-start" class="btn btn-primary"><i class="fas fa-play"></i> Quick Start</button>
+            <button id="open-tutorial" class="btn btn-secondary"><i class="fas fa-book"></i> Tutorial</button>
+          </div>
+          <div class="meta-row">
+            <span class="meta-pill">Modern</span>
+            <span class="meta-pill">Minimal</span>
+            <span class="meta-pill">Fun</span>
+          </div>
         </div>
 
-        <!-- GAME FLOATING UI (score, lives, etc) -->
-        <div id="floating-ui" class="floating-ui" style="display:none;">
-            <div class="floating-stats">
-                <div class="status-indicator"><i class="fas fa-layer-group"></i>
-                    <span id="stat-level">1/4</span>
-                </div>
-                <div class="status-indicator"><i class="fas fa-star"></i>
-                    <span id="stat-score">0</span>
-                </div>
-                <div class="status-indicator"><i class="fas fa-heart"></i>
-                    <span id="stat-lives">3</span>
-                </div>
-                <div class="status-indicator floating-timer" id="floating-timer" style="display:none;">
-                    <i class="fas fa-stopwatch"></i> <span id="timer-value">15</span>s
-                </div>
-            </div>
-            <div class="floating-actions">
-                <button id="btn-quit" class="btn floating-btn"><i class="fas fa-sign-out-alt"></i> Quit</button>
-                <button id="btn-retry" class="btn floating-btn"><i class="fas fa-redo"></i> Retry</button>
-            </div>
-        </div>
-
-        <!-- Settings Card (appears when not playing) -->
-        <div class="card" id="settings-card">
+        <aside class="hero-right">
+          <!-- Settings card (keeps behaviour from before) -->
+          <div class="card" id="settings-card">
             <div class="card-title"><i class="fas fa-sliders-h"></i> GAME SETTINGS</div>
             <div class="settings-row">
-                <div class="settings-label">DIFFICULTY</div>
-                <div class="settings-choices" id="difficulty-select">
-                    <div class="settings-card active" data-value="easy" tabindex="0">
-                        <i class="fas fa-seedling"></i> Beginner
-                    </div>
-                    <div class="settings-card" data-value="medium" tabindex="0">
-                        <i class="fas fa-chart-line"></i> Intermediate
-                    </div>
-                    <div class="settings-card" data-value="hard" tabindex="0">
-                        <i class="fas fa-crown"></i> Expert
-                    </div>
-                </div>
+              <div class="settings-label">DIFFICULTY</div>
+              <div class="settings-choices" id="difficulty-select">
+                <div class="settings-card active" data-value="easy" tabindex="0"><i class="fas fa-seedling"></i> Beginner</div>
+                <div class="settings-card" data-value="medium" tabindex="0"><i class="fas fa-chart-line"></i> Intermediate</div>
+                <div class="settings-card" data-value="hard" tabindex="0"><i class="fas fa-crown"></i> Expert</div>
+              </div>
             </div>
             <div class="settings-row">
-                <div class="settings-label">MODE</div>
-                <div class="settings-choices" id="mode-select">
-                    <div class="settings-card active" data-value="classic" tabindex="0">
-                        <i class="fas fa-puzzle-piece"></i> Classic
-                    </div>
-                    <div class="settings-card" data-value="timed" tabindex="0">
-                        <i class="fas fa-stopwatch"></i> Timed
-                    </div>
-                </div>
+              <div class="settings-label">MODE</div>
+              <div class="settings-choices" id="mode-select">
+                <div class="settings-card active" data-value="classic" tabindex="0"><i class="fas fa-puzzle-piece"></i> Classic</div>
+                <div class="settings-card" data-value="timed" tabindex="0"><i class="fas fa-stopwatch"></i> Timed</div>
+              </div>
             </div>
-            <div class="settings-row" id="start-row">
-                <button id="start-game" class="btn btn-primary" style="margin-top:.8em;"><i class="fas fa-play"></i> Start Game</button>
+
+            <div style="margin-top:12px;">
+              <button id="start-game" class="btn btn-primary" title="Start Game"><i class="fas fa-play"></i> Start Game</button>
             </div>
+          </div>
+
+          <div class="card small-card" id="help-card">
+            <div class="card-title"><i class="fas fa-info-circle"></i> Quick Tips</div>
+            <ol class="tips">
+              <li>Drag operator names to symbols (or answer prompts).</li>
+              <li>Timed mode starts when you press Start.</li>
+              <li>Use Retry / Quit from the floating controls while playing.</li>
+            </ol>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Main play area (populated by game.js) -->
+      <section id="game-area" class="game-area"></section>
+    </section>
+
+    <!-- Tutorial Panel -->
+    <section id="tutorial" class="panel">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-book"></i> Tutorial</div>
+        <h3>How to Play</h3>
+        <ol class="tutorial-list">
+          <li>Choose a difficulty & mode then press Start.</li>
+          <li>Each question is unique; questions are randomized and won't repeat across difficulties.</li>
+          <li>In Timed mode the floating timer starts only when you press Start.</li>
+          <li>Use Retry to restart the current run or Quit to return to settings.</li>
+        </ol>
+        <h4>Examples</h4>
+        <p><strong>Sentence Builder</strong>: "A ___ B (true if both are true)" — drag "AND".</p>
+        <p><strong>Truth Table</strong>: Fill T/F for input pairs.</p>
+      </div>
+    </section>
+
+    <!-- About Panel -->
+    <section id="about" class="panel">
+      <div class="card about-card">
+        <div class="card-title"><i class="fas fa-users"></i> About</div>
+        <p>We are <strong>Group 3 Block 2N, BSIT</strong>.</p>
+        <p>Project Team:</p>
+        <ul>
+          <li><strong>CJ R. Tabada</strong> (Team Lead)</li>
+          <li>Adrian Kith Lagmay</li>
+          <li>Rafael Bangoy Caralipio</li>
+          <li>Cymon Austria</li>
+        </ul>
+        <p>This educational game helps students practice propositional logic with fun, interactive levels.</p>
+      </div>
+    </section>
+
+    <!-- Leaderboard Panel -->
+    <section id="leaderboard" class="panel">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-trophy"></i> Leaderboard</div>
+        <p>Top scores (local):</p>
+        <ol id="leader-list"></ol>
+        <div style="margin-top:10px;">
+          <button id="clear-leader" class="btn btn-secondary">Clear</button>
         </div>
-        <!-- Dynamic Game Area -->
-        <div id="game-area"></div>
-        <!-- Footer -->
-        <footer style="text-align:center;margin:38px 0 8px 0;font-size:0.92rem;color:#a5a5ae;font-family:'IBM Plex Mono',monospace;">
-            <span>Made with <i class="fas fa-brain"></i> by bertings1 &copy; 2025</span>
-        </footer>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating game UI (level/score/lives/timer + Quit/Retry) -->
+  <div id="floating-ui" class="floating-ui" style="display:none;">
+    <div class="floating-stats">
+      <div class="status-indicator"><i class="fas fa-layer-group"></i> <span id="stat-level">1/4</span></div>
+      <div class="status-indicator"><i class="fas fa-star"></i> <span id="stat-score">0</span></div>
+      <div class="status-indicator"><i class="fas fa-heart"></i> <span id="stat-lives">3</span></div>
     </div>
-    <script src="game.js"></script>
+    <div class="floating-stats" style="margin-top:8px;">
+      <div id="floating-timer" class="status-indicator" style="display:none;"><i class="fas fa-stopwatch"></i> <span id="timer-value">15</span>s</div>
+      <div class="floating-actions"><button id="btn-retry" class="btn floating-btn"><i class="fas fa-redo"></i></button><button id="btn-quit" class="btn floating-btn"><i class="fas fa-sign-out-alt"></i></button></div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
 </body>
 </html>
