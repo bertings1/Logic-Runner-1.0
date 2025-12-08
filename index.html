@@ -4,14 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Logic Runner | Propositional Logic Game</title>
+
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <!-- Animated background layer (decorative only) -->
   <div class="bg-animated" aria-hidden="true"></div>
 
-  <!-- NAV -->
   <header class="topbar">
     <div class="topbar-left">
       <button id="hamburger" class="hamburger" aria-label="Open menu"><i class="fas fa-bars"></i></button>
@@ -40,10 +39,9 @@
           <h1 class="shimmer">Logic Runner</h1>
           <p class="subtitle">Test your wits and master propositional logic through gameplay.</p>
 
-          <!-- Topic info box (connects to propositional logic) -->
           <div class="topic-info" aria-hidden="false">
             <div class="topic-title"><i class="fas fa-lightbulb"></i> Propositional Logic — Quick idea</div>
-            <p>Propositional logic is about statements that can be true or false. You'll build and test expressions using operators like AND, OR, and NOT — practice by playing the levels.</p>
+            <p>Propositional logic is about statements that can be true or false. Build and test expressions using operators like AND, OR, NOT, IMPLIES, XOR — practice by playing the levels.</p>
           </div>
 
           <div class="hero-cta">
@@ -56,6 +54,7 @@
             <span class="meta-pill">Fun</span>
           </div>
         </div>
+
         <aside class="hero-right">
           <div class="card" id="settings-card">
             <div class="card-title"><i class="fas fa-sliders-h"></i> GAME SETTINGS</div>
@@ -67,6 +66,7 @@
                 <div class="settings-card" data-value="hard">Expert</div>
               </div>
             </div>
+
             <div class="settings-row">
               <div class="settings-label">MODE</div>
               <div class="settings-choices" id="mode-select">
@@ -74,10 +74,12 @@
                 <div class="settings-card" data-value="timed">Timed</div>
               </div>
             </div>
+
             <div style="margin-top:12px;">
               <button id="start-game" class="btn btn-primary">Start Game</button>
             </div>
           </div>
+
           <div class="card small-card" id="help-card">
             <div class="card-title"><i class="fas fa-info-circle"></i> Quick Tips</div>
             <ol class="tips">
@@ -88,6 +90,7 @@
           </div>
         </aside>
       </div>
+
       <section id="game-area" class="game-area"></section>
     </section>
 
@@ -95,22 +98,17 @@
     <section id="tutorial-panel" class="panel">
       <div class="card">
         <div class="card-title"><i class="fas fa-book"></i> Tutorial</div>
-
-        <!-- Topic info box specific to tutorial -->
         <div class="topic-info">
           <div class="topic-title"><i class="fas fa-project-diagram"></i> Connectors & Semantics</div>
-          <p>AND (∧) is true when both parts are true. OR (∨) true when at least one is true. NOT (¬) inverts truth. Practice by building sentences and checking truth outcomes in the game.</p>
+          <p>AND (∧) true when both are true. OR (∨) true when at least one is true. NOT (¬) inverts truth. IMPLIES (→) false only if true→false. XOR (⊕) true if exactly one is true.</p>
         </div>
 
         <h3>How to Play</h3>
         <ol class="tutorial-list">
           <li>Choose difficulty and mode, then press Start.</li>
-          <li>Each level contains unique questions (randomized every run).</li>
-          <li>In Timed mode the floating timer starts per question.</li>
+          <li>Each level contains randomized questions: match, sentence, truth-table (various answer modes).</li>
+          <li>In Timed mode the floating timer counts down.</li>
         </ol>
-        <h4>Examples</h4>
-        <p>Sentence Builder: "A ___ B (true if both are true)" — drop "AND".</p>
-        <p>Truth Table: Fill T/F for each row in inclusive/exclusive/negation tables.</p>
       </div>
     </section>
 
@@ -118,22 +116,11 @@
     <section id="about-panel" class="panel">
       <div class="card about-card">
         <div class="card-title"><i class="fas fa-users"></i> About</div>
-
-        <!-- Topic info box for pedagogical connection -->
         <div class="topic-info">
           <div class="topic-title"><i class="fas fa-graduation-cap"></i> Learning Goals</div>
-          <p>This project helps learners reason precisely about statements, identify valid inferences, and become comfortable with truth tables and logical connectives.</p>
+          <p>Practice truth tables, connectives, and precise reasoning through short interactive levels.</p>
         </div>
-
-        <p>We are Group 3 Block 2N in BSIT.</p>
-        <p>Project Team:</p>
-        <ul>
-          <li>CJ R. Tabada</li>
-          <li>Adrian Kith Lagmay</li>
-          <li>Rafael Bangoy Caralipio</li>
-          <li>Cymon Austria</li>
-        </ul>
-        <p>This educational game helps students practice propositional logic with fun, interactive levels.</p>
+        <p>Group 3 Block 2N — BSIT</p>
       </div>
     </section>
 
@@ -142,7 +129,6 @@
       <div class="card">
         <div class="card-title"><i class="fas fa-trophy"></i> Leaderboard (local)</div>
 
-        <!-- Topic info + rotating tip -->
         <div class="topic-info">
           <div class="topic-title"><i class="fas fa-clipboard-list"></i> Tip of the Round</div>
           <p id="topic-tip">Think about how negation flips truth-values — practice with small sentences.</p>
@@ -152,22 +138,23 @@
           <input id="player-name" placeholder="Your name" class="name-input" />
           <button id="clear-leader" class="btn btn-secondary">Clear</button>
         </div>
+
         <ol id="leader-list"></ol>
       </div>
     </section>
   </main>
 
-  <!-- Floating UI: bigger level/score/lives/timer + quit/retry-->
+  <!-- Floating HUD (top-right, glass, medium) -->
   <div id="floating-ui" class="floating-ui" aria-hidden="true">
     <div class="floating-top">
-      <div class="status-indicator"><i class="fas fa-layer-group"></i> <span id="stat-level"></span></div>
-      <div class="status-indicator"><i class="fas fa-star"></i> <span id="stat-score"></span></div>
-      <div class="status-indicator"><i class="fas fa-heart"></i> <span id="stat-lives"></span></div>
-      <div id="floating-timer" class="status-indicator" style="display:none;"><i class="fas fa-stopwatch"></i> <span id="timer-value"></span>s</div>
+      <div class="status-indicator"><i class="fas fa-layer-group"></i> <span id="stat-level">0/0</span></div>
+      <div class="status-indicator"><i class="fas fa-star"></i> <span id="stat-score">0</span></div>
+      <div class="status-indicator"><i class="fas fa-heart"></i> <span id="stat-lives">3</span></div>
+      <div id="floating-timer" class="status-indicator" style="display:none;"><i class="fas fa-stopwatch"></i> <span id="timer-value">0</span>s</div>
     </div>
     <div class="floating-actions">
-      <button id="btn-retry" class="btn floating-btn" title="Retry"><i class="fas fa-redo"></i></button>
-      <button id="btn-quit" class="btn floating-btn" title="Quit"><i class="fas fa-sign-out-alt"></i></button>
+      <button id="btn-retry" class="btn floating-btn" title="Retry"><i class="fas fa-redo"></i> Retry</button>
+      <button id="btn-quit" class="btn floating-btn" title="Quit"><i class="fas fa-sign-out-alt"></i> Quit</button>
     </div>
   </div>
 
