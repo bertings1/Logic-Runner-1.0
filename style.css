@@ -13,7 +13,6 @@ body{margin:0;font-family:'IBM Plex Mono',monospace;background:var(--bg);color:#
 .topbar-right{display:flex;gap:8px;align-items:center}
 .icon-btn{background:transparent;border:1px solid transparent;padding:8px;border-radius:8px;cursor:pointer}
 .icon-btn i{font-size:16px;color:#444}
-
 /* Game focus XL panel */
 .game-area.focused{max-width:790px;margin:30px auto;padding:18px;background:#fff;border-radius:18px;box-shadow:0 10px 40px 2px #dadccd;}
 .hero.focus-hide{display:none;}
@@ -21,7 +20,6 @@ body{margin:0;font-family:'IBM Plex Mono',monospace;background:var(--bg);color:#
 .panel:not(.active-panel){display:none;}
 .active-panel{display:block;animation:fadeGamePanel .32s;}
 @keyframes fadeGamePanel {from{opacity:0;transform:scale(0.96);}to{opacity:1;transform:scale(1);}}
-
 .hero{display:flex;gap:30px;align-items:flex-start;}
 .hero-left{flex:1;}
 .hero-right{width:360px;}
@@ -38,9 +36,7 @@ h1{font-size:2.1rem;margin:0;}
 .settings-card{background:#fafafa;padding:11px 20px 9px 20px;border-radius:8px;cursor:pointer;border:2px solid transparent;display:flex;align-items:center;gap:8px;transition:.19s;}
 .settings-card.active{border-color:var(--accent);background:#fff;box-shadow:0 2px 8px rgba(244,82,35,0.07);}
 .small-card{padding:13px;font-size:1.01rem;}
-.game-section-title{font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:13px;font-size:1.15em}
-
-/* Matching grid */
+.game-section-title{font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:13px;font-size:1.15em;}
 .matching-container{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
 .game-column{background:#fff;border-radius:12px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,0.025);}
 .column-title{color:var(--muted);text-transform:uppercase;font-weight:700;margin-bottom:10px;font-size:1.05rem;}
@@ -53,8 +49,6 @@ h1{font-size:2.1rem;margin:0;}
 .tt-table th{background:#f7f7fa;}
 .match-content{font-size:1.09em;color:#25b185;font-weight:700;}
 @media (max-width:950px){.hero{flex-direction:column;}.hero-right{width:100%;margin-top:11px;}.game-area.focused{max-width:97vw;}}
-
-/* Floating UI - bigger and clearer */
 .floating-ui{position:fixed;right:20px;top:30px;background:#fff;padding:20px 20px 12px 20px;border-radius:19px;box-shadow:0 8px 32px rgba(0,0,0,0.12);z-index:999;display:none;min-width:200px;max-width:300px;}
 .floating-top{display:flex;flex-direction:row;gap:16px;justify-content:center;align-items:center;}
 .status-indicator{background:#fafafa;padding:14px 16px;border-radius:14px;display:inline-flex;gap:12px;align-items:center;font-size:1.24rem;}
@@ -65,20 +59,15 @@ h1{font-size:2.1rem;margin:0;}
 .floating-ui .fa-layer-group{color:var(--accent);}
 .floating-ui .fa-stopwatch{color:#232;}
 .floating-ui .status-indicator span{font-size:1.18em;}
-
-/* Controls / buttons */
 .btn{padding:13px 22px;border-radius:11px;border:none;cursor:pointer;font-weight:800;font-size:1.13em;}
 .btn-primary{background:var(--accent);color:#fff;}
 .btn-secondary{background:#fff;color:#333;border:2px solid #eee;}
 .name-input{padding:10px 15px;border-radius:8px;border:2px solid #ddd;font-size:1.09rem;}
-
-/* Modal overlays */
 .modal-overlay{position:fixed;inset:0;background:rgba(28,28,32,0.23);display:flex;align-items:center;justify-content:center;z-index:140;}
 .modal-popup{background:#fff;border-radius:18px;padding:22px;min-width:320px;box-shadow:0 12px 36px rgba(0,0,0,0.19);}
 .game-message{position:fixed;right:26px;top:22px;background:#232;color:#fff;padding:12px 17px;border-radius:8px;z-index:200;font-size:1.10em;}
 .tutorial-list, .tips{margin-left:1.2em;}
 .about-card ul{list-style:disc;margin-left:1.3em;color:#444;}
-
 @media (max-width:700px){
   .container{padding:9px;}
   .floating-ui{right:2vw;top:13vw;padding:10px;}

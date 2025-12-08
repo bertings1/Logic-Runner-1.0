@@ -1,12 +1,12 @@
 (() => {
+  // ========== DATA ==========
   const operators = [
-    { name: "AND", symbol: "∧", desc: "True if both are true" },
-    { name: "OR", symbol: "∨", desc: "True if either is true" },
-    { name: "NOT", symbol: "¬", desc: "Inverts truth value" },
-    { name: "IMPLIES", symbol: "→", desc: "If A is true, B is true" }
+    { name: "AND", symbol: "∧" },
+    { name: "OR", symbol: "∨" },
+    { name: "IMPLIES", symbol: "→" },
+    { name: "NOT", symbol: "¬" }
   ];
-
-  // More table types per level
+  // Various tables for all levels/diff
   const truthTableVariants = [
     {
       op: "OR", label: "Inclusive OR (∨): true unless both are false.",
@@ -28,7 +28,6 @@
         { p: false, q: false, r: false }
       ]
     },
-    // Not and implies for variety
     {
       op: "NOT", label: "Negation (¬p): flips true/false", columns: ["p", "¬p"],
       table: [
@@ -57,8 +56,6 @@
       ]
     }
   ];
-
-  // New - keep 3+ sentence pools per diff so cannot "ever" be empty
   const sentenceQs = {
     easy: [
       { type: 'sentence', sentence: "A ___ B (true if both are true)", choices: ["AND", "OR", "IMPLIES", "NOT"], answer: "AND" },
@@ -83,39 +80,29 @@
     ]
   };
 
-  function shuffle(arr) {
-    arr = arr.slice();
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-  }
-
+  // ========== STATE
+  function shuffle(arr) { arr = arr.slice(); for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]} return arr }
   function buildMatchQuestions() {
     return shuffle([
-      { type: 'match', ops: ['AND', 'OR', 'NOT', 'IMPLIES'] },
-      { type: 'match', ops: ['AND', 'OR', 'IMPLIES', 'NOT'] },
-      { type: 'match', ops: ['OR', 'NOT', 'AND', 'IMPLIES'] }
+      { type:'match', ops:['AND','OR','NOT','IMPLIES'] },
+      { type:'match', ops:['AND','OR','IMPLIES','NOT'] },
+      { type:'match', ops:['OR','NOT','AND','IMPLIES'] }
     ]);
   }
-  // always 1 table Q but plenty of Qs!
-  function buildTruthTableQuestions(diff) {
-    let variants =
-      diff === "easy" ? [truthTableVariants[0], truthTableVariants[4], truthTableVariants[2]]
-      : diff === "medium" ? [truthTableVariants[0], truthTableVariants[1], truthTableVariants[2], truthTableVariants[3], truthTableVariants[4]]
-      : [truthTableVariants[1], truthTableVariants[3], truthTableVariants[4], truthTableVariants[2], truthTableVariants[0]];
+  function buildTruthTableQuestions(diff){
+    let variants=
+      diff==="easy"? [truthTableVariants[0],truthTableVariants[4],truthTableVariants[2]] :
+      diff==="medium"? [truthTableVariants[0],truthTableVariants[1],truthTableVariants[2],truthTableVariants[3],truthTableVariants[4]]:
+      [truthTableVariants[1],truthTableVariants[3],truthTableVariants[4],truthTableVariants[2],truthTableVariants[0]];
     return shuffle(variants);
   }
   function buildQuestions(diff) {
-    // 2 match + 2 sentence + 1 table = 5
-    const matches = buildMatchQuestions().slice(0, 2);
-    const sentences = shuffle(sentenceQs[diff]).slice(0, 2);
+    const matches = buildMatchQuestions().slice(0,2);
+    const sentences = shuffle(sentenceQs[diff]).slice(0,2);
     const tt = buildTruthTableQuestions(diff)[0];
     return shuffle([...matches, ...sentences, { ...tt, type: 'tt' }]);
   }
 
-  // --- game state and DOM
   const state = {
     difficulty: 'easy',
     mode: 'classic',
@@ -127,6 +114,7 @@
     timeLeft: 0,
     soundOn: true
   };
+  // ========== DOM refs & helpers
   const hero = document.getElementById('hero-section');
   const gameArea = document.getElementById('game-area');
   const settingsCard = document.getElementById('settings-card');
@@ -136,16 +124,9 @@
   const statLives = document.getElementById('stat-lives');
   const floatingTimer = document.getElementById('floating-timer');
   const timerValue = document.getElementById('timer-value');
-
-  // Sounds
+  // Sound quick functions
   const audioCtx = window.AudioContext ? new AudioContext() : null;
-  function playTone(f, d = 130, type = 'sine') {
-    if (!audioCtx || !state.soundOn) return;
-    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-    o.type = type; o.frequency.value = f; g.gain.value = 0.04;
-    o.connect(g); g.connect(audioCtx.destination); o.start();
-    setTimeout(() => { g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.02); o.stop(audioCtx.currentTime + 0.03); }, d)
-  }
+  function playTone(f, d = 130, type = 'sine') { if (!audioCtx || !state.soundOn) return; const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.type = type; o.frequency.value = f; g.gain.value = 0.04; o.connect(g); g.connect(audioCtx.destination); o.start(); setTimeout(() => { g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.02); o.stop(audioCtx.currentTime + 0.03); }, d)}
   const soundSuccess = () => playTone(1032, 110, 'triangle');
   const soundError = () => playTone(180, 170, 'square');
   const soundClick = () => playTone(530, 60, 'sine');
@@ -200,7 +181,6 @@
     settingsCard.style.display = 'none';
     showFloating(true); focusGamePanel(true);
     state.score = 0; state.lives = 3; state.qindex = 0;
-    // generate fresh 5-question queue that always has 5
     state.questions = buildQuestions(state.difficulty);
     renderQuestion();
   }
@@ -300,6 +280,7 @@
       if (ok) { state.score += 40; soundSuccess(); advanceAfterDelay() } else { loseLife(); soundError(); }
     }
   }
+  // UI helpers/modals
   function showToast(txt, type = 'info') { const ex = document.querySelector('.game-message'); if (ex) ex.remove(); const t = document.createElement('div'); t.className = 'game-message'; t.textContent = txt; document.body.appendChild(t); setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 350) }, 1800); }
   function openTutorialModal() { closeModal(); const modal = document.createElement('div'); modal.className = 'modal-overlay'; modal.innerHTML = `<div class="modal-popup">
       <div class="card-title"><i class="fas fa-book"></i> Tutorial</div>
