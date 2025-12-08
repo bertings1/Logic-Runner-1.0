@@ -1,12 +1,14 @@
 /* Full working game.js
-   - Mixed-mode truth-table (drag, mcq, partial, type, dropdown)
-   - Floating HUD (top-right) with level, score, lives, timer
-   - Retry and Quit buttons in HUD
-   - Keeps original gameplay flow (match, sentence, truth table)
+   - Preserves game logic (match, sentence, mixed tt)
+   - Navigation working (cards and nav buttons)
+   - Hamburger toggles mobile nav
+   - Hides other sections when playing
+   - Larger question banks per difficulty
 */
 
 (() => {
-  // ---------- DATA ----------
+  // ---------- DATA / QUESTIONS ----------
+  // operators
   const operators = [
     { name: "AND", symbol: "∧" },
     { name: "OR", symbol: "∨" },
@@ -15,112 +17,52 @@
     { name: "XOR", symbol: "⊕" }
   ];
 
+  // truth table variants (small canonical set)
   const truthTableVariants = [
-    {
-      op: "OR",
-      label: "Inclusive OR (∨): true unless both are false.",
-      columns: ["p", "q", "p∨q"],
-      table: [
-        { p: true, q: true, r: true },
-        { p: true, q: false, r: true },
-        { p: false, q: true, r: true },
-        { p: false, q: false, r: false }
-      ]
-    },
-    {
-      op: "XOR",
-      label: "Exclusive OR (⊕): true if one is true, not both.",
-      columns: ["p", "q", "p⊕q"],
-      table: [
-        { p: true, q: true, r: false },
-        { p: true, q: false, r: true },
-        { p: false, q: true, r: true },
-        { p: false, q: false, r: false }
-      ]
-    },
-    {
-      op: "NOT",
-      label: "Negation (¬p): flips true/false",
-      columns: ["p", "¬p"],
-      table: [
-        { p: true, r: false },
-        { p: false, r: true }
-      ]
-    },
-    {
-      op: "IMPLIES",
-      label: "Implication (→): false only if true→false.",
-      columns: ["p", "q", "p→q"],
-      table: [
-        { p: true, q: true, r: true },
-        { p: true, q: false, r: false },
-        { p: false, q: true, r: true },
-        { p: false, q: false, r: true }
-      ]
-    },
-    {
-      op: "AND",
-      label: "AND (∧): only true if both are true.",
-      columns: ["p", "q", "p∧q"],
-      table: [
-        { p: true, q: true, r: true },
-        { p: true, q: false, r: false },
-        { p: false, q: true, r: false },
-        { p: false, q: false, r: false }
-      ]
-    }
+    { op: "AND", label: "AND (∧): true only if both are true.", columns: ["p","q","p∧q"], table:[{p:true,q:true,r:true},{p:true,q:false,r:false},{p:false,q:true,r:false},{p:false,q:false,r:false}]},
+    { op: "OR", label: "OR (∨): true if at least one is true.", columns: ["p","q","p∨q"], table:[{p:true,q:true,r:true},{p:true,q:false,r:true},{p:false,q:true,r:true},{p:false,q:false,r:false}]},
+    { op: "IMPLIES", label:"IMPLIES (→): false only when p true and q false.", columns:["p","q","p→q"], table:[{p:true,q:true,r:true},{p:true,q:false,r:false},{p:false,q:true,r:true},{p:false,q,false,r:true}] || []},
+    { op: "NOT", label:"NOT (¬p): flips truth.", columns:["p","¬p"], table:[{p:true,r:false},{p:false,r:true}]},
+    { op: "XOR", label:"XOR (⊕): true when exactly one is true.", columns:["p","q","p⊕q"], table:[{p:true,q:true,r:false},{p:true,q:false,r:true},{p:false,q:true,r:true},{p:false,q:false,r:false}]}
   ];
 
-  const sentenceQs = {
+  // Larger question banks by difficulty (examples — enough variety)
+  const sentenceBank = {
     easy: [
-      { type: 'sentence', sentence: "A ___ B (true if both are true)", choices: ["AND", "OR", "IMPLIES", "NOT"], answer: "AND" },
-      { type: 'sentence', sentence: "A ___ B (true if either is true)", choices: ["AND", "OR", "IMPLIES", "NOT"], answer: "OR" },
-      { type: 'sentence', sentence: "___ A (true if A is false)", choices: ["AND", "OR", "IMPLIES", "NOT"], answer: "NOT" },
-      { type: 'sentence', sentence: "If it rains ___ you use an umbrella", choices: ["AND", "OR", "IMPLIES", "NOT"], answer: "IMPLIES" },
-      { type: 'sentence', sentence: "If John is a programmer ___ Mary is a lawyer", choices: ["AND", "OR", "IMPLIES"], answer: "OR" }
+      { type: 'sentence', sentence: "A ___ B (true if both are true)", choices: ["AND","OR","IMPLIES","NOT"], answer: "AND" },
+      { type: 'sentence', sentence: "A ___ B (true if either is true)", choices: ["AND","OR","IMPLIES","NOT"], answer: "OR" },
+      { type: 'sentence', sentence: "___ A (true if A is false)", choices: ["NOT","AND","OR","IMPLIES"], answer: "NOT" },
+      { type: 'sentence', sentence: "If it rains ___ you use an umbrella", choices: ["IMPLIES","AND","OR"], answer: "IMPLIES" },
+      { type: 'sentence', sentence: "Either A ___ B (one or both)", choices: ["OR","AND","XOR"], answer: "OR" },
+      { type: 'sentence', sentence: "A and B is written as A ___ B", choices: ["AND","OR","IMPLIES"], answer: "AND" },
+      { type: 'sentence', sentence: "If p then q is written p ___ q", choices: ["IMPLIES","AND","OR"], answer: "IMPLIES" }
     ],
     medium: [
-      { type: 'sentence', sentence: "You can enter if you have a ticket ___ your name is on the list.", choices: ["AND", "OR", "IMPLIES"], answer: "OR" },
-      { type: 'sentence', sentence: "If you miss class, ___ you may fall behind", choices: ["IMPLIES", "AND", "OR"], answer: "IMPLIES" },
-      { type: 'sentence', sentence: "A ___ B ___ C (true if all are true)", choices: ["AND", "OR", "IMPLIES"], answer: "AND" },
-      { type: 'sentence', sentence: "Either John is a programmer or Mary is a lawyer", choices: ["AND", "OR", "IMPLIES", "NOT"], answer: "OR" },
-      { type: 'sentence', sentence: "Negation (¬): 'It is not the case that A'", choices: ["AND", "OR", "IMPLIES", "NOT"], answer: "NOT" }
+      { type: 'sentence', sentence: "p∨q is false only when ___", choices: ["both are false","both true"], answer: "both are false" },
+      { type: 'sentence', sentence: "p⊕q is true when ___", choices: ["one is true","both true"], answer: "one is true" },
+      { type: 'sentence', sentence: "Negation ¬ distributes over which connective: (¬(p∨q)) is ___", choices: ["¬p∧¬q","p∨q"], answer: "¬p∧¬q" },
+      { type: 'sentence', sentence: "If you pass the test ___ you get the certificate", choices: ["IMPLIES","AND","OR"], answer: "IMPLIES" },
+      { type: 'sentence', sentence: "A ___ B ___ C (true if all are true)", choices: ["AND","OR","IMPLIES"], answer: "AND" }
     ],
     hard: [
-      { type: 'sentence', sentence: "Light is ON if switch is ON ___ switch is OFF", choices: ["IMPLIES", "AND", "OR"], answer: "IMPLIES" },
-      { type: 'sentence', sentence: "Either Alice OR Bob will present (but not both). Operator?", choices: ["AND", "OR", "IMPLIES", "NOT"], answer: "OR" },
-      { type: 'sentence', sentence: "p∨q is only false if ___", choices: ["both are false", "both are true"], answer: "both are false" },
-      { type: 'sentence', sentence: "p⊕q is only true if ___", choices: ["one of them is true", "both are true"], answer: "one of them is true" },
-      { type: 'sentence', sentence: "Negation of p: true if p is ___", choices: ["false", "true"], answer: "false" }
+      { type: 'sentence', sentence: "When is p→q false? ___", choices: ["p true and q false","p false and q true"], answer: "p true and q false" },
+      { type: 'sentence', sentence: "Bi-conditional p↔q is true when ___", choices: ["p and q same truth","always true"], answer: "p and q same truth" },
+      { type: 'sentence', sentence: "Contrapositive of p→q is ___", choices: ["¬q→¬p","q→p"], answer: "¬q→¬p" },
+      { type: 'sentence', sentence: "Express 'not (p and q)' as ___", choices: ["¬p or ¬q","p and q"], answer: "¬p or ¬q" }
     ]
   };
 
+  // additional pool for matching items (operators)
+  const matchPools = {
+    easy: ['AND','OR','NOT'],
+    medium: ['AND','OR','IMPLIES','XOR'],
+    hard: ['AND','OR','IMPLIES','XOR','NOT']
+  };
+
+  // truth table pool (we'll reuse truthTableVariants but shuffle)
   // ---------- UTIL ----------
-  function shuffle(arr) { const a = arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a }
+  function shuffle(arr){ const a = arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a }
   function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)] }
-
-  function buildMatchQuestions() {
-    return shuffle([
-      { type:'match', ops:['AND','OR','NOT','IMPLIES'] },
-      { type:'match', ops:['AND','OR','IMPLIES','NOT'] },
-      { type:'match', ops:['OR','NOT','AND','IMPLIES'] }
-    ]);
-  }
-  function buildTruthTableQuestions(diff){
-    const variants = diff==="easy"? [truthTableVariants[0],truthTableVariants[4],truthTableVariants[2]] :
-      diff==="medium"? truthTableVariants :
-      [truthTableVariants[1],truthTableVariants[3],truthTableVariants[4],truthTableVariants[2],truthTableVariants[0]];
-    return shuffle(variants);
-  }
-
-  function buildQuestions(diff){
-    const matches = buildMatchQuestions().slice(0,2);
-    const sentences = shuffle(sentenceQs[diff]).slice(0,2);
-    const tt = buildTruthTableQuestions(diff)[0];
-    const presentation = pickRandom(['drag','mcq','partial','type','dropdown']);
-    const ttWithMode = { ...tt, type:'tt', presentation };
-    return shuffle([...matches, ...sentences, ttWithMode]);
-  }
 
   // ---------- STATE ----------
   const state = {
@@ -132,7 +74,8 @@
     lives: 3,
     timer: null,
     timeLeft: 0,
-    soundOn: true
+    soundOn: true,
+    usedQuestions: new Set()
   };
 
   // ---------- DOM refs ----------
@@ -148,14 +91,20 @@
   const btnRetry = document.getElementById('btn-retry');
   const btnQuit = document.getElementById('btn-quit');
 
-  // ---------- Sound (simple) ----------
+  // top nav / cards / hamburger
+  const navLinks = document.querySelectorAll('.nav-link');
+  const bigCards = document.querySelectorAll('.big-card');
+  const hamburger = document.getElementById('hamburger');
+  const topnav = document.getElementById('topnav');
+
+  // ---------- SOUND ----------
   const audioCtx = window.AudioContext ? new AudioContext() : null;
   function playTone(f, d=110, type='sine'){ if(!audioCtx || !state.soundOn) return; const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type=type; o.frequency.value=f; g.gain.value=0.04; o.connect(g); g.connect(audioCtx.destination); o.start(); setTimeout(()=>{ g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.02); o.stop(audioCtx.currentTime + 0.03) }, d) }
   const soundSuccess = ()=>playTone(1000,120,'triangle');
   const soundError = ()=>playTone(200,160,'square');
   const soundClick = ()=>playTone(520,60,'sine');
 
-  // ---------- HUD and Timer ----------
+  // ---------- HUD / Timer ----------
   function showFloating(show=true){ floatingUI.style.display = show ? 'block' : 'none'; updateFloating(); }
   function updateFloating(){
     statLevel.textContent = `${state.qindex + 1}/${state.questions.length || 0}`;
@@ -174,7 +123,7 @@
   }
   function stopTimer(){ if(state.timer){ clearInterval(state.timer); state.timer = null; } state.timeLeft = 0; updateFloating(); }
 
-  // ---------- Settings & init ----------
+  // ---------- SETTINGS ----------
   function setupSettings(){
     document.querySelectorAll('#difficulty-select .settings-card').forEach(card=>{
       card.onclick = ()=>{ document.querySelectorAll('#difficulty-select .settings-card').forEach(c=>c.classList.remove('active')); card.classList.add('active'); state.difficulty = card.dataset.value; soundClick(); }
@@ -182,83 +131,156 @@
     document.querySelectorAll('#mode-select .settings-card').forEach(card=>{
       card.onclick = ()=>{ document.querySelectorAll('#mode-select .settings-card').forEach(c=>c.classList.remove('active')); card.classList.add('active'); state.mode = card.dataset.value; soundClick(); }
     });
-    document.getElementById('start-game').onclick = startRun;
-    document.getElementById('quick-start').onclick = startRun;
-    document.getElementById('sound-toggle').onclick = ()=>{ state.soundOn = !state.soundOn; document.getElementById('sound-toggle').querySelector('i').classList.toggle('fa-volume-mute', !state.soundOn); soundClick(); }
-    document.getElementById('quick-tutorial').onclick = openTutorialModal;
-    document.getElementById('clear-leader').onclick = ()=>{ localStorage.removeItem('lr_leader'); renderLeaderboard(); soundClick(); }
-    document.getElementById('open-leaderboard').onclick = ()=>{ goToPanel('leaderboard-panel'); }
-    const pn = document.getElementById('player-name');
-    if(pn){ const saved=localStorage.getItem('lr_name'); if(saved) pn.value = saved; pn.oninput = ()=> localStorage.setItem('lr_name', pn.value || ''); }
 
-    document.getElementById('hamburger').onclick = ()=>{ const nav = document.getElementById('topnav'); nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex'; soundClick(); };
-    document.querySelectorAll('.nav-link').forEach(btn => btn.onclick = (ev)=>{ ev.preventDefault(); goToPanel(btn.dataset.target); soundClick(); });
+    // start buttons
+    document.getElementById('start-game').onclick = startRun;
+    document.getElementById('card-play').onclick = () => { startRun(); };
+    document.getElementById('quick-tutorial').onclick = openTutorialModal; // if present
+
+    // sound toggle
+    document.getElementById('sound-toggle').onclick = ()=>{ state.soundOn = !state.soundOn; document.getElementById('sound-toggle').querySelector('i').classList.toggle('fa-volume-mute', !state.soundOn); soundClick(); }
+
+    // clear leaderboard
+    const clearLeader = document.getElementById('clear-leader');
+    if(clearLeader) clearLeader.onclick = ()=>{ localStorage.removeItem('lr_leader'); renderLeaderboard(); soundClick(); }
+
+    // open leaderboard icon
+    const openLeader = document.getElementById('open-leaderboard');
+    if(openLeader) openLeader.onclick = ()=>{ scrollToPanel('leaderboard-panel'); };
+
+    // hamburger mobile
+    hamburger.onclick = ()=>{ topnav.style.display = topnav.style.display === 'flex' ? 'none' : 'flex'; };
+
+    // nav link handlers
+    navLinks.forEach(btn => btn.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      const t = btn.dataset.target;
+      scrollToPanel(t);
+      // collapse mobile nav if open
+      if(window.innerWidth <= 560) topnav.style.display = 'none';
+      soundClick();
+    }));
+
+    // big cards (front) navigation
+    bigCards.forEach(card => card.addEventListener('click', (ev) => {
+      const t = card.dataset.target;
+      scrollToPanel(t);
+      soundClick();
+    }));
 
     // HUD buttons
     btnRetry.onclick = ()=>{ soundClick(); retryRun(); };
     btnQuit.onclick = ()=>{ soundClick(); quitToSettings(); };
   }
 
-  // ---------- Flow controls ----------
+  // scroll or show panel
+  function scrollToPanel(id){
+    // hide menu cards if not going to home
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active-panel'));
+    const panel = document.getElementById(id);
+    if(panel){
+      panel.classList.add('active-panel');
+      // ensure we show the container and hide menu cards when appropriate
+      if(id === 'home'){
+        document.querySelector('#home').classList.add('active-panel');
+      }
+      // scroll smoothly
+      setTimeout(()=> panel.scrollIntoView({ behavior:'smooth', block:'start' }), 40);
+    }
+    // keep settings card visible only on home
+    settingsCard.style.display = (id === 'home' || id === 'home') ? '' : 'none';
+    // if starting play panel, do not auto-start; user can press Start
+  }
+
+  // ---------- FLOW ----------
   function startRun(){
     soundClick();
-    settingsCard.style.display = 'none';
+    // hide non-game sections & menu cards to avoid distraction
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active-panel'));
+    // show home only for context but hide main content
+    document.querySelector('#home').classList.add('active-panel');
+
+    // hide menu cards & tutorial/about/leaderboard
+    document.querySelector('.menu-cards').style.display = 'none';
+    document.getElementById('tutorial-panel').style.display = 'none';
+    document.getElementById('about-panel').style.display = 'none';
+    document.getElementById('leaderboard-panel').style.display = 'none';
+
+    // show floating HUD and game area
     showFloating(true);
     focusGamePanel(true);
-    state.score = 0; state.lives = 3; state.qindex = 0;
-    state.questions = buildQuestions(state.difficulty);
+
+    // reset state
+    state.score = 0; state.lives = 3; state.qindex = 0; state.usedQuestions = new Set();
+    // build question list
+    state.questions = buildQuestions(state.difficulty, 6); // 6 questions per run for example
     renderQuestion();
   }
+
   function retryRun(){ stopTimer(); startRun(); }
-  function quitToSettings(){ stopTimer(); showFloating(false); settingsCard.style.display = ''; gameArea.innerHTML = ''; focusGamePanel(false); }
-  function finishRun(){ stopTimer(); renderLeaderboard(); openSubmitScoreModal(); focusGamePanel(false); settingsCard.style.display = ''; showFloating(false); }
+  function quitToSettings(){ stopTimer(); showFloating(false); settingsCard.style.display = ''; gameArea.innerHTML = ''; focusGamePanel(false); // restore panels
+    document.querySelector('.menu-cards').style.display = ''; document.getElementById('tutorial-panel').style.display = ''; document.getElementById('about-panel').style.display = ''; document.getElementById('leaderboard-panel').style.display = '';
+  }
+  function finishRun(){ stopTimer(); renderLeaderboard(); openSubmitScoreModal(); focusGamePanel(false); settingsCard.style.display = ''; showFloating(false); // show menu again
+    document.querySelector('.menu-cards').style.display = ''; document.getElementById('tutorial-panel').style.display = ''; document.getElementById('about-panel').style.display = ''; document.getElementById('leaderboard-panel').style.display = '';
+  }
   function advanceAfterDelay(){ stopTimer(); state.qindex++; if(state.qindex >= state.questions.length){ finishRun(); } else { setTimeout(renderQuestion, 700); } }
   function loseLife(msg){ if(msg) showToast(msg,'error'); state.lives--; updateFloating(); if(state.lives <= 0) showGameOverModal(); }
 
-  function goToPanel(target){
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active-panel'));
-    const panel = document.getElementById(target); if(panel) panel.classList.add('active-panel');
-    settingsCard.style.display = (target === 'home') ? '' : 'none';
-    focusGamePanel(false); showFloating(false);
-  }
-
   function focusGamePanel(on=true){ if(on){ hero.classList.add('focus-hide'); gameArea.classList.add('focused'); } else { hero.classList.remove('focus-hide'); gameArea.classList.remove('focused'); } }
 
-  // ---------- Questions builders ----------
-  function buildMatchQuestions(){ return buildMatchQuestions_inner(); }
-  function buildMatchQuestions_inner(){
-    return shuffle([
-      { type:'match', ops:['AND','OR','NOT','IMPLIES'] },
-      { type:'match', ops:['AND','OR','IMPLIES','NOT'] },
-      { type:'match', ops:['OR','NOT','AND','IMPLIES'] }
-    ]);
+  // ---------- QUESTION BUILDERS ----------
+  function buildMatchQuestions(count, diff){
+    const pool = matchPools[diff] ? matchPools[diff].slice() : matchPools['easy'].slice();
+    // create multiple match variants
+    const out = [];
+    for(let i=0;i<count;i++){
+      const ops = shuffle(pool).slice(0, Math.min(4,pool.length));
+      out.push({ type:'match', ops });
+    }
+    return out;
   }
 
-  function buildTruthTableQuestions(diff){ return buildTruthTableQuestions_inner(diff); }
-  function buildTruthTableQuestions_inner(diff){
-    const variants = diff==="easy"? [truthTableVariants[0],truthTableVariants[4],truthTableVariants[2]] :
-      diff==="medium"? truthTableVariants :
-      [truthTableVariants[1],truthTableVariants[3],truthTableVariants[4],truthTableVariants[2],truthTableVariants[0]];
-    return shuffle(variants);
+  function buildTruthTableQuestions(diff){
+    // shuffle a copy of variants and return a copy
+    const variants = shuffle(truthTableVariants.slice());
+    return variants;
   }
 
-  function buildQuestions(diff){
-    const matches = buildMatchQuestions().slice(0,2);
-    const sentences = shuffle(sentenceQs[diff]).slice(0,2);
-    const tt = buildTruthTableQuestions(diff)[0];
-    const presentation = pickRandom(['drag','mcq','partial','type','dropdown']);
-    const ttWithMode = { ...tt, type:'tt', presentation };
-    return shuffle([...matches, ...sentences, ttWithMode]);
+  function buildSentenceQuestions(count, diff){
+    const bank = sentenceBank[diff] ? sentenceBank[diff].slice() : sentenceBank['easy'].slice();
+    // random unique picks
+    const out = [];
+    const used = new Set();
+    while(out.length < count && bank.length){
+      const idx = Math.floor(Math.random()*bank.length);
+      const q = bank.splice(idx,1)[0];
+      out.push(q);
+    }
+    return out;
   }
 
-  // ---------- Renderers ----------
+  function buildQuestions(diff, total){
+    // mix of match, sentence, tt
+    total = total || 6;
+    const matches = buildMatchQuestions(Math.ceil(total*0.33), diff);
+    const sentences = buildSentenceQuestions(Math.ceil(total*0.33), diff);
+    const tt = buildTruthTableQuestions(diff).slice(0, Math.max(1, total - matches.length - sentences.length));
+    // turn tt variants into questions with random presentation modes
+    const ttQuestions = tt.map(t => ({ ...t, type:'tt', presentation: pickRandom(['drag','mcq','partial','type','dropdown']) }));
+    const all = shuffle([ ...matches, ...sentences, ...ttQuestions ]).slice(0,total);
+    return all;
+  }
+
+  // ---------- RENDER ----------
   function renderQuestion(){
     stopTimer();
     updateFloating();
     const q = state.questions[state.qindex];
     if(!q){ finishRun(); return; }
+    // timed mode
     if(state.mode === 'timed'){
-      const secs = state.difficulty === "easy" ? 20 : state.difficulty === "medium" ? 14 : 10;
+      const secs = state.difficulty === "easy" ? 20 : state.difficulty === "medium" ? 16 : 12;
       startTimer(secs, ()=>{ loseLife("Time's up!"); advanceAfterDelay(); });
     }
 
@@ -272,7 +294,7 @@
 
   // ---- MATCH ----
   function renderMatch(q){
-    const opPairs = Object.fromEntries(q.ops.map(n=>[n, operators.find(o=>o.name===n).symbol]));
+    const opPairs = Object.fromEntries(q.ops.map(n=>[n, operators.find(o=>o.name===n) ? operators.find(o=>o.name===n).symbol : n]));
     const left = shuffle(q.ops);
     const right = shuffle(Object.values(opPairs));
     gameArea.innerHTML = `<div class="card">
@@ -343,7 +365,6 @@
       gameArea.innerHTML = `<div class="card">
         <div class="game-section-title">Truth Table — Drag</div>
         <div class="subtitle">${q.label}</div>
-        <table class="tt-table">${cols.map(c=>`<th>${c.toUpperCase()}</th>`).join('')}${''}</table>
         <div style="margin-top:12px">
           <table class="tt-table" style="width:100%"><tr>${cols.map(c=>`<th>${c.toUpperCase()}</th>`).join('')}</tr>
             ${table.map((row,i)=>`<tr>${
@@ -449,7 +470,7 @@
       return;
     }
 
-    // dropdown mode (an extra style)
+    // dropdown
     if(mode === 'dropdown'){
       gameArea.innerHTML = `<div class="card">
         <div class="game-section-title">Truth Table — Dropdown</div>
@@ -480,22 +501,8 @@
     setTimeout(()=>{ t.style.opacity = '0'; setTimeout(()=>t.remove(), 350) }, 1600);
   }
 
-  function openTutorialModal(){
-    closeModal();
-    const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
-    modal.innerHTML = `<div class="modal-popup">
-      <div class="card-title"><i class="fas fa-book"></i> Tutorial</div>
-      <ol style="margin-top:10px">
-        <li>Choose Difficulty & Mode, then Start.</li>
-        <li>Questions include match, sentence, and mixed-mode truth tables.</li>
-      </ol>
-      <div style="margin-top:12px;display:flex;justify-content:flex-end"><button id="tut-close" class="btn btn-secondary">Close</button></div>
-    </div>`;
-    document.body.appendChild(modal);
-    modal.querySelector('#tut-close').onclick = ()=> modal.remove();
-  }
-
+  function openTutorialModal(){ /* tutorial already a panel; this keeps compatibility */ showToast('Open the Tutorial panel from the main screen.', 'info'); }
+  // submit score modal and leaderboard
   function openSubmitScoreModal(){
     closeModal();
     const modal = document.createElement('div'); modal.className = 'modal-overlay';
@@ -518,10 +525,9 @@
       saveScore(state.score, name);
       modal.remove();
       showToast('Score saved','success');
-      goToPanel('leaderboard-panel');
-      showFloating(false);
+      scrollToPanel('leaderboard-panel');
     };
-    modal.querySelector('#skip-score').onclick = ()=>{ modal.remove(); goToPanel('leaderboard-panel'); showFloating(false); };
+    modal.querySelector('#skip-score').onclick = ()=>{ modal.remove(); scrollToPanel('leaderboard-panel'); };
   }
 
   function showGameOverModal(){
@@ -542,7 +548,7 @@
 
   function closeModal(){ const ex = document.querySelector('.modal-overlay'); if(ex) ex.remove(); }
 
-  // Leaderboard
+  // Leaderboard functions
   function saveScore(score, name){
     const key = 'lr_leader';
     const data = JSON.parse(localStorage.getItem(key) || '[]');
@@ -554,14 +560,15 @@
 
   function renderLeaderboard(){
     const list = document.getElementById('leader-list');
+    if(!list) return;
     const data = JSON.parse(localStorage.getItem('lr_leader') || '[]');
     list.innerHTML = '';
     if(!data.length){ list.innerHTML = '<li>No scores yet</li>'; return; }
     data.forEach((e,i)=> { const li = document.createElement('li'); li.textContent = `${i+1}. ${e.name} — ${e.score} pts — ${new Date(e.ts).toLocaleString()}`; list.appendChild(li); });
   }
 
-  // ---------- Start ----------
-  function init(){ setupSettings(); renderLeaderboard(); goToPanel('home'); showFloating(false); }
+  // ---------- START ----------
+  function init(){ setupSettings(); renderLeaderboard(); scrollToPanel('home'); showFloating(false); }
   init();
 
 })();

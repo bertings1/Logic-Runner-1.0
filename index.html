@@ -44,10 +44,17 @@
             <p>Propositional logic is about statements that can be true or false. Build and test expressions using operators like AND, OR, NOT, IMPLIES, XOR — practice by playing the levels.</p>
           </div>
 
-          <div class="hero-cta">
-            <button id="quick-start" class="btn btn-primary"><i class="fas fa-play"></i> Quick Start</button>
-            <button id="quick-tutorial" class="btn btn-secondary"><i class="fas fa-book"></i> Tutorial</button>
+          <div class="menu-cards">
+            <div class="big-card-row">
+              <button class="big-card" data-target="play" id="card-play"><i class="fas fa-play card-icon"></i><span>PLAY</span><small>Jump straight into a randomized run</small></button>
+              <button class="big-card" data-target="tutorial-panel" id="card-tut"><i class="fas fa-book card-icon"></i><span>TUTORIAL</span><small>How to play — modes & tips</small></button>
+            </div>
+            <div class="big-card-row">
+              <button class="big-card" data-target="about-panel" id="card-about"><i class="fas fa-users card-icon"></i><span>ABOUT</span><small>What this game teaches</small></button>
+              <button class="big-card" data-target="leaderboard-panel" id="card-leader"><i class="fas fa-trophy card-icon"></i><span>LEADERBOARD</span><small>Top local runs</small></button>
+            </div>
           </div>
+
           <div class="meta-row">
             <span class="meta-pill">Modern</span>
             <span class="meta-pill">Minimal</span>
@@ -100,14 +107,20 @@
         <div class="card-title"><i class="fas fa-book"></i> Tutorial</div>
         <div class="topic-info">
           <div class="topic-title"><i class="fas fa-project-diagram"></i> Connectors & Semantics</div>
-          <p>AND (∧) true when both are true. OR (∨) true when at least one is true. NOT (¬) inverts truth. IMPLIES (→) false only if true→false. XOR (⊕) true if exactly one is true.</p>
+          <p>AND (∧): true only when both p and q are true.<br>
+             OR (∨): true when at least one of p or q is true.<br>
+             NOT (¬): inverts truth.<br>
+             IMPLIES (→): false only when p is true and q is false.<br>
+             XOR (⊕): true when exactly one of p or q is true.</p>
         </div>
 
         <h3>How to Play</h3>
         <ol class="tutorial-list">
           <li>Choose difficulty and mode, then press Start.</li>
-          <li>Each level contains randomized questions: match, sentence, truth-table (various answer modes).</li>
-          <li>In Timed mode the floating timer counts down.</li>
+          <li>Questions appear in mixed-mode: symbol matching, sentence gap-fill, or truth-table tasks (drag/MCQ/type/dropdown/partial).</li>
+          <li>Score points for correct answers; wrong answers cost a life. Lose all lives and the run ends.</li>
+          <li>In Timed mode, each question has a countdown — answer before time runs out.</li>
+          <li>Use Retry during a run to quickly restart, or Quit to return to the settings panel.</li>
         </ol>
       </div>
     </section>
@@ -118,9 +131,9 @@
         <div class="card-title"><i class="fas fa-users"></i> About</div>
         <div class="topic-info">
           <div class="topic-title"><i class="fas fa-graduation-cap"></i> Learning Goals</div>
-          <p>Practice truth tables, connectives, and precise reasoning through short interactive levels.</p>
+          <p>Logic Runner is a short, interactive practice tool to build fluency in propositional logic: translating sentences to operators, recognizing truth tables, and applying logical reasoning under time pressure.</p>
         </div>
-        <p>Group 3 Block 2N — BSIT</p>
+        <p>Designed for BSIT students — Group 3 Block 2N. Use it to practice truth tables, connectives, and basic reasoning skills.</p>
       </div>
     </section>
 
