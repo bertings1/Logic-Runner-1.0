@@ -3,49 +3,67 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Logic Runner | Propositional Logic Game</title>
+  <title>Logic Runner | BSIT Group 3 Block 2N</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <!-- NAV -->
+
   <header class="topbar">
     <div class="topbar-left">
-      <button id="hamburger" class="hamburger"><i class="fas fa-bars"></i></button>
+      <button id="hamburger" class="hamburger" aria-label="Menu"><i class="fas fa-bars"></i></button>
       <div class="logo"><i class="fas fa-brain"></i><span class="brand">Logic Runner</span></div>
     </div>
-
     <nav class="topnav" id="topnav">
-      <button class="nav-link active" data-target="home">Play</button>
-      <button class="nav-link" data-target="tutorial-panel">Tutorial</button>
-      <button class="nav-link" data-target="about-panel">About</button>
-      <button class="nav-link" data-target="leaderboard-panel">Leaderboard</button>
+      <button class="nav-btn active" data-target="home"><span>Play</span></button>
+      <button class="nav-btn" data-target="tutorial-panel"><span>Tutorial</span></button>
+      <button class="nav-btn" data-target="about-panel"><span>About</span></button>
+      <button class="nav-btn" data-target="leaderboard-panel"><span>Leaderboard</span></button>
     </nav>
-
     <div class="topbar-right">
-      <button id="sound-toggle" class="icon-btn" title="Toggle sound"><i class="fas fa-volume-up"></i></button>
-      <button id="open-leaderboard" class="icon-btn" title="Leaderboard"><i class="fas fa-trophy"></i></button>
+      <button id="sound-toggle" class="icon-btn"><i class="fas fa-volume-up"></i></button>
+      <button id="open-leaderboard" class="icon-btn"><i class="fas fa-trophy"></i></button>
     </div>
   </header>
 
+  <nav class="mobile-nav" id="mobile-nav">
+    <div class="nav-menu">
+      <button class="close-nav" id="close-mobile-nav"><i class="fas fa-times"></i></button>
+      <button data-target="home">Play</button>
+      <button data-target="tutorial-panel">Tutorial</button>
+      <button data-target="about-panel">About</button>
+      <button data-target="leaderboard-panel">Leaderboard</button>
+    </div>
+  </nav>
+
   <main class="container">
-    <!-- HOME / PLAY -->
+    <!-- Play Panel -->
     <section id="home" class="panel active-panel">
       <div class="hero" id="hero-section">
         <div class="hero-left">
-          <h1>Logic Runner</h1>
-          <p class="subtitle">Test your wits and master propositional logic through gameplay.</p>
+          <h1 data-animate="fade">Logic Runner</h1>
+          <p class="subtitle" data-animate="fade-delay">Test your logic with real math-based challenges.<br>Drag, solve, and practice with interactive propositional logic puzzles.</p>
           <div class="hero-cta">
-            <button id="quick-start" class="btn btn-primary"><i class="fas fa-play"></i> Quick Start</button>
-            <button id="quick-tutorial" class="btn btn-secondary"><i class="fas fa-book"></i> Tutorial</button>
+            <button id="quick-start" class="btn btn-primary" data-animate="pop"><i class="fas fa-play"></i> Quick Start</button>
+            <button id="quick-tutorial" class="btn btn-secondary" data-animate="pop-delay"><i class="fas fa-book"></i> Tutorial</button>
           </div>
           <div class="meta-row">
-            <span class="meta-pill">Modern</span>
-            <span class="meta-pill">Minimal</span>
-            <span class="meta-pill">Fun</span>
+            <span class="meta-pill" data-animate="badge">Modern</span>
+            <span class="meta-pill" data-animate="badge-delay">Minimal</span>
+            <span class="meta-pill" data-animate="badge-delay2">Fun</span>
+          </div>
+          <div class="play-info" data-animate="fade">
+            <h4>Game Rules & Rubric Integration</h4>
+            <ul>
+              <li><b>Math Integration:</b> Every level includes at least one topic (truth tables, negation, disjunction, implication) applied correctly.</li>
+              <li><b>Creativity:</b> No two runs are the same. Logic puzzles and table tasks are randomly mixed.</li>
+              <li><b>Playability:</b> Each run has 5 interactive tasks; rules and hints are shown with every step.</li>
+              <li><b>Presentation:</b> Animated transitions, color feedback, mobile/desktop clarity.</li>
+              <li><b>Documentation:</b> Every panel documents its content and source logic.</li>
+            </ul>
           </div>
         </div>
-        <aside class="hero-right">
+        <aside class="hero-right" data-animate="fade-delay">
           <div class="card" id="settings-card">
             <div class="card-title"><i class="fas fa-sliders-h"></i> GAME SETTINGS</div>
             <div class="settings-row">
@@ -70,9 +88,10 @@
           <div class="card small-card" id="help-card">
             <div class="card-title"><i class="fas fa-info-circle"></i> Quick Tips</div>
             <ol class="tips">
-              <li>Drag operator names to symbols, or answer prompts when shown.</li>
-              <li>Timed mode starts when you press Start. Timer floats top-right.</li>
-              <li>Use Retry/Quit while playing for more runs.</li>
+              <li>Drag operator names to symbols, or fill the correct answer!</li>
+              <li>Timed mode: Each question has a time limit.</li>
+              <li>Use <span class="pill-hot">Retry</span> or <span class="pill-hot">Quit</span> anytime.</li>
+              <li>Score points for correct logic and table fills!</li>
             </ol>
           </div>
         </aside>
@@ -80,62 +99,80 @@
       <section id="game-area" class="game-area"></section>
     </section>
 
-    <!-- TUTORIAL -->
+    <!-- Tutorial Panel -->
     <section id="tutorial-panel" class="panel">
-      <div class="card">
-        <div class="card-title"><i class="fas fa-book"></i> Tutorial</div>
+      <div class="card tutorial-card" data-animate="fade-pop">
+        <div class="card-title"><i class="fas fa-book-open"></i> Tutorial</div>
         <h3>How to Play</h3>
         <ol class="tutorial-list">
-          <li>Choose difficulty and mode, then press Start.</li>
-          <li>Each level contains unique questions (randomized every run).</li>
-          <li>In Timed mode the floating timer starts per question.</li>
+          <li><b>Choose difficulty and mode.</b> Each run uses unique logic tasks.</li>
+          <li><b>Symbol Match:</b> Drag logic name to the correct symbol (AND, OR, IMPLIES, NOT).</li>
+          <li><b>Sentence Builder:</b> Fill in the blank with the correct logic connector.</li>
+          <li><b>Truth Table Task:</b> Fill T/F results for tables such as AND, OR, XOR, Negation.</li>
+          <li><b>Lives/Timer:</b> Score more by getting answers right before your lives/timer runs out.</li>
         </ol>
-        <h4>Examples</h4>
-        <p>Sentence Builder: "A ___ B (true if both are true)" — drop "AND".</p>
-        <p>Truth Table: Fill T/F for each row in inclusive/exclusive/negation tables.</p>
+        <p>More features: mobile-friendly, leaderboard, player name, sounds, modal feedback. <span class="pill-hot">Try it now!</span></p>
+        <div class="tutorial-img"></div>
       </div>
     </section>
 
-    <!-- ABOUT -->
     <section id="about-panel" class="panel">
-      <div class="card about-card">
+      <div class="card about-card" data-animate="fade-pop">
         <div class="card-title"><i class="fas fa-users"></i> About</div>
-        <p>We are Group 3 Block 2N in BSIT.</p>
-        <p>Project Team:</p>
-        <ul>
-          <li>CJ R. Tabada</li>
-          <li>Adrian Kith Lagmay</li>
-          <li>Rafael Bangoy Caralipio</li>
-          <li>Cymon Austria</li>
-        </ul>
-        <p>This educational game helps students practice propositional logic with fun, interactive levels.</p>
+        <div>
+          <h3>Who we are</h3>
+          <p>We are Group 3, Block 2N, BSIT. Project Team:</p>
+          <ul>
+            <li>CJ R. Tabada</li>
+            <li>Adrian Kith Lagmay</li>
+            <li>Rafael Bangoy Caralipio</li>
+            <li>Cymon Austria</li>
+          </ul>
+          <p>This game was built for math integration, logic mastery, and fun for our class.</p>
+        </div>
+        <div class="about-rubric" data-animate="fade-pop">
+          <h4>Project Rubric</h4>
+          <table class="rubric-table">
+            <thead>
+              <tr><th>Criteria</th><th>Description</th><th>Points</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Math Integration</td><td>At least 1 topic applied correctly</td><td>20</td></tr>
+              <tr><td>Playability</td><td>Rules are clear & game works as intended</td><td>20</td></tr>
+              <tr><td>Creativity</td><td>Unique & engaging concept</td><td>20</td></tr>
+              <tr><td>Presentation</td><td>Clear, confident, organized</td><td>15</td></tr>
+              <tr><td>Documentation</td><td>Complete, neat, correct format</td><td>15</td></tr>
+              <tr><td>Contribution</td><td>Active in group presentation</td><td>10</td></tr>
+              <tr><th colspan="2">Total</th><th>100</th></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
-    <!-- LEADERBOARD -->
     <section id="leaderboard-panel" class="panel">
-      <div class="card">
+      <div class="card leaderboard-card" data-animate="fade-pop">
         <div class="card-title"><i class="fas fa-trophy"></i> Leaderboard (local)</div>
         <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:8px;">
-          <input id="player-name" placeholder="Your name" class="name-input" />
+          <input id="player-name" placeholder="Your name" class="name-input" spellcheck="false" maxlength="20" />
           <button id="clear-leader" class="btn btn-secondary">Clear</button>
         </div>
         <ol id="leader-list"></ol>
+        <div class="leader-desc" data-animate="fade">Top scores are saved locally! Score more by fast & accurate logic!</div>
       </div>
     </section>
   </main>
 
-  <!-- Floating UI: bigger level/score/lives/timer + quit/retry-->
   <div id="floating-ui" class="floating-ui">
-    <div class="floating-top">
-      <div class="status-indicator"><i class="fas fa-layer-group"></i> <span id="stat-level"></span></div>
-      <div class="status-indicator"><i class="fas fa-star"></i> <span id="stat-score"></span></div>
-      <div class="status-indicator"><i class="fas fa-heart"></i> <span id="stat-lives"></span></div>
-      <div id="floating-timer" class="status-indicator" style="display:none;"><i class="fas fa-stopwatch"></i> <span id="timer-value"></span>s</div>
+    <div class="floating-top" data-animate="statbar">
+      <div class="status-indicator hotbox hot-level"><i class="fas fa-layer-group"></i> <span id="stat-level"></span></div>
+      <div class="status-indicator hotbox hot-score"><i class="fas fa-star"></i> <span id="stat-score"></span></div>
+      <div class="status-indicator hotbox hot-life"><i class="fas fa-heart"></i> <span id="stat-lives"></span></div>
+      <div id="floating-timer" class="status-indicator hotbox hot-timer" style="display:none;"><i class="fas fa-stopwatch"></i> <span id="timer-value"></span>s</div>
     </div>
     <div class="floating-actions">
-      <button id="btn-retry" class="btn floating-btn" title="Retry"><i class="fas fa-redo"></i></button>
-      <button id="btn-quit" class="btn floating-btn" title="Quit"><i class="fas fa-sign-out-alt"></i></button>
+      <button id="btn-retry" class="btn floating-btn hotbox"><i class="fas fa-redo"></i></button>
+      <button id="btn-quit" class="btn floating-btn hotbox"><i class="fas fa-sign-out-alt"></i></button>
     </div>
   </div>
 
