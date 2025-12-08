@@ -8,18 +8,22 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+  <!-- Animated background layer (decorative only) -->
+  <div class="bg-animated" aria-hidden="true"></div>
+
   <!-- NAV -->
   <header class="topbar">
     <div class="topbar-left">
-      <button id="hamburger" class="hamburger"><i class="fas fa-bars"></i></button>
+      <button id="hamburger" class="hamburger" aria-label="Open menu"><i class="fas fa-bars"></i></button>
       <div class="logo"><i class="fas fa-brain"></i><span class="brand">Logic Runner</span></div>
     </div>
 
-    <nav class="topnav" id="topnav">
+    <nav class="topnav" id="topnav" aria-label="Main navigation">
       <button class="nav-link active" data-target="home">Play</button>
       <button class="nav-link" data-target="tutorial-panel">Tutorial</button>
       <button class="nav-link" data-target="about-panel">About</button>
       <button class="nav-link" data-target="leaderboard-panel">Leaderboard</button>
+      <div class="nav-underline" aria-hidden="true"></div>
     </nav>
 
     <div class="topbar-right">
@@ -33,8 +37,15 @@
     <section id="home" class="panel active-panel">
       <div class="hero" id="hero-section">
         <div class="hero-left">
-          <h1>Logic Runner</h1>
+          <h1 class="shimmer">Logic Runner</h1>
           <p class="subtitle">Test your wits and master propositional logic through gameplay.</p>
+
+          <!-- Topic info box (connects to propositional logic) -->
+          <div class="topic-info" aria-hidden="false">
+            <div class="topic-title"><i class="fas fa-lightbulb"></i> Propositional Logic — Quick idea</div>
+            <p>Propositional logic is about statements that can be true or false. You'll build and test expressions using operators like AND, OR, and NOT — practice by playing the levels.</p>
+          </div>
+
           <div class="hero-cta">
             <button id="quick-start" class="btn btn-primary"><i class="fas fa-play"></i> Quick Start</button>
             <button id="quick-tutorial" class="btn btn-secondary"><i class="fas fa-book"></i> Tutorial</button>
@@ -84,6 +95,13 @@
     <section id="tutorial-panel" class="panel">
       <div class="card">
         <div class="card-title"><i class="fas fa-book"></i> Tutorial</div>
+
+        <!-- Topic info box specific to tutorial -->
+        <div class="topic-info">
+          <div class="topic-title"><i class="fas fa-project-diagram"></i> Connectors & Semantics</div>
+          <p>AND (∧) is true when both parts are true. OR (∨) true when at least one is true. NOT (¬) inverts truth. Practice by building sentences and checking truth outcomes in the game.</p>
+        </div>
+
         <h3>How to Play</h3>
         <ol class="tutorial-list">
           <li>Choose difficulty and mode, then press Start.</li>
@@ -100,6 +118,13 @@
     <section id="about-panel" class="panel">
       <div class="card about-card">
         <div class="card-title"><i class="fas fa-users"></i> About</div>
+
+        <!-- Topic info box for pedagogical connection -->
+        <div class="topic-info">
+          <div class="topic-title"><i class="fas fa-graduation-cap"></i> Learning Goals</div>
+          <p>This project helps learners reason precisely about statements, identify valid inferences, and become comfortable with truth tables and logical connectives.</p>
+        </div>
+
         <p>We are Group 3 Block 2N in BSIT.</p>
         <p>Project Team:</p>
         <ul>
@@ -116,6 +141,13 @@
     <section id="leaderboard-panel" class="panel">
       <div class="card">
         <div class="card-title"><i class="fas fa-trophy"></i> Leaderboard (local)</div>
+
+        <!-- Topic info + rotating tip -->
+        <div class="topic-info">
+          <div class="topic-title"><i class="fas fa-clipboard-list"></i> Tip of the Round</div>
+          <p id="topic-tip">Think about how negation flips truth-values — practice with small sentences.</p>
+        </div>
+
         <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:8px;">
           <input id="player-name" placeholder="Your name" class="name-input" />
           <button id="clear-leader" class="btn btn-secondary">Clear</button>
@@ -126,7 +158,7 @@
   </main>
 
   <!-- Floating UI: bigger level/score/lives/timer + quit/retry-->
-  <div id="floating-ui" class="floating-ui">
+  <div id="floating-ui" class="floating-ui" aria-hidden="true">
     <div class="floating-top">
       <div class="status-indicator"><i class="fas fa-layer-group"></i> <span id="stat-level"></span></div>
       <div class="status-indicator"><i class="fas fa-star"></i> <span id="stat-score"></span></div>
@@ -140,5 +172,6 @@
   </div>
 
   <script src="game.js"></script>
+  <script src="ui.js"></script>
 </body>
 </html>
