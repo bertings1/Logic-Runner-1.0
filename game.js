@@ -1,8 +1,9 @@
 /* Full working game.js
-   - All navigation fixed (cards, nav links, hamburger)
+   - Navigation fixed (hamburger dropdown)
    - HUD shows only in-game
    - Hides other sections when running
-   - Larger question banks per difficulty
+   - Removed XOR from banks
+   - Check buttons use .btn-check
 */
 
 (() => {
@@ -11,11 +12,10 @@
     { name: "AND", symbol: "∧" },
     { name: "OR", symbol: "∨" },
     { name: "IMPLIES", symbol: "→" },
-    { name: "NOT", symbol: "¬" },
-    { name: "XOR", symbol: "⊕" }
+    { name: "NOT", symbol: "¬" }
   ];
 
-  // truth tables
+  // truth tables (no XOR)
   const truthTableVariants = [
     {
       op: "AND",
@@ -58,34 +58,21 @@
         { p: true, r: false },
         { p: false, r: true }
       ]
-    },
-    {
-      op: "XOR",
-      label: "XOR (⊕): true when exactly one is true.",
-      columns: ["p", "q", "p⊕q"],
-      table: [
-        { p: true, q: true, r: false },
-        { p: true, q: false, r: true },
-        { p: false, q: true, r: true },
-        { p: false, q: false, r: false }
-      ]
     }
   ];
 
-  // rich sentence bank per difficulty
+  // rich sentence bank per difficulty (no XOR)
   const sentenceBank = {
     easy: [
       { type: 'sentence', sentence: "A ___ B (true if both are true)", choices: ["AND", "OR", "IMPLIES", "NOT"], answer: "AND" },
       { type: 'sentence', sentence: "A ___ B (true if either is true)", choices: ["AND", "OR", "IMPLIES", "NOT"], answer: "OR" },
       { type: 'sentence', sentence: "___ A (true if A is false)", choices: ["NOT", "AND", "OR", "IMPLIES"], answer: "NOT" },
       { type: 'sentence', sentence: "If it rains ___ you use an umbrella", choices: ["IMPLIES", "AND", "OR"], answer: "IMPLIES" },
-      { type: 'sentence', sentence: "Either A ___ B (one or both)", choices: ["OR", "AND", "XOR"], answer: "OR" },
       { type: 'sentence', sentence: "A and B is written as A ___ B", choices: ["AND", "OR", "IMPLIES"], answer: "AND" },
       { type: 'sentence', sentence: "If p then q is written p ___ q", choices: ["IMPLIES", "AND", "OR"], answer: "IMPLIES" }
     ],
     medium: [
       { type: 'sentence', sentence: "p∨q is false only when ___", choices: ["both are false", "both are true"], answer: "both are false" },
-      { type: 'sentence', sentence: "p⊕q is true when ___", choices: ["one is true", "both true"], answer: "one is true" },
       { type: 'sentence', sentence: "Negation ¬ distributes over OR: ¬(p∨q) = ___", choices: ["¬p∧¬q", "p∨q"], answer: "¬p∧¬q" },
       { type: 'sentence', sentence: "If you pass the test ___ you get a certificate", choices: ["IMPLIES", "AND", "OR"], answer: "IMPLIES" },
       { type: 'sentence', sentence: "A ___ B ___ C (true if all are true)", choices: ["AND", "OR", "IMPLIES"], answer: "AND" }
@@ -98,11 +85,11 @@
     ]
   };
 
-  // match pool per difficulty
+  // match pool per difficulty (no XOR)
   const matchPools = {
     easy: ['AND','OR','NOT'],
-    medium: ['AND','OR','IMPLIES','XOR'],
-    hard: ['AND','OR','IMPLIES','XOR','NOT']
+    medium: ['AND','OR','IMPLIES'],
+    hard: ['AND','OR','IMPLIES','NOT']
   };
 
   // ---------- UTIL ----------
@@ -136,14 +123,13 @@
   const btnRetry = document.getElementById('btn-retry');
   const btnQuit = document.getElementById('btn-quit');
 
-  const navLinks = document.querySelectorAll('.nav-link');
   const bigCards = document.querySelectorAll('.big-card');
   const hamburger = document.getElementById('hamburger');
-  const topnav = document.getElementById('topnav');
+  const hamburgerMenu = document.getElementById('hamburger-menu');
 
   // ---------- SOUND ----------
   const audioCtx = window.AudioContext ? new AudioContext() : null;
-  function playTone(f, d=110, type='sine'){ if(!audioCtx || !state.soundOn) return; const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type=type; o.frequency.value=f; g.gain.value=0.04; o.connect(g); g.connect(audioCtx.destination); o.start(); setTimeout(()=>{ g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.02); o.stop(audioCtx.currentTime + 0.03) }, d); }
+  function playTone(f, d=110, type='sine'){ if(!audioCtx || !state.soundOn) return; const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type=type; o.frequency.value=f; g.gain.value=0.04; o.connect(g); g.connect(audioCtx.destination); o.start(); setTimeout(()=>{ try{ g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.02); o.stop(audioCtx.currentTime + 0.03); }catch(e){} }, d); }
   const soundSuccess = ()=>playTone(1000,120,'triangle');
   const soundError = ()=>playTone(200,160,'square');
   const soundClick = ()=>playTone(520,60,'sine');
@@ -179,8 +165,10 @@
     });
 
     // start / play card
-    document.getElementById('start-game').onclick = startRun;
-    document.getElementById('card-play').onclick = startRun;
+    const startBtn = document.getElementById('start-game');
+    if(startBtn) startBtn.onclick = startRun;
+    const cardPlay = document.getElementById('card-play');
+    if(cardPlay) cardPlay.onclick = startRun;
 
     // sound toggle
     const st = document.getElementById('sound-toggle');
@@ -194,15 +182,28 @@
     const openLeader = document.getElementById('open-leaderboard');
     if(openLeader) openLeader.onclick = ()=>{ scrollToPanel('leaderboard-panel'); };
 
-    // hamburger
-    if(hamburger) hamburger.onclick = ()=>{ topnav.style.display = topnav.style.display === 'flex' ? 'none' : 'flex'; };
+    // hamburger dropdown toggle
+    if(hamburger){
+      hamburger.onclick = (ev) => {
+        ev.stopPropagation();
+        const show = hamburgerMenu.style.display !== 'flex' && hamburgerMenu.style.display !== 'block';
+        hamburgerMenu.style.display = show ? 'flex' : 'none';
+      };
+    }
 
-    // nav links
-    navLinks.forEach(btn => btn.onclick = (ev)=>{ ev.preventDefault(); const t = btn.dataset.target; scrollToPanel(t); // collapse nav for mobile
-      if(window.innerWidth <= 560) topnav.style.display = 'none'; soundClick(); });
+    // menu items inside hamburger
+    document.querySelectorAll('#hamburger-menu .menu-item').forEach(btn=>{
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        const t = btn.dataset.target;
+        scrollToPanel(t);
+        hamburgerMenu.style.display = 'none';
+        soundClick();
+      };
+    });
 
     // big cards
-    bigCards.forEach(card => card.onclick = ()=>{ scrollToPanel(card.dataset.target); soundClick(); });
+    bigCards.forEach(card => card.onclick = ()=>{ const t = card.dataset.target; if(t === 'play') startRun(); else scrollToPanel(t); soundClick(); });
 
     // HUD buttons
     if(btnRetry) btnRetry.onclick = ()=>{ soundClick(); retryRun(); };
@@ -211,6 +212,11 @@
     // persist player name
     const pn = document.getElementById('player-name');
     if(pn){ const saved = localStorage.getItem('lr_name'); if(saved) pn.value = saved; pn.oninput = ()=> localStorage.setItem('lr_name', pn.value || ''); }
+
+    // close hamburger when clicking outside
+    document.addEventListener('click', ()=>{ if(hamburgerMenu) hamburgerMenu.style.display = 'none'; });
+    // prevent menu clicks from bubbling
+    hamburgerMenu.addEventListener('click', (e)=> e.stopPropagation());
   }
 
   // navigation and showing/hiding panels
@@ -230,8 +236,6 @@
     if(menuCards) menuCards.style.display = (id === 'home') ? '' : '';
     // hide floating HUD unless in game
     if(id !== 'home' && id !== 'play') showFloating(false);
-    // update nav link active class
-    document.querySelectorAll('.topnav .nav-link').forEach(n=> n.classList.toggle('active', n.dataset.target===id));
   }
 
   // ---------- FLOW ----------
@@ -341,7 +345,7 @@
         <div class="game-column"><div class="column-title">Operators</div>${left.map(n=>`<div class="draggable-item" draggable="true" data-op="${n}">${n}</div>`).join('')}</div>
         <div class="game-column"><div class="column-title">Symbols</div>${right.map(s=>`<div class="drop-zone" data-sym="${s}"><span class="zone-label">${s}</span></div>`).join('')}</div>
       </div>
-      <div style="margin-top:16px"><button id="check-btn" class="btn btn-primary" type="button">Check</button></div>
+      <div style="margin-top:16px"><button id="check-btn" class="btn-check" type="button">Check</button></div>
     </div>`;
     setupMatchDrag(opPairs);
   }
@@ -378,7 +382,7 @@
         ${q.choices.map(c=>`<div class="draggable-item" draggable="true" data-choice="${c}">${c}</div>`).join('')}
       </div>
       <div style="margin-top:12px"><div id="sentence-drop" class="drop-zone">Drop here</div></div>
-      <div style="margin-top:14px"><button id="check-sentence" class="btn btn-primary" type="button">Check</button></div>
+      <div style="margin-top:14px"><button id="check-sentence" class="btn-check" type="button">Check</button></div>
     </div>`;
     gameArea.querySelectorAll('#sentence-choices .draggable-item').forEach(d=> d.ondragstart = e => e.dataTransfer.setData('text/plain', d.dataset.choice));
     const drop = document.getElementById('sentence-drop');
@@ -411,7 +415,7 @@
           </table>
         </div>
         <div style="margin-top:12px">${['T','F','T','F'].map(v=>`<div class="draggable-item tt-chip" draggable="true" data-val="${v}">${v}</div>`).join('')}</div>
-        <div style="margin-top:14px"><button id="check-tt" class="btn btn-primary" type="button">Check</button></div>
+        <div style="margin-top:14px"><button id="check-tt" class="btn-check" type="button">Check</button></div>
       </div>`;
 
       gameArea.querySelectorAll('.tt-chip').forEach(c => c.ondragstart = e => e.dataTransfer.setData('text/plain', c.dataset.val));
@@ -439,7 +443,7 @@
             cols.slice(0,-1).map(k=>`<td>${row[k]===true?'T':(row[k]===false?'F':'')}</td>`).join('')
           }<td><div class="mcq-row" data-idx="${i}"><button class="btn mcq-btn" data-val="T" type="button">T</button><button class="btn mcq-btn" data-val="F" type="button">F</button></div></td></tr>`).join('')}
         </table>
-        <div style="margin-top:14px"><button id="check-tt-mcq" class="btn btn-primary" type="button">Check</button></div>
+        <div style="margin-top:14px"><button id="check-tt-mcq" class="btn-check" type="button">Check</button></div>
       </div>`;
       gameArea.querySelectorAll('.mcq-row .mcq-btn').forEach(b=>{
         b.onclick = ()=>{ const parent = b.closest('.mcq-row'); parent.querySelectorAll('.mcq-btn').forEach(x=>x.classList.remove('selected')); b.classList.add('selected'); };
@@ -468,7 +472,7 @@
           }<td>${ blankIdx.includes(i) ? `<div class="drop-zone tt-drop" data-idx="${i}"></div>` : `<div class="filled">${row.r ? 'T' : 'F'}</div>` }</td></tr>`).join('')}
         </table>
         <div style="margin-top:12px">${['T','F'].map(v=>`<div class="draggable-item tt-chip" draggable="true" data-val="${v}">${v}</div>`).join('')}</div>
-        <div style="margin-top:14px"><button id="check-tt-partial" class="btn btn-primary" type="button">Check</button></div>
+        <div style="margin-top:14px"><button id="check-tt-partial" class="btn-check" type="button">Check</button></div>
       </div>`;
       gameArea.querySelectorAll('.tt-chip').forEach(c => c.ondragstart = e => e.dataTransfer.setData('text/plain', c.dataset.val));
       gameArea.querySelectorAll('.tt-drop').forEach(d => {
@@ -498,7 +502,7 @@
             cols.slice(0,-1).map(k=>`<td>${row[k]===true?'T':(row[k]===false?'F':'')}</td>`).join('')
           }<td><input class="tt-input" data-idx="${i}" maxlength="1" /></td></tr>`).join('')}
         </table>
-        <div style="margin-top:14px"><button id="check-tt-type" class="btn btn-primary" type="button">Check</button></div>
+        <div style="margin-top:14px"><button id="check-tt-type" class="btn-check" type="button">Check</button></div>
       </div>`;
       const typeBtn = document.getElementById('check-tt-type');
       if(typeBtn) typeBtn.onclick = ()=>{
@@ -522,7 +526,7 @@
             cols.slice(0,-1).map(k=>`<td>${row[k]===true?'T':(row[k]===false?'F':'')}</td>`).join('')
           }<td><select class="tt-select" data-idx="${i}"><option value="">--</option><option value="T">T</option><option value="F">F</option></select></td></tr>`).join('')}
         </table>
-        <div style="margin-top:14px"><button id="check-tt-drop" class="btn btn-primary" type="button">Check</button></div>
+        <div style="margin-top:14px"><button id="check-tt-drop" class="btn-check" type="button">Check</button></div>
       </div>`;
       const dropBtn = document.getElementById('check-tt-drop');
       if(dropBtn) dropBtn.onclick = ()=>{

@@ -17,19 +17,22 @@
       <div class="logo" aria-hidden="false"><i class="fas fa-brain"></i><span class="brand">Logic Runner</span></div>
     </div>
 
-    <nav class="topnav" id="topnav" aria-label="Main navigation">
-      <button class="nav-link active" data-target="home" type="button">Play</button>
-      <button class="nav-link" data-target="tutorial-panel" type="button">Tutorial</button>
-      <button class="nav-link" data-target="about-panel" type="button">About</button>
-      <button class="nav-link" data-target="leaderboard-panel" type="button">Leaderboard</button>
-      <div class="nav-underline" aria-hidden="true"></div>
-    </nav>
+    <!-- topnav removed from header (nav items are now inside the hamburger dropdown) -->
+    <nav class="topnav" id="topnav" aria-label="Main navigation" style="display:none;"></nav>
 
     <div class="topbar-right">
       <button id="sound-toggle" class="icon-btn" title="Toggle sound" type="button"><i class="fas fa-volume-up"></i></button>
       <button id="open-leaderboard" class="icon-btn" title="Leaderboard" type="button"><i class="fas fa-trophy"></i></button>
     </div>
   </header>
+
+  <!-- small dropdown menu (appears under the hamburger) -->
+  <div id="hamburger-menu" class="hamburger-menu" aria-hidden="true" style="display:none;">
+    <button class="menu-item" data-target="home" type="button">Play</button>
+    <button class="menu-item" data-target="tutorial-panel" type="button">Tutorial</button>
+    <button class="menu-item" data-target="about-panel" type="button">About</button>
+    <button class="menu-item" data-target="leaderboard-panel" type="button">Leaderboard</button>
+  </div>
 
   <main class="container" id="main-container">
     <!-- HOME / PLAY -->
@@ -41,7 +44,7 @@
 
           <div class="topic-info" aria-hidden="false">
             <div class="topic-title"><i class="fas fa-lightbulb"></i> Propositional Logic — Quick idea</div>
-            <p>Propositional logic deals with statements that are either true or false. Practice using connectives like AND, OR, NOT, IMPLIES and XOR through short interactive challenges.</p>
+            <p>Propositional logic deals with statements that are either true or false. Practice using connectives like AND, OR, NOT and IMPLIES through short interactive challenges.</p>
           </div>
 
           <!-- Big Cards layout (two by two) -->
@@ -99,7 +102,8 @@
             </div>
 
             <div style="margin-top:12px;">
-              <button id="start-game" class="btn btn-primary" type="button">Start Game</button>
+              <!-- redesigned start button -->
+              <button id="start-game" class="btn-start" type="button">Start Game</button>
             </div>
           </div>
 
@@ -126,8 +130,7 @@
           <p><strong>AND (∧)</strong> — true only when both p and q are true.<br>
              <strong>OR (∨)</strong> — true when at least one of p or q is true.<br>
              <strong>NOT (¬)</strong> — inverts truth.<br>
-             <strong>IMPLIES (→)</strong> — false only when p is true and q is false.<br>
-             <strong>XOR (⊕)</strong> — true when exactly one of p or q is true.</p>
+             <strong>IMPLIES (→)</strong> — false only when p is true and q is false.</p>
         </div>
 
         <h3>How to Play</h3>

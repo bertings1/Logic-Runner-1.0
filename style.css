@@ -57,14 +57,44 @@ body{
   border:none;
   font-size:18px;
   padding:8px;
-  display:none;
+  display:inline-flex;
   cursor:pointer;
+  align-items:center;
+  justify-content:center;
+  border-radius:8px;
 }
+.hamburger:hover{ background: rgba(0,0,0,0.03); }
 .logo{display:flex;align-items:center;gap:10px;font-weight:700}
 .logo i{color:var(--accent);font-size:20px}
 .topbar-right{display:flex;gap:8px;align-items:center}
 .icon-btn{background:transparent;border-radius:10px;padding:8px;border:1px solid transparent;cursor:pointer}
 .icon-btn i{font-size:16px;color:#444}
+
+/* small hamburger dropdown (option B: downward panel) */
+.hamburger-menu{
+  position:absolute;
+  top:60px; /* just under topbar */
+  left:12px;
+  background: var(--card);
+  border-radius:10px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.12);
+  padding:8px;
+  z-index:450;
+  min-width:180px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.hamburger-menu .menu-item{
+  background:transparent;
+  border:none;
+  text-align:left;
+  padding:10px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:800;
+}
+.hamburger-menu .menu-item:hover{ background: rgba(0,0,0,0.04); }
 
 /* hero layout */
 .hero{display:flex;gap:28px;margin-top:18px;align-items:flex-start}
@@ -213,36 +243,36 @@ body{
 
 /* Start and Check buttons */
 .btn-start{
-  background: linear-gradient(90deg,#0ff,#0aa);
-  color:#000;
-  font-weight:bold;
-  font-size:1.2rem;
-  padding:12px 24px;
+  background: linear-gradient(135deg,#ff9d5c,#ffd89a);
+  color:#111;
+  font-weight:900;
+  font-size:1rem;
+  padding:12px 22px;
   border:none;
   border-radius:12px;
   cursor:pointer;
-  box-shadow:0 4px 6px rgba(0,255,255,0.3);
-  transition: transform .2s, box-shadow .2s;
+  box-shadow:0 10px 20px rgba(255,153,77,0.14);
+  transition: transform .18s, box-shadow .18s;
 }
 .btn-start:hover{
-  transform:translateY(-2px);
-  box-shadow:0 6px 8px rgba(0,255,255,0.5);
+  transform:translateY(-4px);
+  box-shadow:0 14px 28px rgba(255,153,77,0.2);
 }
 .btn-check{
-  background: linear-gradient(90deg,#ff0,#aa0);
-  color:#000;
-  font-weight:bold;
-  font-size:1rem;
-  padding:10px 20px;
+  background: linear-gradient(90deg,#ffd89a,#ff9d5c);
+  color:#111;
+  font-weight:800;
+  font-size:0.98rem;
+  padding:10px 18px;
   border:none;
   border-radius:10px;
   cursor:pointer;
-  box-shadow:0 3px 5px rgba(255,255,0,0.3);
-  transition: transform .2s, box-shadow .2s;
+  box-shadow:0 8px 18px rgba(255,153,77,0.12);
+  transition: transform .14s, box-shadow .14s;
 }
 .btn-check:hover{
-  transform:translateY(-1px);
-  box-shadow:0 5px 7px rgba(255,255,0,0.5);
+  transform:translateY(-2px);
+  box-shadow:0 10px 22px rgba(255,153,77,0.16);
 }
 
 /* toast and modal */
@@ -257,8 +287,7 @@ body{
   .floating-ui{right:12px;top:100px;min-width:200px}
 }
 @media (max-width:560px){
-  .topnav{display:none}
-  .hamburger{display:inline-block}
+  /* still keep hamburger for small screens */
   .menu-cards .big-card-row{flex-direction:column}
   .floating-ui{display:none} /* hide HUD on very small screens to avoid overlap */
 }
