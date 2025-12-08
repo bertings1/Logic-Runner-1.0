@@ -76,10 +76,10 @@
           <div class="card small-card" id="help-card">
             <div class="card-title"><i class="fas fa-info-circle"></i> Quick Tips</div>
             <ol class="tips">
-              <li>Drag operator names to symbols or fill the correct answer!</li>
-              <li>Timed mode gives a time limit for each question.</li>
-              <li>Use <span class="pill-hot">Retry</span> or <span class="pill-hot">Quit</span> to restart or exit anytime.</li>
-              <li>Score points for correct logic and table fills!</li>
+              <li>Drag operator names to symbols or fill in the correct answer!</li>
+              <li>Timed mode: solve before the timer runs out.</li>
+              <li>Use Retry or Quit to restart or exit at any time.</li>
+              <li>Points = logic & table accuracy.</li>
             </ol>
           </div>
         </aside>
@@ -88,23 +88,23 @@
     </section>
     <!-- Tutorial Panel -->
     <section id="tutorial-panel" class="panel">
-      <div class="card tutorial-card" data-animate="fade-pop">
+      <div class="card tutorial-card">
         <div class="card-title"><i class="fas fa-book-open"></i> Tutorial</div>
-        <h3>How to Play</h3>
         <ol class="tutorial-list">
-          <li>Choose your difficulty and mode</li>
-          <li>For each question, follow the prompt and drag/fill/select correct logic</li>
-          <li>Timed mode = more challenge, higher score</li>
+          <li>Choose difficulty and mode</li>
+          <li>Each question: follow the prompt and drag/fill the logic.</li>
+          <li>Score points for correct moves/thinking. Lose lives if wrong.</li>
+          <li>Timed = more pressure, more score.</li>
         </ol>
-        <p>Enjoy instant feedback, sound, and fun transitions. <span class="pill-hot">Ready?</span></p>
+        <p>Enjoy color feedback, sound, and transitions.</p>
       </div>
     </section>
     <!-- ABOUT -->
     <section id="about-panel" class="panel">
-      <div class="card about-card" data-animate="fade-pop">
+      <div class="card about-card">
         <div class="card-title"><i class="fas fa-users"></i> About</div>
         <div>
-          <h3>BSIT Group 3 Block 2N</h3>
+          <h3>Group 3 Block 2N, BSIT</h3>
           <ul>
             <li>CJ R. Tabada</li>
             <li>Adrian Kith Lagmay</li>
@@ -112,27 +112,25 @@
             <li>Cymon Austria</li>
           </ul>
           <p>
-            Built for mathematical logic and computer science students at MSU-IIT.<br>
-            Our game was made to be fun, interactive, and visually engaging.
+            This game is for real math logic learning and interactive fun.
           </p>
         </div>
       </div>
     </section>
     <section id="leaderboard-panel" class="panel">
-      <div class="card leaderboard-card" data-animate="fade-pop">
+      <div class="card leaderboard-card">
         <div class="card-title"><i class="fas fa-trophy"></i> Leaderboard</div>
         <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:8px;">
           <input id="player-name" placeholder="Your name" class="name-input" maxlength="20" />
           <button id="clear-leader" class="btn btn-secondary">Clear</button>
         </div>
         <ol id="leader-list"></ol>
-        <div class="leader-desc">Your best scores will appear here. You earn more by solving quickly and accurately!</div>
+        <div class="leader-desc">Your best scores will show here. Play better and faster to climb up!</div>
       </div>
     </section>
   </main>
-
   <div id="floating-ui" class="floating-ui">
-    <div class="floating-top" data-animate="statbar">
+    <div class="floating-top">
       <div class="status-indicator hotbox hot-level"><i class="fas fa-layer-group"></i> <span id="stat-level"></span></div>
       <div class="status-indicator hotbox hot-score"><i class="fas fa-star"></i> <span id="stat-score"></span></div>
       <div class="status-indicator hotbox hot-life"><i class="fas fa-heart"></i> <span id="stat-lives"></span></div>
