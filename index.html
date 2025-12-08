@@ -3,173 +3,226 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Logic Runner | Propositional Logic Game</title>
+  <title>Logic Runner | Enhanced Logic Game</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <!-- Animated background layer (decorative only) -->
-  <div class="bg-animated" aria-hidden="true"></div>
+  <div class="bg-animated"></div>
 
-  <!-- NAV -->
   <header class="topbar">
     <div class="topbar-left">
-      <button id="hamburger" class="hamburger" aria-label="Open menu"><i class="fas fa-bars"></i></button>
-      <div class="logo"><i class="fas fa-brain"></i><span class="brand">Logic Runner</span></div>
+      <button id="hamburger" class="hamburger"><i class="fas fa-bars"></i></button>
+      <div class="logo"><i class="fas fa-brain"></i> <span class="brand">Logic Runner+</span></div>
     </div>
 
-    <nav class="topnav" id="topnav" aria-label="Main navigation">
+    <nav class="topnav" id="topnav">
       <button class="nav-link active" data-target="home">Play</button>
       <button class="nav-link" data-target="tutorial-panel">Tutorial</button>
       <button class="nav-link" data-target="about-panel">About</button>
       <button class="nav-link" data-target="leaderboard-panel">Leaderboard</button>
-      <div class="nav-underline" aria-hidden="true"></div>
+      <div class="nav-underline"></div>
     </nav>
 
     <div class="topbar-right">
-      <button id="sound-toggle" class="icon-btn" title="Toggle sound"><i class="fas fa-volume-up"></i></button>
-      <button id="open-leaderboard" class="icon-btn" title="Leaderboard"><i class="fas fa-trophy"></i></button>
+      <button id="sound-toggle" class="icon-btn"><i class="fas fa-volume-up"></i></button>
+      <button id="open-leaderboard" class="icon-btn"><i class="fas fa-trophy"></i></button>
     </div>
   </header>
 
   <main class="container">
-    <!-- HOME / PLAY -->
     <section id="home" class="panel active-panel">
       <div class="hero" id="hero-section">
         <div class="hero-left">
-          <h1 class="shimmer">Logic Runner</h1>
-          <p class="subtitle">Test your wits and master propositional logic through gameplay.</p>
+          <h1 class="shimmer">Logic Runner+</h1>
+          <p class="subtitle">A cleaner, faster, smarter way to learn propositional logic.</p>
 
-          <!-- Topic info box (connects to propositional logic) -->
-          <div class="topic-info" aria-hidden="false">
-            <div class="topic-title"><i class="fas fa-lightbulb"></i> Propositional Logic — Quick idea</div>
-            <p>Propositional logic is about statements that can be true or false. You'll build and test expressions using operators like AND, OR, and NOT — practice by playing the levels.</p>
+          <div class="topic-info">
+            <div class="topic-title"><i class="fas fa-lightbulb"></i> Quick Concept</div>
+            <p>Identify truth-values, connectives, and logical forms. Practice with real-time logic puzzles and refined visual feedback.</p>
           </div>
 
           <div class="hero-cta">
-            <button id="quick-start" class="btn btn-primary"><i class="fas fa-play"></i> Quick Start</button>
+            <button id="quick-start" class="btn btn-primary"><i class="fas fa-play"></i> Play</button>
             <button id="quick-tutorial" class="btn btn-secondary"><i class="fas fa-book"></i> Tutorial</button>
           </div>
-          <div class="meta-row">
-            <span class="meta-pill">Modern</span>
-            <span class="meta-pill">Minimal</span>
-            <span class="meta-pill">Fun</span>
-          </div>
         </div>
+
         <aside class="hero-right">
           <div class="card" id="settings-card">
-            <div class="card-title"><i class="fas fa-sliders-h"></i> GAME SETTINGS</div>
+            <div class="card-title"><i class="fas fa-sliders-h"></i> Game Settings</div>
+
             <div class="settings-row">
-              <div class="settings-label">DIFFICULTY</div>
+              <div class="settings-label">Difficulty</div>
               <div class="settings-choices" id="difficulty-select">
                 <div class="settings-card active" data-value="easy">Beginner</div>
                 <div class="settings-card" data-value="medium">Intermediate</div>
                 <div class="settings-card" data-value="hard">Expert</div>
               </div>
             </div>
+
             <div class="settings-row">
-              <div class="settings-label">MODE</div>
+              <div class="settings-label">Mode</div>
               <div class="settings-choices" id="mode-select">
                 <div class="settings-card active" data-value="classic">Classic</div>
                 <div class="settings-card" data-value="timed">Timed</div>
               </div>
             </div>
-            <div style="margin-top:12px;">
-              <button id="start-game" class="btn btn-primary">Start Game</button>
-            </div>
-          </div>
-          <div class="card small-card" id="help-card">
-            <div class="card-title"><i class="fas fa-info-circle"></i> Quick Tips</div>
-            <ol class="tips">
-              <li>Drag operator names to symbols, or answer prompts when shown.</li>
-              <li>Timed mode starts when you press Start. Timer floats top-right.</li>
-              <li>Use Retry/Quit while playing for more runs.</li>
-            </ol>
+
+            <button id="start-game" class="btn btn-primary" style="margin-top:10px; width:100%;">Start Game</button>
           </div>
         </aside>
       </div>
+
       <section id="game-area" class="game-area"></section>
     </section>
 
-    <!-- TUTORIAL -->
     <section id="tutorial-panel" class="panel">
       <div class="card">
-        <div class="card-title"><i class="fas fa-book"></i> Tutorial</div>
+        <div class="card-title"><i class="fas fa-book"></i> How the Game Works</div>
+        <p>You’ll answer three types of logic puzzles: symbol matching, statement building, and truth tables.</p>
 
-        <!-- Topic info box specific to tutorial -->
-        <div class="topic-info">
-          <div class="topic-title"><i class="fas fa-project-diagram"></i> Connectors & Semantics</div>
-          <p>AND (∧) is true when both parts are true. OR (∨) true when at least one is true. NOT (¬) inverts truth. Practice by building sentences and checking truth outcomes in the game.</p>
-        </div>
-
-        <h3>How to Play</h3>
-        <ol class="tutorial-list">
-          <li>Choose difficulty and mode, then press Start.</li>
-          <li>Each level contains unique questions (randomized every run).</li>
-          <li>In Timed mode the floating timer starts per question.</li>
-        </ol>
-        <h4>Examples</h4>
-        <p>Sentence Builder: "A ___ B (true if both are true)" — drop "AND".</p>
-        <p>Truth Table: Fill T/F for each row in inclusive/exclusive/negation tables.</p>
-      </div>
-    </section>
-
-    <!-- ABOUT -->
-    <section id="about-panel" class="panel">
-      <div class="card about-card">
-        <div class="card-title"><i class="fas fa-users"></i> About</div>
-
-        <!-- Topic info box for pedagogical connection -->
-        <div class="topic-info">
-          <div class="topic-title"><i class="fas fa-graduation-cap"></i> Learning Goals</div>
-          <p>This project helps learners reason precisely about statements, identify valid inferences, and become comfortable with truth tables and logical connectives.</p>
-        </div>
-
-        <p>We are Group 3 Block 2N in BSIT.</p>
-        <p>Project Team:</p>
         <ul>
-          <li>CJ R. Tabada</li>
-          <li>Adrian Kith Lagmay</li>
-          <li>Rafael Bangoy Caralipio</li>
-          <li>Cymon Austria</li>
+          <li>Drag operators to symbols</li>
+          <li>Build statements correctly</li>
+          <li>Fill truth table outputs</li>
         </ul>
-        <p>This educational game helps students practice propositional logic with fun, interactive levels.</p>
       </div>
     </section>
 
-    <!-- LEADERBOARD -->
+    <section id="about-panel" class="panel">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-users"></i> About This Project</div>
+        <p>Created by Group 3 Block 2N (BSIT). Enhanced UI, polish, animations and gameplay improvements added.</p>
+      </div>
+    </section>
+
     <section id="leaderboard-panel" class="panel">
       <div class="card">
-        <div class="card-title"><i class="fas fa-trophy"></i> Leaderboard (local)</div>
-
-        <!-- Topic info + rotating tip -->
-        <div class="topic-info">
-          <div class="topic-title"><i class="fas fa-clipboard-list"></i> Tip of the Round</div>
-          <p id="topic-tip">Think about how negation flips truth-values — practice with small sentences.</p>
-        </div>
-
-        <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:8px;">
-          <input id="player-name" placeholder="Your name" class="name-input" />
-          <button id="clear-leader" class="btn btn-secondary">Clear</button>
-        </div>
+        <div class="card-title"><i class="fas fa-trophy"></i> Leaderboard</div>
+        <input id="player-name" placeholder="Your name" class="name-input" />
+        <button id="clear-leader" class="btn btn-secondary">Clear</button>
         <ol id="leader-list"></ol>
       </div>
     </section>
   </main>
 
-  <!-- Floating UI: bigger level/score/lives/timer + quit/retry-->
-  <div id="floating-ui" class="floating-ui" aria-hidden="true">
-    <div class="floating-top">
-      <div class="status-indicator"><i class="fas fa-layer-group"></i> <span id="stat-level"></span></div>
-      <div class="status-indicator"><i class="fas fa-star"></i> <span id="stat-score"></span></div>
-      <div class="status-indicator"><i class="fas fa-heart"></i> <span id="stat-lives"></span></div>
-      <div id="floating-timer" class="status-indicator" style="display:none;"><i class="fas fa-stopwatch"></i> <span id="timer-value"></span>s</div>
+  <div id="floating-ui" class="floating-ui"></div>
+
+  <script src="game.js"></script>
+  <script src="ui.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Logic Runner | Enhanced Logic Game</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="bg-animated"></div>
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <button id="hamburger" class="hamburger"><i class="fas fa-bars"></i></button>
+      <div class="logo"><i class="fas fa-brain"></i> <span class="brand">Logic Runner+</span></div>
     </div>
-    <div class="floating-actions">
-      <button id="btn-retry" class="btn floating-btn" title="Retry"><i class="fas fa-redo"></i></button>
-      <button id="btn-quit" class="btn floating-btn" title="Quit"><i class="fas fa-sign-out-alt"></i></button>
+
+    <nav class="topnav" id="topnav">
+      <button class="nav-link active" data-target="home">Play</button>
+      <button class="nav-link" data-target="tutorial-panel">Tutorial</button>
+      <button class="nav-link" data-target="about-panel">About</button>
+      <button class="nav-link" data-target="leaderboard-panel">Leaderboard</button>
+      <div class="nav-underline"></div>
+    </nav>
+
+    <div class="topbar-right">
+      <button id="sound-toggle" class="icon-btn"><i class="fas fa-volume-up"></i></button>
+      <button id="open-leaderboard" class="icon-btn"><i class="fas fa-trophy"></i></button>
     </div>
-  </div>
+  </header>
+
+  <main class="container">
+    <section id="home" class="panel active-panel">
+      <div class="hero" id="hero-section">
+        <div class="hero-left">
+          <h1 class="shimmer">Logic Runner+</h1>
+          <p class="subtitle">A cleaner, faster, smarter way to learn propositional logic.</p>
+
+          <div class="topic-info">
+            <div class="topic-title"><i class="fas fa-lightbulb"></i> Quick Concept</div>
+            <p>Identify truth-values, connectives, and logical forms. Practice with real-time logic puzzles and refined visual feedback.</p>
+          </div>
+
+          <div class="hero-cta">
+            <button id="quick-start" class="btn btn-primary"><i class="fas fa-play"></i> Play</button>
+            <button id="quick-tutorial" class="btn btn-secondary"><i class="fas fa-book"></i> Tutorial</button>
+          </div>
+        </div>
+
+        <aside class="hero-right">
+          <div class="card" id="settings-card">
+            <div class="card-title"><i class="fas fa-sliders-h"></i> Game Settings</div>
+
+            <div class="settings-row">
+              <div class="settings-label">Difficulty</div>
+              <div class="settings-choices" id="difficulty-select">
+                <div class="settings-card active" data-value="easy">Beginner</div>
+                <div class="settings-card" data-value="medium">Intermediate</div>
+                <div class="settings-card" data-value="hard">Expert</div>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">Mode</div>
+              <div class="settings-choices" id="mode-select">
+                <div class="settings-card active" data-value="classic">Classic</div>
+                <div class="settings-card" data-value="timed">Timed</div>
+              </div>
+            </div>
+
+            <button id="start-game" class="btn btn-primary" style="margin-top:10px; width:100%;">Start Game</button>
+          </div>
+        </aside>
+      </div>
+
+      <section id="game-area" class="game-area"></section>
+    </section>
+
+    <section id="tutorial-panel" class="panel">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-book"></i> How the Game Works</div>
+        <p>You’ll answer three types of logic puzzles: symbol matching, statement building, and truth tables.</p>
+
+        <ul>
+          <li>Drag operators to symbols</li>
+          <li>Build statements correctly</li>
+          <li>Fill truth table outputs</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="about-panel" class="panel">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-users"></i> About This Project</div>
+        <p>Created by Group 3 Block 2N (BSIT). Enhanced UI, polish, animations and gameplay improvements added.</p>
+      </div>
+    </section>
+
+    <section id="leaderboard-panel" class="panel">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-trophy"></i> Leaderboard</div>
+        <input id="player-name" placeholder="Your name" class="name-input" />
+        <button id="clear-leader" class="btn btn-secondary">Clear</button>
+        <ol id="leader-list"></ol>
+      </div>
+    </section>
+  </main>
+
+  <div id="floating-ui" class="floating-ui"></div>
 
   <script src="game.js"></script>
   <script src="ui.js"></script>
