@@ -7,10 +7,20 @@
 
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {margin:0;font-family:sans-serif;background:#0a0a0a;color:#eee;}
+    .btn-primary{background:#1e90ff;color:#fff;border:none;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;transition:0.3s;}
+    .btn-primary:hover{background:#63b3ff;}
+    .floating-ui{position:fixed;top:10px;right:10px;background:rgba(0,0,0,0.8);padding:10px;border-radius:12px;display:flex;flex-direction:column;gap:5px;color:#fff;}
+    #game-area{margin-top:20px;padding:20px;background:#111;border:2px solid #1e90ff;border-radius:12px;box-shadow:0 0 15px #1e90ff;}
+    .hamburger-menu{position:absolute;top:60px;left:10px;background:#111;border:1px solid #1e90ff;border-radius:8px;display:none;flex-direction:column;min-width:140px;}
+    .hamburger-menu button{background:none;color:#fff;border:none;padding:10px;text-align:left;cursor:pointer;}
+    .big-card, #start-game{transition:0.3s; border-radius:12px; }
+    .big-card:hover,#start-game:hover{box-shadow:0 0 10px #1e90ff;}
+  </style>
 </head>
 <body>
-  <div class="bg-animated" aria-hidden="true"></div>
-
   <header class="topbar" role="banner">
     <div class="topbar-left">
       <button id="hamburger" class="hamburger" aria-label="Open menu" type="button"><i class="fas fa-bars"></i></button>
@@ -31,39 +41,36 @@
     </div>
   </header>
 
+  <div class="hamburger-menu" id="hamburger-menu">
+    <button data-target="home">Play</button>
+    <button data-target="tutorial-panel">Tutorial</button>
+    <button data-target="about-panel">About</button>
+    <button data-target="leaderboard-panel">Leaderboard</button>
+  </div>
+
   <main class="container" id="main-container">
-    <!-- HOME / PLAY -->
     <section id="home" class="panel active-panel" aria-label="Home">
       <div class="hero" id="hero-section">
         <div class="hero-left">
           <h1 class="shimmer">Logic Runner</h1>
           <p class="subtitle">Test your wits and master propositional logic through gameplay.</p>
 
-          <div class="topic-info" aria-hidden="false">
-            <div class="topic-title"><i class="fas fa-lightbulb"></i> Propositional Logic — Quick idea</div>
-            <p>Propositional logic deals with statements that are either true or false. Practice using connectives like AND, OR, NOT, IMPLIES and XOR through short interactive challenges.</p>
-          </div>
-
-          <!-- Big Cards layout (two by two) -->
           <div class="menu-cards" id="menu-cards">
             <div class="big-card-row">
               <button class="big-card" data-target="play" id="card-play" type="button">
                 <div class="card-icon-wrap"><i class="fas fa-play card-icon"></i></div>
                 <div class="card-body"><span class="card-title">PLAY</span><small>Jump into a randomized run</small></div>
               </button>
-
               <button class="big-card" data-target="tutorial-panel" id="card-tut" type="button">
                 <div class="card-icon-wrap"><i class="fas fa-book card-icon"></i></div>
                 <div class="card-body"><span class="card-title">TUTORIAL</span><small>Modes, rules & tips</small></div>
               </button>
             </div>
-
             <div class="big-card-row">
               <button class="big-card" data-target="about-panel" id="card-about" type="button">
                 <div class="card-icon-wrap"><i class="fas fa-users card-icon"></i></div>
                 <div class="card-body"><span class="card-title">ABOUT</span><small>What the game teaches</small></div>
               </button>
-
               <button class="big-card" data-target="leaderboard-panel" id="card-leader" type="button">
                 <div class="card-icon-wrap"><i class="fas fa-trophy card-icon"></i></div>
                 <div class="card-body"><span class="card-title">LEADERBOARD</span><small>Top local runs</small></div>
@@ -89,7 +96,6 @@
                 <div class="settings-card" data-value="hard" role="button" tabindex="0">Expert</div>
               </div>
             </div>
-
             <div class="settings-row">
               <div class="settings-label">MODE</div>
               <div class="settings-choices" id="mode-select">
@@ -97,27 +103,15 @@
                 <div class="settings-card" data-value="timed" role="button" tabindex="0">Timed</div>
               </div>
             </div>
-
             <div style="margin-top:12px;">
               <button id="start-game" class="btn btn-primary" type="button">Start Game</button>
             </div>
           </div>
-
-          <div class="card small-card" id="help-card">
-            <div class="card-title"><i class="fas fa-info-circle"></i> Quick Tips</div>
-            <ol class="tips">
-              <li>Drag operator names to symbols, or answer prompts when shown.</li>
-              <li>Timed mode starts when you press Start. Timer will appear in-game only.</li>
-              <li>Use Retry/Quit while playing to control runs.</li>
-            </ol>
-          </div>
         </aside>
       </div>
-
       <section id="game-area" class="game-area" aria-live="polite"></section>
     </section>
 
-    <!-- TUTORIAL -->
     <section id="tutorial-panel" class="panel">
       <div class="card">
         <div class="card-title"><i class="fas fa-book"></i> Tutorial</div>
@@ -126,66 +120,107 @@
           <p><strong>AND (∧)</strong> — true only when both p and q are true.<br>
              <strong>OR (∨)</strong> — true when at least one of p or q is true.<br>
              <strong>NOT (¬)</strong> — inverts truth.<br>
-             <strong>IMPLIES (→)</strong> — false only when p is true and q is false.<br>
-             <strong>XOR (⊕)</strong> — true when exactly one of p or q is true.</p>
+             <strong>IMPLIES (→)</strong> — false only when p is true and q is false.</p>
         </div>
-
-        <h3>How to Play</h3>
-        <ol class="tutorial-list">
-          <li>Choose difficulty and mode, then press Start.</li>
-          <li>Question types: symbol match, sentence fill, truth-table tasks (drag / mcq / type / dropdown / partial).</li>
-          <li>Correct answers increase score. Wrong answers lose a life. Run ends at 0 lives.</li>
-          <li>In Timed mode, each question has a countdown — answer before time runs out.</li>
-        </ol>
       </div>
     </section>
 
-    <!-- ABOUT -->
     <section id="about-panel" class="panel">
       <div class="card about-card">
         <div class="card-title"><i class="fas fa-users"></i> About</div>
-        <div class="topic-info">
-          <div class="topic-title"><i class="fas fa-graduation-cap"></i> Learning Goals</div>
-          <p>Logic Runner is a practice tool to build fluency in propositional logic: translating sentences into logical operators, reading truth tables, and applying logical reasoning under mild time pressure.</p>
-        </div>
-        <p>Designed for students. Use it often and the patterns will stick.</p>
+        <p>Logic Runner helps students practice propositional logic under mild time pressure and understand truth tables, operators, and reasoning.</p>
       </div>
     </section>
 
-    <!-- LEADERBOARD -->
     <section id="leaderboard-panel" class="panel">
       <div class="card">
         <div class="card-title"><i class="fas fa-trophy"></i> Leaderboard (local)</div>
-
-        <div class="topic-info">
-          <div class="topic-title"><i class="fas fa-clipboard-list"></i> Tip of the Round</div>
-          <p id="topic-tip">Practice negation and small subexpressions — simplify step-by-step.</p>
-        </div>
-
-        <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:8px;">
-          <input id="player-name" placeholder="Your name" class="name-input" />
-          <button id="clear-leader" class="btn btn-secondary" type="button">Clear</button>
-        </div>
-
+        <input id="player-name" placeholder="Your name" class="name-input" />
+        <button id="clear-leader" class="btn btn-secondary" type="button">Clear</button>
         <ol id="leader-list" aria-live="polite"></ol>
       </div>
     </section>
   </main>
 
-  <!-- Floating HUD (top-right, shown only in-game) -->
   <div id="floating-ui" class="floating-ui" aria-hidden="true" style="display:none;">
-    <div class="floating-top">
-      <div class="status-indicator" title="Level"><i class="fas fa-layer-group"></i> <span id="stat-level">0/0</span></div>
-      <div class="status-indicator" title="Score"><i class="fas fa-star"></i> <span id="stat-score">0</span></div>
-      <div class="status-indicator" title="Lives"><i class="fas fa-heart"></i> <span id="stat-lives">3</span></div>
-      <div id="floating-timer" class="status-indicator" style="display:none;" title="Timer"><i class="fas fa-stopwatch"></i> <span id="timer-value">0</span>s</div>
-    </div>
-    <div class="floating-actions">
-      <button id="btn-retry" class="btn floating-btn" title="Retry" type="button"><i class="fas fa-redo"></i> Retry</button>
-      <button id="btn-quit" class="btn floating-btn" title="Quit" type="button"><i class="fas fa-sign-out-alt"></i> Quit</button>
+    <div class="status-indicator" title="Level"><i class="fas fa-layer-group"></i> <span id="stat-level">0/0</span></div>
+    <div class="status-indicator" title="Score"><i class="fas fa-star"></i> <span id="stat-score">0</span></div>
+    <div class="status-indicator" title="Lives"><i class="fas fa-heart"></i> <span id="stat-lives">3</span></div>
+    <div id="floating-timer" class="status-indicator" style="display:none;" title="Timer"><i class="fas fa-stopwatch"></i> <span id="timer-value">0</span>s</div>
+    <div style="margin-top:5px;">
+      <button id="btn-retry" class="btn floating-btn">Retry</button>
+      <button id="btn-quit" class="btn floating-btn">Quit</button>
     </div>
   </div>
 
-  <script src="game.js"></script>
+<script>
+  // Hamburger menu toggle
+  const hamburger = document.getElementById('hamburger');
+  const menu = document.getElementById('hamburger-menu');
+  hamburger.addEventListener('click',()=>menu.style.display=menu.style.display==='flex'?'none':'flex');
+
+  // Scroll to sections
+  document.querySelectorAll('[data-target]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const target=document.getElementById(btn.dataset.target);
+      if(target){target.scrollIntoView({behavior:'smooth'});}
+    });
+  });
+
+  // Question bank
+  const questions={
+    easy:[
+      {q:"p ∧ q: p=true,q=false, result?",a:"false"},
+      {q:"p ∨ q: p=false,q=true, result?",a:"true"},
+      {q:"¬p: p=true, result?",a:"false"},
+      {q:"p → q: p=false,q=true, result?",a:"true"},
+      {q:"p ∧ q: p=true,q=true, result?",a:"true"}
+    ],
+    medium:[
+      {q:"(p ∧ q) → r: p=true,q=false,r=true?",a:"true"},
+      {q:"¬p ∨ q: p=true,q=false?",a:"false"},
+      {q:"(p ∨ q) ∧ (¬p ∨ r): p=false,q=true,r=false?",a:"false"},
+      {q:"¬(p → q): p=true,q=false?",a:"true"}
+    ],
+    hard:[
+      {q:"((p → q) ∧ (q → r)) → (p → r): p=true,q=false,r=true?",a:"false"},
+      {q:"¬((p → q) ∧ (q → p)): p=true,q=true?",a:"false"},
+      {q:"((p ∨ q) ∧ ¬r) → s: p=false,q=true,r=false,s=true?",a:"true"}
+    ]
+  };
+
+  let usedQuestions=[];
+  const floatingUI=document.getElementById('floating-ui');
+
+  function shuffle(arr){return arr.sort(()=>Math.random()-0.5);}
+  function getQuestion(level){
+    let pool=questions[level].filter(q=>!usedQuestions.includes(q.q));
+    if(pool.length===0) usedQuestions=[];
+    const question=shuffle(pool)[0];
+    usedQuestions.push(question.q);
+    return question;
+  }
+
+  // Start Game
+  document.getElementById('start-game').addEventListener('click',()=>{
+    floatingUI.style.display='flex';
+    usedQuestions=[];
+    const difficulty=document.querySelector('#difficulty-select .settings-card.active').dataset.value;
+    const question=getQuestion(difficulty);
+    document.getElementById('game-area').innerHTML=`
+      <div style="margin-bottom:1rem;font-weight:bold;">${question.q}</div>
+      <input id="answer-input" placeholder="Type your answer (true/false)" style="padding:0.5rem;border-radius:8px;border:none;">
+      <button id="check-answer" class="btn btn-primary" style="margin-left:0.5rem;">Check</button>
+      <div id="feedback" style="margin-top:0.5rem;"></div>
+    `;
+    document.getElementById('check-answer').addEventListener('click',()=>{
+      const ans=document.getElementById('answer-input').value.trim().toLowerCase();
+      const feedback=document.getElementById('feedback');
+      if(ans===question.a){feedback.textContent="✅ Correct!";feedback.style.color="#0f0";}
+      else{feedback.textContent="❌ Wrong! Correct: "+question.a;feedback.style.color="#f00";}
+    });
+  });
+
+</script>
 </body>
 </html>
