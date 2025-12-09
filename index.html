@@ -5,207 +5,35 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Logic Runner | Propositional Logic Game</title>
 
-  <!-- Font Awesome (icons) -->
+  <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <!-- Embedded styles (copy of your style + small HUD mobile tweaks) -->
-  <style>
-    /* Polished style — gradient big cards (option B) */
-    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap');
-
-    :root{
-      --accent:#ff7a3d;
-      --muted:#6b7280;
-      --card: rgba(255,255,255,0.95);
-      --bg1: #fff7f0;
-      --bg2: #fffaf6;
-      --shadow-lg: 0 18px 60px rgba(0,0,0,0.08);
-    }
-
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:'IBM Plex Mono', monospace;
-      background: linear-gradient(135deg,var(--bg1),var(--bg2));
-      color:#222;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      overflow-x:hidden;
-    }
-
-    .bg-animated{
-      position:fixed; inset:0; z-index:-1;
-      background: radial-gradient(circle at 10% 10%, rgba(255,122,61,0.06), transparent 8%),
-                  radial-gradient(circle at 85% 80%, rgba(30,159,113,0.04), transparent 12%);
-      pointer-events:none; opacity:0.95;
-    }
-
-    .container{ max-width:1100px; margin:0 auto; padding:18px; }
-
-    .topbar{
-      display:flex; justify-content:space-between; align-items:center;
-      padding:12px 16px; position:sticky; top:0;
-      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
-      backdrop-filter: blur(6px);
-      box-shadow:0 8px 30px rgba(0,0,0,0.06);
-      z-index:400;
-    }
-    .topbar-left{display:flex;align-items:center;gap:12px}
-    .hamburger{
-      background:transparent;border:none;font-size:18px;padding:8px;display:inline-flex;
-      cursor:pointer;align-items:center;justify-content:center;border-radius:8px;
-    }
-    .hamburger:hover{ background: rgba(0,0,0,0.03); }
-    .logo{display:flex;align-items:center;gap:10px;font-weight:700}
-    .logo i{color:var(--accent);font-size:20px}
-    .topbar-right{display:flex;gap:8px;align-items:center}
-    .icon-btn{background:transparent;border-radius:10px;padding:8px;border:1px solid transparent;cursor:pointer}
-    .icon-btn i{font-size:16px;color:#444}
-
-    .hamburger-menu{
-      position:absolute; top:60px; left:12px;
-      background: var(--card); border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,0.12);
-      padding:8px; z-index:450; min-width:180px; display:flex; flex-direction:column; gap:6px;
-    }
-    .hamburger-menu .menu-item{
-      background:transparent;border:none;text-align:left;padding:10px 12px;border-radius:8px;cursor:pointer;font-weight:800;
-    }
-    .hamburger-menu .menu-item:hover{ background: rgba(0,0,0,0.04); }
-
-    .hero{display:flex;gap:28px;margin-top:18px;align-items:flex-start}
-    .hero-left{flex:1}
-    .hero-right{width:360px}
-    .shimmer{
-      font-size:2.2rem;margin:0;
-      background: linear-gradient(90deg, #333, var(--accent), #333);
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-size:200%;
-    }
-    .subtitle{color:var(--muted);margin-top:8px}
-
-    .menu-cards{margin-top:18px}
-    .big-card-row{display:flex;gap:14px;margin-bottom:14px}
-    .big-card{
-      flex:1; display:flex; align-items:center; gap:14px; padding:18px; border-radius:12px; cursor:pointer;
-      border:none; color:#222; background:linear-gradient(135deg,#ff9d5c,#ffd89a);
-      box-shadow:var(--shadow-lg); transition:transform .15s,box-shadow .15s;
-    }
-    .big-card:hover{transform:translateY(-6px)}
-    .card-icon-wrap{width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.06)}
-    .card-icon{font-size:26px;color:#fff}
-    .card-body{display:flex;flex-direction:column;align-items:flex-start}
-    .card-title{font-weight:900;font-size:1.05rem}
-    .big-card small{color:#262626;opacity:.9}
-
-    .card{
-      background:var(--card); backdrop-filter: blur(6px); border-radius:14px; padding:18px; box-shadow:var(--shadow-lg);
-      margin-bottom:16px
-    }
-    .card-title{ font-weight:800; color:#333; display:flex; gap:10px; align-items:center; margin-bottom:12px; font-size:1.05rem }
-
-    .settings-row{display:flex;align-items:center;margin-bottom:12px}
-    .settings-label{flex:0 0 120px;color:var(--muted);text-transform:uppercase;font-size:.85rem}
-    .settings-choices{display:flex;gap:10px;flex-wrap:wrap}
-    .settings-card{ background:#fff;padding:10px 12px;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:all .12s }
-    .settings-card.active{ border-color:var(--accent); box-shadow:0 8px 22px rgba(0,0,0,0.06); transform:translateY(-3px) }
-
-    .meta-row{display:flex;gap:8px;margin-top:12px}
-    .meta-pill{ background:rgba(255,255,255,0.9); padding:6px 10px; border-radius:12px; color:#666; font-size:.92rem }
-
-    .game-area{margin-top:18px}
-    .game-area.focused{max-width:820px;margin:28px auto;padding:18px;background:#fff;border-radius:14px;box-shadow:var(--shadow-lg)}
-    .hero.focus-hide{display:none}
-
-    .matching-container{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-    .game-column{background:rgba(255,255,255,0.95);padding:14px;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,0.04)}
-    .column-title{color:var(--muted);font-weight:700;margin-bottom:10px}
-    .draggable-item{ background:rgba(255,255,255,0.98); padding:12px; border-radius:10px; margin-bottom:8px; border:1px solid #f0f0f0; font-weight:800; cursor:grab; box-shadow:0 6px 18px rgba(0,0,0,0.04); transition:transform .1s }
-    .draggable-item:hover{transform:translateY(-6px)}
-    .drop-zone{ min-height:48px;border-radius:10px;border:2px dashed #eee; padding:10px;background:rgba(255,255,255,0.92); display:flex;align-items:center;justify-content:center; transition:all .12s }
-    .drop-zone.drag-over{border-color:var(--accent);background:rgba(255,122,61,0.06);transform:scale(1.02)}
-    .zone-label{color:var(--accent);font-weight:900;font-size:1.12rem}
-    .match-content{font-weight:800;color:#1e9f71;margin-top:6px}
-
-    .tt-table{width:100%;border-collapse:collapse;margin-top:12px}
-    .tt-table th, .tt-table td{padding:10px;border:1px solid #eee;text-align:center}
-    .tt-table th{background:#fafafa}
-    .tt-chip{display:inline-block;padding:8px 12px;border-radius:8px;margin-right:8px;background:#fff;border:1px solid #eee;cursor:grab}
-
-    .mcq-row{display:flex;gap:8px;justify-content:center}
-    .mcq-btn{padding:8px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
-    .mcq-btn.selected{background:var(--accent);color:#fff;border-color:transparent}
-
-    .tt-input{padding:6px;border-radius:6px;border:1px solid #ddd;text-align:center;width:44px}
-
-    /* floating HUD */
-    .floating-ui{
-      position:fixed; right:18px; top:84px;
-      background: rgba(255,255,255,0.28); backdrop-filter: blur(10px);
-      padding:12px; border-radius:12px; box-shadow:0 12px 40px rgba(0,0,0,0.12); z-index:300;
-      min-width:190px; touch-action:none; /* for drag support on touch */
-    }
-    .floating-top{display:flex;gap:8px;align-items:center;justify-content:center;margin-bottom:8px}
-    .status-indicator{background:rgba(255,255,255,0.7);padding:6px 10px;border-radius:10px;display:inline-flex;gap:8px;align-items:center;font-weight:800;font-size:.95rem}
-    .floating-actions{display:flex;gap:8px;justify-content:center}
-    .btn.floating-btn{padding:8px 10px;border-radius:8px}
-
-    /* Start and Check buttons */
-    .btn-start{
-      background: linear-gradient(135deg,#ff9d5c,#ffd89a);
-      color:#111;font-weight:900;font-size:1rem;padding:12px 22px;border:none;border-radius:12px;cursor:pointer;
-      box-shadow:0 10px 20px rgba(255,153,77,0.14);transition: transform .18s, box-shadow .18s;
-    }
-    .btn-start:hover{ transform:translateY(-4px); box-shadow:0 14px 28px rgba(255,153,77,0.2); }
-    .btn-check{
-      background: linear-gradient(90deg,#ffd89a,#ff9d5c); color:#111; font-weight:800; font-size:0.98rem; padding:10px 18px;
-      border:none; border-radius:10px; cursor:pointer; box-shadow:0 8px 18px rgba(255,153,77,0.12); transition: transform .14s, box-shadow .14s;
-    }
-    .btn-check:hover{ transform:translateY(-2px); box-shadow:0 10px 22px rgba(255,153,77,0.16); }
-
-    .game-message{position:fixed;right:22px;top:22px;background:#232;color:#fff;padding:10px 14px;border-radius:8px;z-index:500;font-weight:700;transition:opacity .25s}
-    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;z-index:520}
-    .modal-popup{background:#fff;padding:18px;border-radius:12px;min-width:320px;box-shadow:0 14px 46px rgba(0,0,0,0.18)}
-
-    /* credits small list */
-    .credits-list{ margin:0; padding-left:1rem; }
-    .credits-note{ color:var(--muted); margin-top:8px; font-size:0.95rem; }
-
-    /* responsive */
-    @media (max-width:900px){
-      .hero{flex-direction:column}
-      .hero-right{width:100%}
-    }
-    @media (max-width:560px){
-      .menu-cards .big-card-row{flex-direction:column}
-      /* make HUD smaller and place it at bottom-right so it doesn't cover the question */
-      .floating-ui{
-        right:12px; left:auto; top:auto; bottom:12px; min-width:140px; padding:8px;
-        opacity:0.98;
-      }
-      .floating-top{gap:6px}
-      .status-indicator{ padding:6px 8px; font-size:.87rem }
-      .btn.floating-btn{ padding:6px 8px; font-size:.86rem }
-    }
-  </style>
 </head>
+
 <body>
   <div class="bg-animated" aria-hidden="true"></div>
 
   <header class="topbar" role="banner">
     <div class="topbar-left">
-      <button id="hamburger" class="hamburger" aria-label="Open menu" type="button"><i class="fas fa-bars"></i></button>
-      <div class="logo" aria-hidden="false"><i class="fas fa-brain"></i><span class="brand">Logic Runner</span></div>
+      <button id="hamburger" class="hamburger" aria-label="Open menu" type="button">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="logo" aria-hidden="false">
+        <i class="fas fa-brain"></i><span class="brand">Logic Runner</span>
+      </div>
     </div>
 
-    <!-- topnav removed from header (nav items are now inside the hamburger dropdown) -->
     <nav class="topnav" id="topnav" aria-label="Main navigation" style="display:none;"></nav>
 
     <div class="topbar-right">
-      <button id="sound-toggle" class="icon-btn" title="Toggle sound" type="button"><i class="fas fa-volume-up"></i></button>
-      <button id="open-leaderboard" class="icon-btn" title="Leaderboard" type="button"><i class="fas fa-trophy"></i></button>
+      <button id="sound-toggle" class="icon-btn" title="Toggle sound" type="button">
+        <i class="fas fa-volume-up"></i>
+      </button>
+      <button id="open-leaderboard" class="icon-btn" title="Leaderboard" type="button">
+        <i class="fas fa-trophy"></i>
+      </button>
     </div>
   </header>
 
-  <!-- small dropdown menu (appears under the hamburger) -->
   <div id="hamburger-menu" class="hamburger-menu" aria-hidden="true" style="display:none;">
     <button class="menu-item" data-target="home" type="button">Play</button>
     <button class="menu-item" data-target="tutorial-panel" type="button">Tutorial</button>
@@ -215,6 +43,7 @@
   </div>
 
   <main class="container" id="main-container">
+
     <!-- HOME / PLAY -->
     <section id="home" class="panel active-panel" aria-label="Home">
       <div class="hero" id="hero-section">
@@ -222,165 +51,169 @@
           <h1 class="shimmer">Logic Runner</h1>
           <p class="subtitle">Test your wits and master propositional logic through gameplay.</p>
 
-          <!-- Expanded, informative intro -->
-          <div class="topic-info" aria-hidden="false">
-            <div class="topic-title"><i class="fas fa-lightbulb"></i> What is Propositional Logic?</div>
+          <div class="topic-info">
+            <div class="topic-title"><i class="fas fa-lightbulb"></i> Master Propositional Logic</div>
             <p>
-              Propositional logic studies statements that are either true or false and the rules for combining them.
-              It’s the foundation of formal reasoning used in computer science, discrete math, and everyday problem solving.
-              Logic Runner turns those ideas into short interactive tasks so you build fluency with operators, truth tables,
-              and translating English sentences to formal expressions.
-            </p>
-            <p style="margin-top:8px;color:var(--muted)">
-              Practice formats include drag-and-drop symbol matching, sentence translation, truth table completion,
-              and quick multiple-choice checks. Choose a difficulty, try timed rounds, and track progress locally.
+              Logic Runner transforms propositional logic into fun, interactive challenges.
+              Solve tasks under gentle pressure while strengthening your understanding of
+              logical operators, truth tables, and symbolic translation.
             </p>
           </div>
 
-          <!-- Big Cards layout (two by two) -->
           <div class="menu-cards" id="menu-cards">
             <div class="big-card-row">
               <button class="big-card" data-target="play" id="card-play" type="button">
                 <div class="card-icon-wrap"><i class="fas fa-play card-icon"></i></div>
-                <div class="card-body"><span class="card-title">PLAY</span><small>Jump into a randomized run</small></div>
+                <div class="card-body">
+                  <span class="card-title">PLAY</span>
+                  <small>Start a randomized run</small>
+                </div>
               </button>
 
               <button class="big-card" data-target="tutorial-panel" id="card-tut" type="button">
                 <div class="card-icon-wrap"><i class="fas fa-book card-icon"></i></div>
-                <div class="card-body"><span class="card-title">TUTORIAL</span><small>Connectives, examples & tasks</small></div>
+                <div class="card-body">
+                  <span class="card-title">TUTORIAL</span>
+                  <small>Learn connectors & rules</small>
+                </div>
               </button>
             </div>
 
             <div class="big-card-row">
               <button class="big-card" data-target="about-panel" id="card-about" type="button">
                 <div class="card-icon-wrap"><i class="fas fa-users card-icon"></i></div>
-                <div class="card-body"><span class="card-title">ABOUT</span><small>Learning goals & scope</small></div>
+                <div class="card-body">
+                  <span class="card-title">ABOUT</span>
+                  <small>Learning goals & purpose</small>
+                </div>
               </button>
 
               <button class="big-card" data-target="leaderboard-panel" id="card-leader" type="button">
                 <div class="card-icon-wrap"><i class="fas fa-trophy card-icon"></i></div>
-                <div class="card-body"><span class="card-title">LEADERBOARD</span><small>Local high scores</small></div>
+                <div class="card-body">
+                  <span class="card-title">LEADERBOARD</span>
+                  <small>Top local runs</small>
+                </div>
               </button>
             </div>
           </div>
 
-          <div class="meta-row" style="margin-top:14px">
+          <div class="meta-row">
             <span class="meta-pill">BSIT</span>
-            <span class="meta-pill">IT Block 2N</span>
-            <span class="meta-pill">Prototype</span>
+            <span class="meta-pill">BLOCK 2N</span>
           </div>
         </div>
 
         <aside class="hero-right">
           <div class="card" id="settings-card">
             <div class="card-title"><i class="fas fa-sliders-h"></i> GAME SETTINGS</div>
+
             <div class="settings-row">
               <div class="settings-label">DIFFICULTY</div>
               <div class="settings-choices" id="difficulty-select">
-                <div class="settings-card active" data-value="easy" role="button" tabindex="0">Beginner</div>
-                <div class="settings-card" data-value="medium" role="button" tabindex="0">Intermediate</div>
-                <div class="settings-card" data-value="hard" role="button" tabindex="0">Expert</div>
+                <div class="settings-card active" data-value="easy">Beginner</div>
+                <div class="settings-card" data-value="medium">Intermediate</div>
+                <div class="settings-card" data-value="hard">Expert</div>
               </div>
             </div>
 
             <div class="settings-row">
               <div class="settings-label">MODE</div>
               <div class="settings-choices" id="mode-select">
-                <div class="settings-card active" data-value="classic" role="button" tabindex="0">Classic</div>
-                <div class="settings-card" data-value="timed" role="button" tabindex="0">Timed</div>
+                <div class="settings-card active" data-value="classic">Classic</div>
+                <div class="settings-card" data-value="timed">Timed</div>
               </div>
             </div>
 
-            <div style="margin-top:12px;">
-              <!-- redesigned start button -->
-              <button id="start-game" class="btn-start" type="button">Start Game</button>
-            </div>
+            <button id="start-game" class="btn-start" type="button">Start Game</button>
           </div>
 
           <div class="card small-card" id="help-card">
             <div class="card-title"><i class="fas fa-info-circle"></i> Quick Tips</div>
             <ol class="tips">
-              <li>Drag operator names to symbols, or answer prompts when shown.</li>
-              <li>Timed mode starts when you press Start. Timer will appear in-game only.</li>
-              <li>Correct answers increase score. Wrong answers cost a life.</li>
+              <li>Drag operator names to symbols when needed.</li>
+              <li>Timed mode only starts once the game begins.</li>
+              <li>Use Retry or Quit anytime during a run.</li>
             </ol>
           </div>
         </aside>
       </div>
 
-      <section id="game-area" class="game-area" aria-live="polite"></section>
+      <section id="game-area" class="game-area"></section>
     </section>
 
-    <!-- TUTORIAL (combined with How to Play and Example Tasks) -->
-    <section id="tutorial-panel" class="panel" style="display:none;">
+    <!-- TUTORIAL PANEL -->
+    <section id="tutorial-panel" class="panel">
       <div class="card">
-        <div class="card-title"><i class="fas fa-book"></i> Tutorial & How to Play</div>
+        <div class="card-title"><i class="fas fa-book"></i> Tutorial</div>
 
-        <h3>Connectives & Semantics</h3>
-        <p><strong>AND (∧)</strong> — true only if <em>both</em> p and q are true.<br>
-           <strong>OR (∨)</strong> — true if <em>at least one</em> of p or q is true.<br>
-           <strong>NOT (¬)</strong> — reverses truth: true → false, false → true.<br>
-           <strong>IMPLIES (→)</strong> — the implication p → q is false only when p is true and q is false.</p>
+        <div class="topic-info">
+          <div class="topic-title"><i class="fas fa-project-diagram"></i> Connectives & How to Play</div>
+          <p>These are the four basic operators in propositional logic:</p>
+          <ul>
+            <li><strong>AND (∧)</strong> — true only if both p and q are true</li>
+            <li><strong>OR (∨)</strong> — true if at least one of p or q is true</li>
+            <li><strong>NOT (¬)</strong> — flips the truth value</li>
+            <li><strong>IMPLIES (→)</strong> — only false when p is true and q is false</li>
+          </ul>
 
-        <h3 style="margin-top:12px">How to Play (short)</h3>
-        <ol>
-          <li>Select difficulty and mode, then press <strong>Start Game</strong>.</li>
-          <li>Solve a short run (varied questions: matching, truth tables, sentence translation).</li>
-          <li>Correct answers add to your score. Wrong answers subtract a life. When lives reach zero the run ends.</li>
-          <li>In Timed Mode each question has a countdown — answer before time runs out.</li>
-        </ol>
+          <h3>Gameplay Tips</h3>
+          <ol>
+            <li>Select your difficulty and mode.</li>
+            <li>Question types include:
+              <ul>
+                <li>Operator matching</li>
+                <li>Symbol translation</li>
+                <li>Truth table completion</li>
+                <li>Expression evaluation</li>
+              </ul>
+            </li>
+            <li>Correct answers increase score; mistakes cost lives.</li>
+            <li>Timed Mode requires answering before the countdown ends.</li>
+          </ol>
 
-        <h3 style="margin-top:12px">Example Tasks</h3>
-        <div>
-          <strong>Symbol Match</strong>
-          <p>Drag the operator name to the matching symbol. Example: “NOT” → ¬</p>
-
-          <strong>Truth Table</strong>
-          <p>Complete the final column for each row. Example: if p = T and q = F, then p → q = <strong>F</strong>.</p>
-
-          <strong>Sentence Translation</strong>
-          <p>Translate an English sentence to a logical expression. Example: “If the switch is on, the light turns on.” → p → q</p>
-
-          <strong>Expression Evaluation</strong>
-          <p>Evaluate expressions with given truth values. Example: ¬(p ∧ q) when p = T, q = F → <strong>True</strong></p>
+          <h3>Example Tasks</h3>
+          <ul>
+            <li>"not p" → ¬p</li>
+            <li>p=T, q=F → p → q = False</li>
+            <li>"If the switch is on, the light turns on." → p → q</li>
+            <li>Evaluate ¬(p ∧ q) when p=T, q=F → True</li>
+          </ul>
         </div>
       </div>
     </section>
 
-    <!-- ABOUT (Learning Goals) -->
-    <section id="about-panel" class="panel" style="display:none;">
+    <!-- ABOUT PANEL -->
+    <section id="about-panel" class="panel">
       <div class="card about-card">
-        <div class="card-title"><i class="fas fa-users"></i> About & Learning Goals</div>
+        <div class="card-title"><i class="fas fa-users"></i> About</div>
 
         <div class="topic-info">
           <div class="topic-title"><i class="fas fa-graduation-cap"></i> Learning Goals</div>
-          <p>
-            Logic Runner is a focused practice tool that helps students:
-          </p>
           <ul>
-            <li>Translate English statements into logical expressions.</li>
-            <li>Understand and apply logical connectives and their truth conditions.</li>
-            <li>Read and complete truth tables accurately.</li>
-            <li>Recognize logical equivalences and simplify small expressions.</li>
-            <li>Improve reasoning speed with optional timed practice.</li>
+            <li>Translate sentences into logical expressions</li>
+            <li>Understand the behavior of logical operators</li>
+            <li>Analyze compound propositions</li>
+            <li>Complete truth tables</li>
+            <li>Recognize common equivalences</li>
+            <li>Develop fast reasoning skills</li>
           </ul>
-          <p class="credits-note">
-            These skills are useful for discrete math, programming, formal logic classes, and exam preparation.
+          <p>
+            These skills support computer science, discrete mathematics, philosophy,
+            logic-based exams, and general critical thinking.
           </p>
         </div>
-
-        <p style="margin-top:8px">Designed for students. Use it often — the patterns will stick.</p>
       </div>
     </section>
 
-    <!-- LEADERBOARD -->
-    <section id="leaderboard-panel" class="panel" style="display:none;">
+    <!-- LEADERBOARD PANEL -->
+    <section id="leaderboard-panel" class="panel">
       <div class="card">
         <div class="card-title"><i class="fas fa-trophy"></i> Leaderboard (local)</div>
 
         <div class="topic-info">
           <div class="topic-title"><i class="fas fa-clipboard-list"></i> Tip of the Round</div>
-          <p id="topic-tip">Practice negation and small subexpressions — simplify step-by-step.</p>
+          <p id="topic-tip">Practice negation and simplify expressions step-by-step.</p>
         </div>
 
         <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:8px;">
@@ -388,123 +221,53 @@
           <button id="clear-leader" class="btn btn-secondary" type="button">Clear</button>
         </div>
 
-        <ol id="leader-list" aria-live="polite"></ol>
+        <ol id="leader-list"></ol>
       </div>
     </section>
 
-    <!-- CREDITS -->
-    <section id="credits-panel" class="panel" style="display:none;">
-      <div class="card">
-        <div class="card-title"><i class="fas fa-star"></i> Credits</div>
-        <p><strong>Logic Runner</strong> — prototype developed for <strong>Discrete Mathematics</strong> by <strong>IT Block 2N</strong>.</p>
+    <!-- CREDITS PANEL -->
+    <section id="credits-panel" class="panel">
+      <div class="card about-card">
+        <div class="card-title"><i class="fas fa-id-card"></i> Credits</div>
 
-        <div>
-          <ul class="credits-list">
+        <div class="topic-info">
+          <div class="topic-title"><i class="fas fa-users"></i> Development Team</div>
+          <p>
+            This prototype for <strong>Discrete Mathematics</strong> was developed by
+            <strong>IT BLOCK 2N</strong> as part of an academic project. The game
+            <em>Logic Runner</em> was built to help students practice propositional logic
+            through interactive challenges.
+          </p>
+
+          <ul>
             <li><strong>Tabada, Cj R.</strong></li>
-            <li><strong>Lagmay, Adrian Kith</strong></li>
-            <li><strong>Caralipio, Rafael Bangoy</strong></li>
-            <li><strong>Austria, Cymon</strong></li>
+            <li><strong>Adrian Kith Lagmay</strong></li>
+            <li><strong>Rafael Bangoy Caralipio</strong></li>
+            <li><strong>Cymon Austria</strong></li>
           </ul>
-          <p class="credits-note">Thank you for exploring Logic Runner — built to help students learn propositional logic interactively.</p>
         </div>
       </div>
     </section>
+
   </main>
 
-  <!-- Floating HUD (top-right, shown only in-game) -->
-  <div id="floating-ui" class="floating-ui" aria-hidden="true" style="display:none;">
-    <div class="floating-top" id="floating-handle">
-      <div class="status-indicator" title="Level"><i class="fas fa-layer-group"></i> <span id="stat-level">0/0</span></div>
-      <div class="status-indicator" title="Score"><i class="fas fa-star"></i> <span id="stat-score">0</span></div>
-      <div class="status-indicator" title="Lives"><i class="fas fa-heart"></i> <span id="stat-lives">3</span></div>
-      <div id="floating-timer" class="status-indicator" style="display:none;" title="Timer"><i class="fas fa-stopwatch"></i> <span id="timer-value">0</span>s</div>
+  <!-- FLOATING HUD -->
+  <div id="floating-ui" class="floating-ui" style="display:none;">
+    <div class="floating-top">
+      <div class="status-indicator"><i class="fas fa-layer-group"></i> <span id="stat-level">0/0</span></div>
+      <div class="status-indicator"><i class="fas fa-star"></i> <span id="stat-score">0</span></div>
+      <div class="status-indicator"><i class="fas fa-heart"></i> <span id="stat-lives">3</span></div>
+      <div id="floating-timer" class="status-indicator" style="display:none;">
+        <i class="fas fa-stopwatch"></i> <span id="timer-value">0</span>s
+      </div>
     </div>
+
     <div class="floating-actions">
-      <button id="btn-retry" class="btn floating-btn" title="Retry" type="button"><i class="fas fa-redo"></i> Retry</button>
-      <button id="btn-quit" class="btn floating-btn" title="Quit" type="button"><i class="fas fa-sign-out-alt"></i> Quit</button>
+      <button id="btn-retry" class="btn floating-btn"><i class="fas fa-redo"></i> Retry</button>
+      <button id="btn-quit" class="btn floating-btn"><i class="fas fa-sign-out-alt"></i> Quit</button>
     </div>
   </div>
 
-  <!-- Your main game logic file -->
   <script src="game.js"></script>
-
-  <!-- Small inline script to make the HUD draggable (desktop + touch) and ensure it doesn't block content on mobile -->
-  <script>
-    (function(){
-      const hud = document.getElementById('floating-ui');
-      const handle = document.getElementById('floating-handle') || hud;
-      if(!hud) return;
-
-      // Make draggable using pointer events
-      let dragging = false;
-      let startX = 0, startY = 0, origLeft = 0, origTop = 0;
-
-      function onPointerDown(e){
-        dragging = true;
-        hud.style.transition = 'none';
-        startX = e.clientX || (e.touches && e.touches[0].clientX);
-        startY = e.clientY || (e.touches && e.touches[0].clientY);
-        const rect = hud.getBoundingClientRect();
-        origLeft = rect.left;
-        origTop = rect.top;
-        // prevent scrolling while dragging on touch
-        document.body.style.touchAction = 'none';
-      }
-
-      function onPointerMove(e){
-        if(!dragging) return;
-        const cx = e.clientX || (e.touches && e.touches[0].clientX);
-        const cy = e.clientY || (e.touches && e.touches[0].clientY);
-        const dx = cx - startX;
-        const dy = cy - startY;
-        let left = origLeft + dx;
-        let top = origTop + dy;
-
-        // clamp to viewport
-        const pad = 8;
-        const w = hud.offsetWidth, h = hud.offsetHeight;
-        left = Math.max(pad, Math.min(window.innerWidth - w - pad, left));
-        top = Math.max(pad, Math.min(window.innerHeight - h - pad, top));
-
-        hud.style.left = left + 'px';
-        hud.style.top = top + 'px';
-        hud.style.right = 'auto';
-        hud.style.bottom = 'auto';
-      }
-
-      function onPointerUp(){
-        dragging = false;
-        hud.style.transition = ''; // restore
-        document.body.style.touchAction = '';
-      }
-
-      // attach pointer / touch events
-      handle.addEventListener('mousedown', onPointerDown);
-      document.addEventListener('mousemove', onPointerMove);
-      document.addEventListener('mouseup', onPointerUp);
-
-      handle.addEventListener('touchstart', onPointerDown, {passive:false});
-      document.addEventListener('touchmove', onPointerMove, {passive:false});
-      document.addEventListener('touchend', onPointerUp);
-
-      // When window resizes, ensure HUD stays visible
-      window.addEventListener('resize', () => {
-        hud.style.left = hud.style.left || '';
-        hud.style.top = hud.style.top || '';
-      });
-
-      // Small helper to move HUD to bottom-right on very small screens (so it doesn't block questions)
-      function applyMobilePositioning(){
-        if(window.matchMedia('(max-width:560px)').matches){
-          hud.style.right = hud.style.right || '12px';
-          hud.style.left = 'auto';
-          hud.style.top = 'auto';
-          hud.style.bottom = '12px';
-        }
-      }
-      applyMobilePositioning();
-      window.addEventListener('resize', applyMobilePositioning);
-    })();
-  </script>
 </body>
 </html>
