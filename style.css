@@ -320,6 +320,9 @@ body{
     flex: 1;
     text-align: center;
   }
+  game-screen.active ~ #creditsPanel {
+    display: none;
+}
 }
 
 }
