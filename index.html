@@ -8,29 +8,20 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-
 <body>
   <div class="bg-animated" aria-hidden="true"></div>
 
   <header class="topbar" role="banner">
     <div class="topbar-left">
-      <button id="hamburger" class="hamburger" aria-label="Open menu" type="button">
-        <i class="fas fa-bars"></i>
-      </button>
-      <div class="logo" aria-hidden="false">
-        <i class="fas fa-brain"></i><span class="brand">Logic Runner</span>
-      </div>
+      <button id="hamburger" class="hamburger" aria-label="Open menu" type="button"><i class="fas fa-bars"></i></button>
+      <div class="logo" aria-hidden="false"><i class="fas fa-brain"></i><span class="brand">Logic Runner</span></div>
     </div>
 
     <nav class="topnav" id="topnav" aria-label="Main navigation" style="display:none;"></nav>
 
     <div class="topbar-right">
-      <button id="sound-toggle" class="icon-btn" title="Toggle sound" type="button">
-        <i class="fas fa-volume-up"></i>
-      </button>
-      <button id="open-leaderboard" class="icon-btn" title="Leaderboard" type="button">
-        <i class="fas fa-trophy"></i>
-      </button>
+      <button id="sound-toggle" class="icon-btn" title="Toggle sound" type="button"><i class="fas fa-volume-up"></i></button>
+      <button id="open-leaderboard" class="icon-btn" title="Leaderboard" type="button"><i class="fas fa-trophy"></i></button>
     </div>
   </header>
 
@@ -39,107 +30,91 @@
     <button class="menu-item" data-target="tutorial-panel" type="button">Tutorial</button>
     <button class="menu-item" data-target="about-panel" type="button">About</button>
     <button class="menu-item" data-target="leaderboard-panel" type="button">Leaderboard</button>
-    <button class="menu-item" data-target="credits-panel" type="button">Credits</button>
   </div>
 
   <main class="container" id="main-container">
-
     <!-- HOME / PLAY -->
     <section id="home" class="panel active-panel" aria-label="Home">
       <div class="hero" id="hero-section">
         <div class="hero-left">
           <h1 class="shimmer">Logic Runner</h1>
-          <p class="subtitle">A simple prototype tool about Propositional Logic</p>
+          <p class="subtitle">Test your wits and master propositional logic through gameplay.</p>
 
-          <div class="topic-info">
+          <div class="topic-info" aria-hidden="false">
             <div class="topic-title"><i class="fas fa-lightbulb"></i> Master Propositional Logic</div>
-            <p>
-              Logic Runner transforms propositional logic into fun, interactive challenges.
-              Solve tasks under gentle pressure while strengthening your understanding of
-              logical operators, truth tables, and symbolic translation.
-            </p>
+            <p>Logic Runner transforms propositional logic into fun, interactive challenges. Solve small tasks under mild pressure while strengthening your understanding of logical operators, truth tables, and symbolic translation.</p>
           </div>
 
+          <!-- Big Cards layout -->
           <div class="menu-cards" id="menu-cards">
             <div class="big-card-row">
               <button class="big-card" data-target="play" id="card-play" type="button">
                 <div class="card-icon-wrap"><i class="fas fa-play card-icon"></i></div>
-                <div class="card-body">
-                  <span class="card-title">PLAY</span>
-                  <small>Start a randomized run</small>
-                </div>
+                <div class="card-body"><span class="card-title">PLAY</span><small>Jump into a randomized run</small></div>
               </button>
 
               <button class="big-card" data-target="tutorial-panel" id="card-tut" type="button">
                 <div class="card-icon-wrap"><i class="fas fa-book card-icon"></i></div>
-                <div class="card-body">
-                  <span class="card-title">TUTORIAL</span>
-                  <small>Learn connectors & rules</small>
-                </div>
+                <div class="card-body"><span class="card-title">TUTORIAL</span><small>Learn connectors & gameplay</small></div>
               </button>
             </div>
 
             <div class="big-card-row">
               <button class="big-card" data-target="about-panel" id="card-about" type="button">
                 <div class="card-icon-wrap"><i class="fas fa-users card-icon"></i></div>
-                <div class="card-body">
-                  <span class="card-title">ABOUT</span>
-                  <small>Learning goals & purpose</small>
-                </div>
+                <div class="card-body"><span class="card-title">ABOUT</span><small>Learning goals & benefits</small></div>
               </button>
 
               <button class="big-card" data-target="leaderboard-panel" id="card-leader" type="button">
                 <div class="card-icon-wrap"><i class="fas fa-trophy card-icon"></i></div>
-                <div class="card-body">
-                  <span class="card-title">LEADERBOARD</span>
-                  <small>Top local runs</small>
-                </div>
+                <div class="card-body"><span class="card-title">LEADERBOARD</span><small>Top local runs</small></div>
               </button>
             </div>
           </div>
 
           <div class="meta-row">
             <span class="meta-pill">BSIT</span>
-            <span class="meta-pill">BLOCK 2N</span>
+            <span class="meta-pill">BLOCK</span>
           </div>
         </div>
 
         <aside class="hero-right">
           <div class="card" id="settings-card">
             <div class="card-title"><i class="fas fa-sliders-h"></i> GAME SETTINGS</div>
-
             <div class="settings-row">
               <div class="settings-label">DIFFICULTY</div>
               <div class="settings-choices" id="difficulty-select">
-                <div class="settings-card active" data-value="easy">Beginner</div>
-                <div class="settings-card" data-value="medium">Intermediate</div>
-                <div class="settings-card" data-value="hard">Expert</div>
+                <div class="settings-card active" data-value="easy" role="button" tabindex="0">Beginner</div>
+                <div class="settings-card" data-value="medium" role="button" tabindex="0">Intermediate</div>
+                <div class="settings-card" data-value="hard" role="button" tabindex="0">Expert</div>
               </div>
             </div>
 
             <div class="settings-row">
               <div class="settings-label">MODE</div>
               <div class="settings-choices" id="mode-select">
-                <div class="settings-card active" data-value="classic">Classic</div>
-                <div class="settings-card" data-value="timed">Timed</div>
+                <div class="settings-card active" data-value="classic" role="button" tabindex="0">Classic</div>
+                <div class="settings-card" data-value="timed" role="button" tabindex="0">Timed</div>
               </div>
             </div>
 
-            <button id="start-game" class="btn-start" type="button">Start Game</button>
+            <div style="margin-top:12px;">
+              <button id="start-game" class="btn-start" type="button">Start Game</button>
+            </div>
           </div>
 
           <div class="card small-card" id="help-card">
             <div class="card-title"><i class="fas fa-info-circle"></i> Quick Tips</div>
             <ol class="tips">
-              <li>Drag operator names to symbols when needed.</li>
-              <li>Timed mode only starts once the game begins.</li>
-              <li>Use Retry or Quit anytime during a run.</li>
+              <li>Drag operator names to symbols, or answer prompts when shown.</li>
+              <li>Timed mode starts when you press Start. Timer will appear in-game only.</li>
+              <li>Use Retry/Quit while playing to control runs.</li>
             </ol>
           </div>
         </aside>
       </div>
 
-      <section id="game-area" class="game-area"></section>
+      <section id="game-area" class="game-area" aria-live="polite"></section>
     </section>
 
     <!-- TUTORIAL PANEL -->
@@ -149,35 +124,35 @@
 
         <div class="topic-info">
           <div class="topic-title"><i class="fas fa-project-diagram"></i> Connectives & How to Play</div>
-          <p>These are the four basic operators in propositional logic:</p>
+          <p>These are the four fundamental operators in propositional logic and gameplay tips:</p>
           <ul>
             <li><strong>AND (∧)</strong> — true only if both p and q are true</li>
             <li><strong>OR (∨)</strong> — true if at least one of p or q is true</li>
-            <li><strong>NOT (¬)</strong> — flips the truth value</li>
-            <li><strong>IMPLIES (→)</strong> — only false when p is true and q is false</li>
+            <li><strong>NOT (¬)</strong> — inverts the truth value</li>
+            <li><strong>IMPLIES (→)</strong> — false only when p is true and q is false</li>
           </ul>
 
           <h3>Gameplay Tips</h3>
           <ol>
-            <li>Select your difficulty and mode.</li>
+            <li>Select difficulty (Beginner, Intermediate, Expert) and mode (Classic or Timed).</li>
             <li>Question types include:
               <ul>
-                <li>Operator matching</li>
-                <li>Symbol translation</li>
-                <li>Truth table completion</li>
-                <li>Expression evaluation</li>
+                <li>Drag-and-drop operator matching</li>
+                <li>Sentence-to-symbol translation</li>
+                <li>Fill-in or multiple-choice truth-table values</li>
+                <li>Partial expression evaluation</li>
               </ul>
             </li>
-            <li>Correct answers increase score; mistakes cost lives.</li>
-            <li>Timed Mode requires answering before the countdown ends.</li>
+            <li>Correct answers increase score; wrong answers cost a life. Run ends at 0 lives.</li>
+            <li>Timed Mode: answer before countdown ends.</li>
           </ol>
 
-          <h3>Example Tasks</h3>
+          <h3>🧩 Example Tasks</h3>
           <ul>
-            <li>"not p" → ¬p</li>
-            <li>p=T, q=F → p → q = False</li>
-            <li>"If the switch is on, the light turns on." → p → q</li>
-            <li>Evaluate ¬(p ∧ q) when p=T, q=F → True</li>
+            <li>Symbol Match: "not p" → ¬p</li>
+            <li>Truth Table Completion: p=T, q=F → p → q = False</li>
+            <li>Sentence Translation: "If the switch is on, the light turns on." → p → q</li>
+            <li>Evaluate Expression: ¬(p ∧ q) when p=T, q=F → True</li>
           </ul>
         </div>
       </div>
@@ -187,21 +162,17 @@
     <section id="about-panel" class="panel">
       <div class="card about-card">
         <div class="card-title"><i class="fas fa-users"></i> About</div>
-
         <div class="topic-info">
           <div class="topic-title"><i class="fas fa-graduation-cap"></i> Learning Goals</div>
           <ul>
-            <li>Translate sentences into logical expressions</li>
-            <li>Understand the behavior of logical operators</li>
-            <li>Analyze compound propositions</li>
-            <li>Complete truth tables</li>
-            <li>Recognize common equivalences</li>
-            <li>Develop fast reasoning skills</li>
+            <li>Translate English statements into logical expressions</li>
+            <li>Understand logical connectives</li>
+            <li>Analyze compound propositions step-by-step</li>
+            <li>Read and complete truth tables</li>
+            <li>Recognize logical equivalences</li>
+            <li>Apply fast reasoning under mild pressure</li>
           </ul>
-          <p>
-            These skills support computer science, discrete mathematics, philosophy,
-            logic-based exams, and general critical thinking.
-          </p>
+          <p>Skills are essential for computer science, discrete math, formal logic courses, philosophy, and exam preparation (NMAT, LSAT, GRE logic sections). Designed for students and self-learners.</p>
         </div>
       </div>
     </section>
@@ -213,7 +184,7 @@
 
         <div class="topic-info">
           <div class="topic-title"><i class="fas fa-clipboard-list"></i> Tip of the Round</div>
-          <p id="topic-tip">Practice negation and simplify expressions step-by-step.</p>
+          <p id="topic-tip">Practice negation and small subexpressions — simplify step-by-step.</p>
         </div>
 
         <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:8px;">
@@ -221,50 +192,36 @@
           <button id="clear-leader" class="btn btn-secondary" type="button">Clear</button>
         </div>
 
-        <ol id="leader-list"></ol>
+        <ol id="leader-list" aria-live="polite"></ol>
       </div>
     </section>
 
     <!-- CREDITS PANEL -->
     <section id="credits-panel" class="panel">
-      <div class="card about-card">
-        <div class="card-title"><i class="fas fa-id-card"></i> Credits</div>
-
-        <div class="topic-info">
-          <div class="topic-title"><i class="fas fa-users"></i> Development Team</div>
-          <p>
-            This prototype for <strong>Discrete Mathematics</strong> was developed by
-            <strong>IT BLOCK 2N</strong> as part of an academic project. The game
-            <em>Logic Runner</em> was built to help students practice propositional logic
-            through interactive challenges.
-          </p>
-
-          <ul>
-            <li><strong>Tabada, Cj R.</strong></li>
-            <li><strong>Adrian Kith Lagmay</strong></li>
-            <li><strong>Rafael Bangoy Caralipio</strong></li>
-            <li><strong>Cymon Austria</strong></li>
-          </ul>
-        </div>
+      <div class="card">
+        <div class="card-title"><i class="fas fa-address-card"></i> Credits</div>
+        <p>This prototype of Logic Runner for Discrete Mathematics was developed by IT BLOCK 2N.</p>
+        <ul>
+          <li>Tabada, Cj R.</li>
+          <li>Adrian Kith Lagmay</li>
+          <li>Rafael Bangoy Caralipio</li>
+          <li>Cymon Austria</li>
+        </ul>
       </div>
     </section>
-
   </main>
 
-  <!-- FLOATING HUD -->
-  <div id="floating-ui" class="floating-ui" style="display:none;">
+  <!-- Floating HUD -->
+  <div id="floating-ui" class="floating-ui" aria-hidden="true" style="display:none;">
     <div class="floating-top">
-      <div class="status-indicator"><i class="fas fa-layer-group"></i> <span id="stat-level">0/0</span></div>
-      <div class="status-indicator"><i class="fas fa-star"></i> <span id="stat-score">0</span></div>
-      <div class="status-indicator"><i class="fas fa-heart"></i> <span id="stat-lives">3</span></div>
-      <div id="floating-timer" class="status-indicator" style="display:none;">
-        <i class="fas fa-stopwatch"></i> <span id="timer-value">0</span>s
-      </div>
+      <div class="status-indicator" title="Level"><i class="fas fa-layer-group"></i> <span id="stat-level">0/0</span></div>
+      <div class="status-indicator" title="Score"><i class="fas fa-star"></i> <span id="stat-score">0</span></div>
+      <div class="status-indicator" title="Lives"><i class="fas fa-heart"></i> <span id="stat-lives">3</span></div>
+      <div id="floating-timer" class="status-indicator" style="display:none;" title="Timer"><i class="fas fa-stopwatch"></i> <span id="timer-value">0</span>s</div>
     </div>
-
     <div class="floating-actions">
-      <button id="btn-retry" class="btn floating-btn"><i class="fas fa-redo"></i> Retry</button>
-      <button id="btn-quit" class="btn floating-btn"><i class="fas fa-sign-out-alt"></i> Quit</button>
+      <button id="btn-retry" class="btn floating-btn" title="Retry" type="button"><i class="fas fa-redo"></i> Retry</button>
+      <button id="btn-quit" class="btn floating-btn" title="Quit" type="button"><i class="fas fa-sign-out-alt"></i> Quit</button>
     </div>
   </div>
 
