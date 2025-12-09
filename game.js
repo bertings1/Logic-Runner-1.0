@@ -129,7 +129,21 @@
 
   // ---------- SOUND ----------
   const audioCtx = window.AudioContext ? new AudioContext() : null;
-  function playTone(f, d=110, type='sine'){ if(!audioCtx || !state.soundOn) return; const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type=type; o.frequency.value=f; g.gain.value=0.04; o[...]
+  function playTone(f, d=110, type='sine'){
+    if(!audioCtx || !state.soundOn) return;
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = type;
+    o.frequency.value = f;
+    g.gain.value = 0.04;
+    o.connect(g);
+    g.connect(audioCtx.destination);
+    o.start();
+    setTimeout(()=>{
+      try { o.stop(); } catch(e){}
+      try { g.disconnect(); o.disconnect(); } catch(e){}
+    }, d);
+  }
   const soundSuccess = ()=>playTone(1000,120,'triangle');
   const soundError = ()=>playTone(200,160,'square');
   const soundClick = ()=>playTone(520,60,'sine');
@@ -157,11 +171,21 @@
   function setupSettings(){
     // difficulty selectors
     document.querySelectorAll('#difficulty-select .settings-card').forEach(card=>{
-      card.onclick = ()=>{ document.querySelectorAll('#difficulty-select .settings-card').forEach(c=>c.classList.remove('active')); card.classList.add('active'); state.difficulty = card.dataset.value;[...]
+      card.onclick = ()=>{ 
+        document.querySelectorAll('#difficulty-select .settings-card').forEach(c=>c.classList.remove('active')); 
+        card.classList.add('active'); 
+        state.difficulty = card.dataset.value; 
+        soundClick();
+      };
     });
     // mode selectors
     document.querySelectorAll('#mode-select .settings-card').forEach(card=>{
-      card.onclick = ()=>{ document.querySelectorAll('#mode-select .settings-card').forEach(c=>c.classList.remove('active')); card.classList.add('active'); state.mode = card.dataset.value; soundClick([...]
+      card.onclick = ()=>{ 
+        document.querySelectorAll('#mode-select .settings-card').forEach(c=>c.classList.remove('active')); 
+        card.classList.add('active'); 
+        state.mode = card.dataset.value; 
+        soundClick();
+      };
     });
 
     // start / play card
@@ -250,10 +274,10 @@
     document.getElementById('tutorial-panel').style.display = 'none';
     document.getElementById('about-panel').style.display = 'none';
     document.getElementById('leaderboard-panel').style.display = 'none';
-    // hide credits panel as well (save previous display to restore later)
+    // hide credits panel as well (save previous inline display to restore later)
     const creditsPanel = document.getElementById('credits-panel');
     if(creditsPanel){
-      creditsPanel.dataset._prevDisplay = creditsPanel.style.display || getComputedStyle(creditsPanel).display;
+      creditsPanel.dataset._prevDisplay = creditsPanel.style.display ?? '';
       creditsPanel.style.display = 'none';
     }
     // show game area and HUD
@@ -459,7 +483,7 @@
         <table class="tt-table" style="width:100%"><tr>${cols.map(c=>`<th>${c.toUpperCase()}</th>`).join('')}<th>Answer</th></tr>
           ${table.map((row,i)=>`<tr>${
             cols.slice(0,-1).map(k=>`<td>${row[k]===true?'T':(row[k]===false?'F':'')}</td>`).join('')
-          }<td><div class="mcq-row" data-idx="${i}"><button class="btn mcq-btn" data-val="T" type="button">T</button><button class="btn mcq-btn" data-val="F" type="button">F</button></div></td></tr>`)[...]
+          }<td><div class="mcq-row" data-idx="${i}"><button class="btn mcq-btn" data-val="T" type="button">T</button><button class="btn mcq-btn" data-val="F" type="button">F</button></div></td></tr>`).join('')}
         </table>
         <div style="margin-top:14px"><button id="check-tt-mcq" class="btn-check" type="button">Check</button></div>
       </div>`;
